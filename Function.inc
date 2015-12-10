@@ -1,6 +1,9 @@
 Draw MACRO
 
-	DrawSolider 5,5
+	DrawCastle	 0, 13
+	;DrawCastle2	20, 10
+	;DrawCastle3	40, 9
+	DrawSolider 20,10
 
 	ENDM
 

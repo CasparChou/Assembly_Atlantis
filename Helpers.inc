@@ -6,15 +6,16 @@ LoopTimes	MACRO	Times
 ENDM
 Translate	MACRO X, Y
 	MOV  	dl, 	X
-	MOV  	dh, 	Y    
+	MOV  	dh, 	Y
+	CALL 	Gotoxy  
 	ENDM
-Position 	MACRO X, Y
-	MOV 	EAX,	EDX
-	MOV  	 DL, 	X
-	MOV  	 DH, 	Y 
-	CALL 	Gotoxy
-	MOV 	EDX,	EAX
-	ENDM
+;Position 	MACRO X, Y
+;	MOV 	EAX,	EDX
+;	MOV  	 DL, 	X
+;	MOV  	 DH, 	Y 
+;	CALL 	Gotoxy
+;	MOV 	EDX,	EAX
+;	ENDM
 PrintAt  	MACRO X, Y, Code
 	PUSH	EAX
 		MOV 	EAX,	EDX
