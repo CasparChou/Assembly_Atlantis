@@ -6,7 +6,7 @@ Draw MACRO
 	DrawCastle3	95, 9
 	;DrawSolider 20,10
 	DrawMonster2 70,15
-	DrawTurrent  20,14
+	DrawTurrent  10,14
 
 	ENDM
 
@@ -21,3 +21,5 @@ GraphDisplay MACRO String
 		INC  DH
 		Call GoToXY
 	ENDM
+
+

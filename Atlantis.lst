@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 6.15.8803		    12/10/15 16:52:44
+Microsoft (R) Macro Assembler Version 6.15.8803		    12/10/15 17:15:02
 Atlantis.asm						     Page 1 - 1
 
 
@@ -40,6 +40,67 @@ Atlantis.asm						     Page 1 - 1
 					INCLUDE	Status.inc
 			      C 
 			      C 
+ 00000008		      C Apple 	STRUCT
+			      C 
+ 00000000  00000003	      C 	X DWORD 3
+ 00000004  00000004	      C 	Y DWORD 4
+			      C 
+			      C Apple	ENDS
+			      C 
+			      C 
+ 00000000 00000003	      C NA2		Apple <>
+	   00000004
+			      C 
+ 00000018		      C Soilder STRUCT
+ 00000000  00000000	      C 	HP		DWORD ?
+ 00000004  0000 0000	      C 	XY		COORD <>
+ 00000008  00000000	      C 	ATK		DWORD ?
+ 0000000C  00000000	      C 	SPD		DWORD ?
+ 00000010  00000000	      C 	LV		DWORD ?
+ 00000014  00000000	      C 	KIND	DWORD ?
+			      C Soilder ENDS
+			      C 
+ 00000008 00000000 0000	      C Soilder1 Soilder <>
+	   0000 00000000
+	   00000000
+	   00000000
+	   00000000
+ 00000020 00000000 0000	      C Soilder2 Soilder <>
+	   0000 00000000
+	   00000000
+	   00000000
+	   00000000
+ 00000038 00000000 0000	      C Soilder3 Soilder <>
+	   0000 00000000
+	   00000000
+	   00000000
+	   00000000
+ 00000050 00000000 0000	      C Soilder4 Soilder <>
+	   0000 00000000
+	   00000000
+	   00000000
+	   00000000
+ 00000068 00000000 0000	      C Soilder5 Soilder <>
+	   0000 00000000
+	   00000000
+	   00000000
+	   00000000
+ 00000080 00000000 0000	      C Soilder6 Soilder <>
+	   0000 00000000
+	   00000000
+	   00000000
+	   00000000
+ 00000098 00000000 0000	      C Soilder7 Soilder <>
+	   0000 00000000
+	   00000000
+	   00000000
+	   00000000
+ 000000B0 00000000 0000	      C Soilder8 Soilder <>
+	   0000 00000000
+	   00000000
+	   00000000
+	   00000000
+			      C 
 					INCLUDE	Function.inc
 			      C Draw MACRO
 			      C 
@@ -49,7 +110,7 @@ Atlantis.asm						     Page 1 - 1
 			      C 	DrawCastle3	95, 9
 			      C 	;DrawSolider 20,10
 			      C 	DrawMonster2 70,15
-			      C 	DrawTurrent  20,14
+			      C 	DrawTurrent  10,14
 			      C 
 			      C 	ENDM
 			      C 
@@ -64,6 +125,8 @@ Atlantis.asm						     Page 1 - 1
 			      C 		INC  DH
 			      C 		Call GoToXY
 			      C 	ENDM
+			      C 
+			      C 
 			      C 
 					INCLUDE	Helpers.inc
  00000000		      C .Data
@@ -291,43 +354,43 @@ Atlantis.asm						     Page 1 - 1
  = CALL 	ForceCLS      C CLSALL  EQU <CALL 	ForceCLS>	
 			      C 
 			      C 
- 00000000		      C .Code
+ 000000C8		      C .Code
 			      C 
- 00000000		      C ForceCLS  PROC
- 00000000  51		      C 	PUSH ECX
+ 000000C8		      C ForceCLS  PROC
+ 000000C8  51		      C 	PUSH ECX
 			      C 	LoopTimes 100
- 00000001  B9 00000064	     1C 	MOV 	ECX,	100
- 00000006		      C 	NewLine:
- 00000006  51		      C 		PUSH ECX
+ 000000C9  B9 00000064	     1C 	MOV 	ECX,	100
+ 000000CE		      C 	NewLine:
+ 000000CE  51		      C 		PUSH ECX
 			      C 			LoopTimes 100
- 00000007  B9 00000064	     1C 	MOV 	ECX,	100
- 0000000C		      C 			BLANKS:
+ 000000CF  B9 00000064	     1C 	MOV 	ECX,	100
+ 000000D4		      C 			BLANKS:
 			      C 				Write 07FH
- 0000000C  50		     1C 	PUSH 	EAX
- 0000000D  B8 0000007F	     1C 		MOV 	EAX,	07FH
- 00000012  E8 00000000 E     1C 		CALL 	WriteChar
- 00000017  58		     1C 	POP 	EAX
- 00000018  E2 F2	      C 				Loop BLANKS
- 0000001A  59		      C 		POP  ECX
+ 000000D4  50		     1C 	PUSH 	EAX
+ 000000D5  B8 0000007F	     1C 		MOV 	EAX,	07FH
+ 000000DA  E8 00000000 E     1C 		CALL 	WriteChar
+ 000000DF  58		     1C 	POP 	EAX
+ 000000E0  E2 F2	      C 				Loop BLANKS
+ 000000E2  59		      C 		POP  ECX
 			      C 		NL
- 0000001B  50		     1C 	PUSH 	EAX
- 0000001C  B8 0000000A	     1C 		MOV 	EAX,	0AH
- 00000021  E8 00000000 E     1C 		CALL 	WriteChar
- 00000026  58		     1C 	POP 	EAX
- 00000027  E2 DD	      C 		Loop NewLine
- 00000029  59		      C 	POP  ECX
- 0000002A  C3		      C 	RET
- 0000002B		      C ForceCLS ENDP
+ 000000E3  50		     1C 	PUSH 	EAX
+ 000000E4  B8 0000000A	     1C 		MOV 	EAX,	0AH
+ 000000E9  E8 00000000 E     1C 		CALL 	WriteChar
+ 000000EE  58		     1C 	POP 	EAX
+ 000000EF  E2 DD	      C 		Loop NewLine
+ 000000F1  59		      C 	POP  ECX
+ 000000F2  C3		      C 	RET
+ 000000F3		      C ForceCLS ENDP
 			      C 
- 0000002B		      C CoppingString PROC
- 0000002B		      C 	CoppingS:
- 0000002B  8A 06	      C 		MOV 	AL,	[ESI]
- 0000002D  88 07	      C 		MOV 	[EDI], AL
- 0000002F  46		      C         INC 	ESI
- 00000030  47		      C         INC 	EDI
- 00000031  E2 F8	      C         LOOP 	CoppingS
- 00000033  C3		      C     RET
- 00000034		      C CoppingString ENDP
+ 000000F3		      C CoppingString PROC
+ 000000F3		      C 	CoppingS:
+ 000000F3  8A 06	      C 		MOV 	AL,	[ESI]
+ 000000F5  88 07	      C 		MOV 	[EDI], AL
+ 000000F7  46		      C         INC 	ESI
+ 000000F8  47		      C         INC 	EDI
+ 000000F9  E2 F8	      C         LOOP 	CoppingS
+ 000000FB  C3		      C     RET
+ 000000FC		      C CoppingString ENDP
 			      C 
 			      C 
 
@@ -648,194 +711,98 @@ Atlantis.asm						     Page 1 - 1
 			      C 		
 			      C 
 
- 00000034			.Code
- 00000034			MAIN:
- 00000034
+ 000000FC			.Code
+ 000000FC			MAIN:
+ 000000FC
 
 
 					Draw
- 00000034  B2 50	     3		MOV  	dl, 	80
- 00000036  B6 11	     3		MOV  	dh, 	17
- 00000038  E8 00000000 E     3		CALL 	Gotoxy  
- 0000003D  52		     3			PUSH EDX
- 0000003E  52		     4		PUSH EDX
- 0000003F  51		     4		PUSH ECX
- 00000040  56		     4		PUSH ESI
- 00000041  BA 00000206 R     4			MOV EDX, OFFSET Monster_1_1
- 00000046  E8 00000000 E     4			CALL WriteString
- 0000004B  59		     4		POP ECX
- 0000004C  59		     4		POP ECX
- 0000004D  5E		     4		POP ESI
- 0000004E  5A		     3			POP  EDX
- 0000004F  FE C6	     3			INC  DH
- 00000051  E8 00000000 E     3			Call GoToXY
- 00000056  B2 00	     3		MOV  	dl, 	0
- 00000058  B6 0D	     3		MOV  	dh, 	13
- 0000005A  E8 00000000 E     3		CALL 	Gotoxy  
- 0000005F  52		     3			PUSH EDX
- 00000060  52		     4		PUSH EDX
- 00000061  51		     4		PUSH ECX
- 00000062  56		     4		PUSH ESI
- 00000063  BA 00000000 R     4			MOV EDX, OFFSET Castle_1_1
- 00000068  E8 00000000 E     4			CALL WriteString
- 0000006D  59		     4		POP ECX
- 0000006E  59		     4		POP ECX
- 0000006F  5E		     4		POP ESI
- 00000070  5A		     3			POP  EDX
- 00000071  FE C6	     3			INC  DH
- 00000073  E8 00000000 E     3			Call GoToXY
- 00000078  52		     3			PUSH EDX
- 00000079  52		     4		PUSH EDX
- 0000007A  51		     4		PUSH ECX
- 0000007B  56		     4		PUSH ESI
- 0000007C  BA 00000013 R     4			MOV EDX, OFFSET Castle_1_2
- 00000081  E8 00000000 E     4			CALL WriteString
- 00000086  59		     4		POP ECX
- 00000087  59		     4		POP ECX
- 00000088  5E		     4		POP ESI
- 00000089  5A		     3			POP  EDX
- 0000008A  FE C6	     3			INC  DH
- 0000008C  E8 00000000 E     3			Call GoToXY
- 00000091  52		     3			PUSH EDX
- 00000092  52		     4		PUSH EDX
- 00000093  51		     4		PUSH ECX
- 00000094  56		     4		PUSH ESI
- 00000095  BA 00000029 R     4			MOV EDX, OFFSET Castle_1_3
- 0000009A  E8 00000000 E     4			CALL WriteString
- 0000009F  59		     4		POP ECX
- 000000A0  59		     4		POP ECX
- 000000A1  5E		     4		POP ESI
- 000000A2  5A		     3			POP  EDX
- 000000A3  FE C6	     3			INC  DH
- 000000A5  E8 00000000 E     3			Call GoToXY
- 000000AA  52		     3			PUSH EDX
- 000000AB  52		     4		PUSH EDX
- 000000AC  51		     4		PUSH ECX
- 000000AD  56		     4		PUSH ESI
- 000000AE  BA 0000003C R     4			MOV EDX, OFFSET Castle_1_4
- 000000B3  E8 00000000 E     4			CALL WriteString
- 000000B8  59		     4		POP ECX
- 000000B9  59		     4		POP ECX
- 000000BA  5E		     4		POP ESI
- 000000BB  5A		     3			POP  EDX
- 000000BC  FE C6	     3			INC  DH
- 000000BE  E8 00000000 E     3			Call GoToXY
- 000000C3  52		     3			PUSH EDX
- 000000C4  52		     4		PUSH EDX
- 000000C5  51		     4		PUSH ECX
- 000000C6  56		     4		PUSH ESI
- 000000C7  BA 0000004F R     4			MOV EDX, OFFSET Castle_1_5
- 000000CC  E8 00000000 E     4			CALL WriteString
- 000000D1  59		     4		POP ECX
- 000000D2  59		     4		POP ECX
- 000000D3  5E		     4		POP ESI
- 000000D4  5A		     3			POP  EDX
- 000000D5  FE C6	     3			INC  DH
- 000000D7  E8 00000000 E     3			Call GoToXY
- 000000DC  B2 5F	     3		MOV  	dl, 	95
- 000000DE  B6 09	     3		MOV  	dh, 	9
- 000000E0  E8 00000000 E     3		CALL 	Gotoxy  
- 000000E5  52		     3			PUSH EDX
- 000000E6  52		     4		PUSH EDX
- 000000E7  51		     4		PUSH ECX
- 000000E8  56		     4		PUSH ESI
- 000000E9  BA 00000103 R     4			MOV EDX, OFFSET Castle_3_1
- 000000EE  E8 00000000 E     4			CALL WriteString
- 000000F3  59		     4		POP ECX
- 000000F4  59		     4		POP ECX
- 000000F5  5E		     4		POP ESI
- 000000F6  5A		     3			POP  EDX
- 000000F7  FE C6	     3			INC  DH
- 000000F9  E8 00000000 E     3			Call GoToXY
- 000000FE  52		     3			PUSH EDX
- 000000FF  52		     4		PUSH EDX
- 00000100  51		     4		PUSH ECX
- 00000101  56		     4		PUSH ESI
- 00000102  BA 00000115 R     4			MOV EDX, OFFSET Castle_3_2
- 00000107  E8 00000000 E     4			CALL WriteString
- 0000010C  59		     4		POP ECX
- 0000010D  59		     4		POP ECX
- 0000010E  5E		     4		POP ESI
- 0000010F  5A		     3			POP  EDX
- 00000110  FE C6	     3			INC  DH
- 00000112  E8 00000000 E     3			Call GoToXY
- 00000117  52		     3			PUSH EDX
- 00000118  52		     4		PUSH EDX
- 00000119  51		     4		PUSH ECX
- 0000011A  56		     4		PUSH ESI
- 0000011B  BA 00000127 R     4			MOV EDX, OFFSET Castle_3_3
- 00000120  E8 00000000 E     4			CALL WriteString
- 00000125  59		     4		POP ECX
- 00000126  59		     4		POP ECX
- 00000127  5E		     4		POP ESI
- 00000128  5A		     3			POP  EDX
- 00000129  FE C6	     3			INC  DH
- 0000012B  E8 00000000 E     3			Call GoToXY
- 00000130  52		     3			PUSH EDX
- 00000131  52		     4		PUSH EDX
- 00000132  51		     4		PUSH ECX
- 00000133  56		     4		PUSH ESI
- 00000134  BA 0000013A R     4			MOV EDX, OFFSET Castle_3_4
- 00000139  E8 00000000 E     4			CALL WriteString
- 0000013E  59		     4		POP ECX
- 0000013F  59		     4		POP ECX
- 00000140  5E		     4		POP ESI
- 00000141  5A		     3			POP  EDX
- 00000142  FE C6	     3			INC  DH
- 00000144  E8 00000000 E     3			Call GoToXY
- 00000149  52		     3			PUSH EDX
- 0000014A  52		     4		PUSH EDX
- 0000014B  51		     4		PUSH ECX
- 0000014C  56		     4		PUSH ESI
- 0000014D  BA 0000014F R     4			MOV EDX, OFFSET Castle_3_5
- 00000152  E8 00000000 E     4			CALL WriteString
- 00000157  59		     4		POP ECX
- 00000158  59		     4		POP ECX
- 00000159  5E		     4		POP ESI
- 0000015A  5A		     3			POP  EDX
- 0000015B  FE C6	     3			INC  DH
- 0000015D  E8 00000000 E     3			Call GoToXY
- 00000162  52		     3			PUSH EDX
- 00000163  52		     4		PUSH EDX
- 00000164  51		     4		PUSH ECX
- 00000165  56		     4		PUSH ESI
- 00000166  BA 00000166 R     4			MOV EDX, OFFSET Castle_3_6
- 0000016B  E8 00000000 E     4			CALL WriteString
- 00000170  59		     4		POP ECX
- 00000171  59		     4		POP ECX
- 00000172  5E		     4		POP ESI
- 00000173  5A		     3			POP  EDX
- 00000174  FE C6	     3			INC  DH
- 00000176  E8 00000000 E     3			Call GoToXY
- 0000017B  52		     3			PUSH EDX
- 0000017C  52		     4		PUSH EDX
- 0000017D  51		     4		PUSH ECX
- 0000017E  56		     4		PUSH ESI
- 0000017F  BA 0000017D R     4			MOV EDX, OFFSET Castle_3_7
- 00000184  E8 00000000 E     4			CALL WriteString
- 00000189  59		     4		POP ECX
- 0000018A  59		     4		POP ECX
- 0000018B  5E		     4		POP ESI
- 0000018C  5A		     3			POP  EDX
- 0000018D  FE C6	     3			INC  DH
- 0000018F  E8 00000000 E     3			Call GoToXY
- 00000194  52		     3			PUSH EDX
- 00000195  52		     4		PUSH EDX
- 00000196  51		     4		PUSH ECX
- 00000197  56		     4		PUSH ESI
- 00000198  BA 00000193 R     4			MOV EDX, OFFSET Castle_3_8
- 0000019D  E8 00000000 E     4			CALL WriteString
- 000001A2  59		     4		POP ECX
- 000001A3  59		     4		POP ECX
- 000001A4  5E		     4		POP ESI
- 000001A5  5A		     3			POP  EDX
- 000001A6  FE C6	     3			INC  DH
- 000001A8  E8 00000000 E     3			Call GoToXY
+ 000000FC  B2 50	     3		MOV  	dl, 	80
+ 000000FE  B6 11	     3		MOV  	dh, 	17
+ 00000100  E8 00000000 E     3		CALL 	Gotoxy  
+ 00000105  52		     3			PUSH EDX
+ 00000106  52		     4		PUSH EDX
+ 00000107  51		     4		PUSH ECX
+ 00000108  56		     4		PUSH ESI
+ 00000109  BA 00000206 R     4			MOV EDX, OFFSET Monster_1_1
+ 0000010E  E8 00000000 E     4			CALL WriteString
+ 00000113  59		     4		POP ECX
+ 00000114  59		     4		POP ECX
+ 00000115  5E		     4		POP ESI
+ 00000116  5A		     3			POP  EDX
+ 00000117  FE C6	     3			INC  DH
+ 00000119  E8 00000000 E     3			Call GoToXY
+ 0000011E  B2 00	     3		MOV  	dl, 	0
+ 00000120  B6 0D	     3		MOV  	dh, 	13
+ 00000122  E8 00000000 E     3		CALL 	Gotoxy  
+ 00000127  52		     3			PUSH EDX
+ 00000128  52		     4		PUSH EDX
+ 00000129  51		     4		PUSH ECX
+ 0000012A  56		     4		PUSH ESI
+ 0000012B  BA 00000000 R     4			MOV EDX, OFFSET Castle_1_1
+ 00000130  E8 00000000 E     4			CALL WriteString
+ 00000135  59		     4		POP ECX
+ 00000136  59		     4		POP ECX
+ 00000137  5E		     4		POP ESI
+ 00000138  5A		     3			POP  EDX
+ 00000139  FE C6	     3			INC  DH
+ 0000013B  E8 00000000 E     3			Call GoToXY
+ 00000140  52		     3			PUSH EDX
+ 00000141  52		     4		PUSH EDX
+ 00000142  51		     4		PUSH ECX
+ 00000143  56		     4		PUSH ESI
+ 00000144  BA 00000013 R     4			MOV EDX, OFFSET Castle_1_2
+ 00000149  E8 00000000 E     4			CALL WriteString
+ 0000014E  59		     4		POP ECX
+ 0000014F  59		     4		POP ECX
+ 00000150  5E		     4		POP ESI
+ 00000151  5A		     3			POP  EDX
+ 00000152  FE C6	     3			INC  DH
+ 00000154  E8 00000000 E     3			Call GoToXY
+ 00000159  52		     3			PUSH EDX
+ 0000015A  52		     4		PUSH EDX
+ 0000015B  51		     4		PUSH ECX
+ 0000015C  56		     4		PUSH ESI
+ 0000015D  BA 00000029 R     4			MOV EDX, OFFSET Castle_1_3
+ 00000162  E8 00000000 E     4			CALL WriteString
+ 00000167  59		     4		POP ECX
+ 00000168  59		     4		POP ECX
+ 00000169  5E		     4		POP ESI
+ 0000016A  5A		     3			POP  EDX
+ 0000016B  FE C6	     3			INC  DH
+ 0000016D  E8 00000000 E     3			Call GoToXY
+ 00000172  52		     3			PUSH EDX
+ 00000173  52		     4		PUSH EDX
+ 00000174  51		     4		PUSH ECX
+ 00000175  56		     4		PUSH ESI
+ 00000176  BA 0000003C R     4			MOV EDX, OFFSET Castle_1_4
+ 0000017B  E8 00000000 E     4			CALL WriteString
+ 00000180  59		     4		POP ECX
+ 00000181  59		     4		POP ECX
+ 00000182  5E		     4		POP ESI
+ 00000183  5A		     3			POP  EDX
+ 00000184  FE C6	     3			INC  DH
+ 00000186  E8 00000000 E     3			Call GoToXY
+ 0000018B  52		     3			PUSH EDX
+ 0000018C  52		     4		PUSH EDX
+ 0000018D  51		     4		PUSH ECX
+ 0000018E  56		     4		PUSH ESI
+ 0000018F  BA 0000004F R     4			MOV EDX, OFFSET Castle_1_5
+ 00000194  E8 00000000 E     4			CALL WriteString
+ 00000199  59		     4		POP ECX
+ 0000019A  59		     4		POP ECX
+ 0000019B  5E		     4		POP ESI
+ 0000019C  5A		     3			POP  EDX
+ 0000019D  FE C6	     3			INC  DH
+ 0000019F  E8 00000000 E     3			Call GoToXY
+ 000001A4  B2 5F	     3		MOV  	dl, 	95
+ 000001A6  B6 09	     3		MOV  	dh, 	9
+ 000001A8  E8 00000000 E     3		CALL 	Gotoxy  
  000001AD  52		     3			PUSH EDX
  000001AE  52		     4		PUSH EDX
  000001AF  51		     4		PUSH ECX
  000001B0  56		     4		PUSH ESI
- 000001B1  BA 000001AB R     4			MOV EDX, OFFSET Castle_3_9
+ 000001B1  BA 00000103 R     4			MOV EDX, OFFSET Castle_3_1
  000001B6  E8 00000000 E     4			CALL WriteString
  000001BB  59		     4		POP ECX
  000001BC  59		     4		POP ECX
@@ -843,115 +810,214 @@ Atlantis.asm						     Page 1 - 1
  000001BE  5A		     3			POP  EDX
  000001BF  FE C6	     3			INC  DH
  000001C1  E8 00000000 E     3			Call GoToXY
- 000001C6  B2 46	     3		MOV  	dl, 	70
- 000001C8  B6 0F	     3		MOV  	dh, 	15
- 000001CA  E8 00000000 E     3		CALL 	Gotoxy  
- 000001CF  52		     3			PUSH EDX
- 000001D0  52		     4		PUSH EDX
- 000001D1  51		     4		PUSH ECX
- 000001D2  56		     4		PUSH ESI
- 000001D3  BA 0000020B R     4			MOV EDX, OFFSET Monster_2_1
- 000001D8  E8 00000000 E     4			CALL WriteString
- 000001DD  59		     4		POP ECX
- 000001DE  59		     4		POP ECX
- 000001DF  5E		     4		POP ESI
- 000001E0  5A		     3			POP  EDX
- 000001E1  FE C6	     3			INC  DH
- 000001E3  E8 00000000 E     3			Call GoToXY
- 000001E8  52		     3			PUSH EDX
- 000001E9  52		     4		PUSH EDX
- 000001EA  51		     4		PUSH ECX
- 000001EB  56		     4		PUSH ESI
- 000001EC  BA 00000214 R     4			MOV EDX, OFFSET Monster_2_2
- 000001F1  E8 00000000 E     4			CALL WriteString
- 000001F6  59		     4		POP ECX
- 000001F7  59		     4		POP ECX
- 000001F8  5E		     4		POP ESI
- 000001F9  5A		     3			POP  EDX
- 000001FA  FE C6	     3			INC  DH
- 000001FC  E8 00000000 E     3			Call GoToXY
- 00000201  52		     3			PUSH EDX
- 00000202  52		     4		PUSH EDX
- 00000203  51		     4		PUSH ECX
- 00000204  56		     4		PUSH ESI
- 00000205  BA 0000021C R     4			MOV EDX, OFFSET Monster_2_3
- 0000020A  E8 00000000 E     4			CALL WriteString
- 0000020F  59		     4		POP ECX
- 00000210  59		     4		POP ECX
- 00000211  5E		     4		POP ESI
- 00000212  5A		     3			POP  EDX
- 00000213  FE C6	     3			INC  DH
- 00000215  E8 00000000 E     3			Call GoToXY
- 0000021A  B2 14	     3		MOV  	dl, 	20
- 0000021C  B6 0E	     3		MOV  	dh, 	14
- 0000021E  E8 00000000 E     3		CALL 	Gotoxy  
- 00000223  52		     3			PUSH EDX
- 00000224  52		     4		PUSH EDX
- 00000225  51		     4		PUSH ECX
- 00000226  56		     4		PUSH ESI
- 00000227  BA 000001EC R     4			MOV EDX, OFFSET Turrent_1_1
- 0000022C  E8 00000000 E     4			CALL WriteString
- 00000231  59		     4		POP ECX
- 00000232  59		     4		POP ECX
- 00000233  5E		     4		POP ESI
- 00000234  5A		     3			POP  EDX
- 00000235  FE C6	     3			INC  DH
- 00000237  E8 00000000 E     3			Call GoToXY
- 0000023C  52		     3			PUSH EDX
- 0000023D  52		     4		PUSH EDX
- 0000023E  51		     4		PUSH ECX
- 0000023F  56		     4		PUSH ESI
- 00000240  BA 000001F2 R     4			MOV EDX, OFFSET Turrent_1_2
- 00000245  E8 00000000 E     4			CALL WriteString
- 0000024A  59		     4		POP ECX
- 0000024B  59		     4		POP ECX
- 0000024C  5E		     4		POP ESI
- 0000024D  5A		     3			POP  EDX
- 0000024E  FE C6	     3			INC  DH
- 00000250  E8 00000000 E     3			Call GoToXY
- 00000255  52		     3			PUSH EDX
- 00000256  52		     4		PUSH EDX
- 00000257  51		     4		PUSH ECX
- 00000258  56		     4		PUSH ESI
- 00000259  BA 000001F8 R     4			MOV EDX, OFFSET Turrent_1_3
- 0000025E  E8 00000000 E     4			CALL WriteString
- 00000263  59		     4		POP ECX
- 00000264  59		     4		POP ECX
- 00000265  5E		     4		POP ESI
- 00000266  5A		     3			POP  EDX
- 00000267  FE C6	     3			INC  DH
- 00000269  E8 00000000 E     3			Call GoToXY
- 0000026E  52		     3			PUSH EDX
- 0000026F  52		     4		PUSH EDX
- 00000270  51		     4		PUSH ECX
- 00000271  56		     4		PUSH ESI
- 00000272  BA 000001FE R     4			MOV EDX, OFFSET Turrent_1_4
- 00000277  E8 00000000 E     4			CALL WriteString
- 0000027C  59		     4		POP ECX
- 0000027D  59		     4		POP ECX
- 0000027E  5E		     4		POP ESI
- 0000027F  5A		     3			POP  EDX
- 00000280  FE C6	     3			INC  DH
- 00000282  E8 00000000 E     3			Call GoToXY
+ 000001C6  52		     3			PUSH EDX
+ 000001C7  52		     4		PUSH EDX
+ 000001C8  51		     4		PUSH ECX
+ 000001C9  56		     4		PUSH ESI
+ 000001CA  BA 00000115 R     4			MOV EDX, OFFSET Castle_3_2
+ 000001CF  E8 00000000 E     4			CALL WriteString
+ 000001D4  59		     4		POP ECX
+ 000001D5  59		     4		POP ECX
+ 000001D6  5E		     4		POP ESI
+ 000001D7  5A		     3			POP  EDX
+ 000001D8  FE C6	     3			INC  DH
+ 000001DA  E8 00000000 E     3			Call GoToXY
+ 000001DF  52		     3			PUSH EDX
+ 000001E0  52		     4		PUSH EDX
+ 000001E1  51		     4		PUSH ECX
+ 000001E2  56		     4		PUSH ESI
+ 000001E3  BA 00000127 R     4			MOV EDX, OFFSET Castle_3_3
+ 000001E8  E8 00000000 E     4			CALL WriteString
+ 000001ED  59		     4		POP ECX
+ 000001EE  59		     4		POP ECX
+ 000001EF  5E		     4		POP ESI
+ 000001F0  5A		     3			POP  EDX
+ 000001F1  FE C6	     3			INC  DH
+ 000001F3  E8 00000000 E     3			Call GoToXY
+ 000001F8  52		     3			PUSH EDX
+ 000001F9  52		     4		PUSH EDX
+ 000001FA  51		     4		PUSH ECX
+ 000001FB  56		     4		PUSH ESI
+ 000001FC  BA 0000013A R     4			MOV EDX, OFFSET Castle_3_4
+ 00000201  E8 00000000 E     4			CALL WriteString
+ 00000206  59		     4		POP ECX
+ 00000207  59		     4		POP ECX
+ 00000208  5E		     4		POP ESI
+ 00000209  5A		     3			POP  EDX
+ 0000020A  FE C6	     3			INC  DH
+ 0000020C  E8 00000000 E     3			Call GoToXY
+ 00000211  52		     3			PUSH EDX
+ 00000212  52		     4		PUSH EDX
+ 00000213  51		     4		PUSH ECX
+ 00000214  56		     4		PUSH ESI
+ 00000215  BA 0000014F R     4			MOV EDX, OFFSET Castle_3_5
+ 0000021A  E8 00000000 E     4			CALL WriteString
+ 0000021F  59		     4		POP ECX
+ 00000220  59		     4		POP ECX
+ 00000221  5E		     4		POP ESI
+ 00000222  5A		     3			POP  EDX
+ 00000223  FE C6	     3			INC  DH
+ 00000225  E8 00000000 E     3			Call GoToXY
+ 0000022A  52		     3			PUSH EDX
+ 0000022B  52		     4		PUSH EDX
+ 0000022C  51		     4		PUSH ECX
+ 0000022D  56		     4		PUSH ESI
+ 0000022E  BA 00000166 R     4			MOV EDX, OFFSET Castle_3_6
+ 00000233  E8 00000000 E     4			CALL WriteString
+ 00000238  59		     4		POP ECX
+ 00000239  59		     4		POP ECX
+ 0000023A  5E		     4		POP ESI
+ 0000023B  5A		     3			POP  EDX
+ 0000023C  FE C6	     3			INC  DH
+ 0000023E  E8 00000000 E     3			Call GoToXY
+ 00000243  52		     3			PUSH EDX
+ 00000244  52		     4		PUSH EDX
+ 00000245  51		     4		PUSH ECX
+ 00000246  56		     4		PUSH ESI
+ 00000247  BA 0000017D R     4			MOV EDX, OFFSET Castle_3_7
+ 0000024C  E8 00000000 E     4			CALL WriteString
+ 00000251  59		     4		POP ECX
+ 00000252  59		     4		POP ECX
+ 00000253  5E		     4		POP ESI
+ 00000254  5A		     3			POP  EDX
+ 00000255  FE C6	     3			INC  DH
+ 00000257  E8 00000000 E     3			Call GoToXY
+ 0000025C  52		     3			PUSH EDX
+ 0000025D  52		     4		PUSH EDX
+ 0000025E  51		     4		PUSH ECX
+ 0000025F  56		     4		PUSH ESI
+ 00000260  BA 00000193 R     4			MOV EDX, OFFSET Castle_3_8
+ 00000265  E8 00000000 E     4			CALL WriteString
+ 0000026A  59		     4		POP ECX
+ 0000026B  59		     4		POP ECX
+ 0000026C  5E		     4		POP ESI
+ 0000026D  5A		     3			POP  EDX
+ 0000026E  FE C6	     3			INC  DH
+ 00000270  E8 00000000 E     3			Call GoToXY
+ 00000275  52		     3			PUSH EDX
+ 00000276  52		     4		PUSH EDX
+ 00000277  51		     4		PUSH ECX
+ 00000278  56		     4		PUSH ESI
+ 00000279  BA 000001AB R     4			MOV EDX, OFFSET Castle_3_9
+ 0000027E  E8 00000000 E     4			CALL WriteString
+ 00000283  59		     4		POP ECX
+ 00000284  59		     4		POP ECX
+ 00000285  5E		     4		POP ESI
+ 00000286  5A		     3			POP  EDX
+ 00000287  FE C6	     3			INC  DH
+ 00000289  E8 00000000 E     3			Call GoToXY
+ 0000028E  B2 46	     3		MOV  	dl, 	70
+ 00000290  B6 0F	     3		MOV  	dh, 	15
+ 00000292  E8 00000000 E     3		CALL 	Gotoxy  
+ 00000297  52		     3			PUSH EDX
+ 00000298  52		     4		PUSH EDX
+ 00000299  51		     4		PUSH ECX
+ 0000029A  56		     4		PUSH ESI
+ 0000029B  BA 0000020B R     4			MOV EDX, OFFSET Monster_2_1
+ 000002A0  E8 00000000 E     4			CALL WriteString
+ 000002A5  59		     4		POP ECX
+ 000002A6  59		     4		POP ECX
+ 000002A7  5E		     4		POP ESI
+ 000002A8  5A		     3			POP  EDX
+ 000002A9  FE C6	     3			INC  DH
+ 000002AB  E8 00000000 E     3			Call GoToXY
+ 000002B0  52		     3			PUSH EDX
+ 000002B1  52		     4		PUSH EDX
+ 000002B2  51		     4		PUSH ECX
+ 000002B3  56		     4		PUSH ESI
+ 000002B4  BA 00000214 R     4			MOV EDX, OFFSET Monster_2_2
+ 000002B9  E8 00000000 E     4			CALL WriteString
+ 000002BE  59		     4		POP ECX
+ 000002BF  59		     4		POP ECX
+ 000002C0  5E		     4		POP ESI
+ 000002C1  5A		     3			POP  EDX
+ 000002C2  FE C6	     3			INC  DH
+ 000002C4  E8 00000000 E     3			Call GoToXY
+ 000002C9  52		     3			PUSH EDX
+ 000002CA  52		     4		PUSH EDX
+ 000002CB  51		     4		PUSH ECX
+ 000002CC  56		     4		PUSH ESI
+ 000002CD  BA 0000021C R     4			MOV EDX, OFFSET Monster_2_3
+ 000002D2  E8 00000000 E     4			CALL WriteString
+ 000002D7  59		     4		POP ECX
+ 000002D8  59		     4		POP ECX
+ 000002D9  5E		     4		POP ESI
+ 000002DA  5A		     3			POP  EDX
+ 000002DB  FE C6	     3			INC  DH
+ 000002DD  E8 00000000 E     3			Call GoToXY
+ 000002E2  B2 0A	     3		MOV  	dl, 	10
+ 000002E4  B6 0E	     3		MOV  	dh, 	14
+ 000002E6  E8 00000000 E     3		CALL 	Gotoxy  
+ 000002EB  52		     3			PUSH EDX
+ 000002EC  52		     4		PUSH EDX
+ 000002ED  51		     4		PUSH ECX
+ 000002EE  56		     4		PUSH ESI
+ 000002EF  BA 000001EC R     4			MOV EDX, OFFSET Turrent_1_1
+ 000002F4  E8 00000000 E     4			CALL WriteString
+ 000002F9  59		     4		POP ECX
+ 000002FA  59		     4		POP ECX
+ 000002FB  5E		     4		POP ESI
+ 000002FC  5A		     3			POP  EDX
+ 000002FD  FE C6	     3			INC  DH
+ 000002FF  E8 00000000 E     3			Call GoToXY
+ 00000304  52		     3			PUSH EDX
+ 00000305  52		     4		PUSH EDX
+ 00000306  51		     4		PUSH ECX
+ 00000307  56		     4		PUSH ESI
+ 00000308  BA 000001F2 R     4			MOV EDX, OFFSET Turrent_1_2
+ 0000030D  E8 00000000 E     4			CALL WriteString
+ 00000312  59		     4		POP ECX
+ 00000313  59		     4		POP ECX
+ 00000314  5E		     4		POP ESI
+ 00000315  5A		     3			POP  EDX
+ 00000316  FE C6	     3			INC  DH
+ 00000318  E8 00000000 E     3			Call GoToXY
+ 0000031D  52		     3			PUSH EDX
+ 0000031E  52		     4		PUSH EDX
+ 0000031F  51		     4		PUSH ECX
+ 00000320  56		     4		PUSH ESI
+ 00000321  BA 000001F8 R     4			MOV EDX, OFFSET Turrent_1_3
+ 00000326  E8 00000000 E     4			CALL WriteString
+ 0000032B  59		     4		POP ECX
+ 0000032C  59		     4		POP ECX
+ 0000032D  5E		     4		POP ESI
+ 0000032E  5A		     3			POP  EDX
+ 0000032F  FE C6	     3			INC  DH
+ 00000331  E8 00000000 E     3			Call GoToXY
+ 00000336  52		     3			PUSH EDX
+ 00000337  52		     4		PUSH EDX
+ 00000338  51		     4		PUSH ECX
+ 00000339  56		     4		PUSH ESI
+ 0000033A  BA 000001FE R     4			MOV EDX, OFFSET Turrent_1_4
+ 0000033F  E8 00000000 E     4			CALL WriteString
+ 00000344  59		     4		POP ECX
+ 00000345  59		     4		POP ECX
+ 00000346  5E		     4		POP ESI
+ 00000347  5A		     3			POP  EDX
+ 00000348  FE C6	     3			INC  DH
+ 0000034A  E8 00000000 E     3			Call GoToXY
+					;MOV NA2.X, DWORD PTR 05H
+					;WriteD NA2.X
+					;WriteD NA2.Y
 				NL
- 00000287  50		     1		PUSH 	EAX
- 00000288  B8 0000000A	     1			MOV 	EAX,	0AH
- 0000028D  E8 00000000 E     1			CALL 	WriteChar
- 00000292  58		     1		POP 	EAX
+ 0000034F  50		     1		PUSH 	EAX
+ 00000350  B8 0000000A	     1			MOV 	EAX,	0AH
+ 00000355  E8 00000000 E     1			CALL 	WriteChar
+ 0000035A  58		     1		POP 	EAX
 				NL
- 00000293  50		     1		PUSH 	EAX
- 00000294  B8 0000000A	     1			MOV 	EAX,	0AH
- 00000299  E8 00000000 E     1			CALL 	WriteChar
- 0000029E  58		     1		POP 	EAX
+ 0000035B  50		     1		PUSH 	EAX
+ 0000035C  B8 0000000A	     1			MOV 	EAX,	0AH
+ 00000361  E8 00000000 E     1			CALL 	WriteChar
+ 00000366  58		     1		POP 	EAX
 				NL
- 0000029F  50		     1		PUSH 	EAX
- 000002A0  B8 0000000A	     1			MOV 	EAX,	0AH
- 000002A5  E8 00000000 E     1			CALL 	WriteChar
- 000002AA  58		     1		POP 	EAX
+ 00000367  50		     1		PUSH 	EAX
+ 00000368  B8 0000000A	     1			MOV 	EAX,	0AH
+ 0000036D  E8 00000000 E     1			CALL 	WriteChar
+ 00000372  58		     1		POP 	EAX
 
 				ExitMain
- 000002B2			END MAIN
-Microsoft (R) Macro Assembler Version 6.15.8803		    12/10/15 16:52:44
+ 0000037A			END MAIN
+Microsoft (R) Macro Assembler Version 6.15.8803		    12/10/15 17:15:02
 Atlantis.asm						     Symbols 2 - 1
 
 
@@ -1001,6 +1067,9 @@ Structures and Unions:
                 N a m e                  Size
                                          Offset      Type
 
+Apple  . . . . . . . . . . . . .	 00000008
+  X  . . . . . . . . . . . . . .	 00000000	 DWord
+  Y  . . . . . . . . . . . . . .	 00000004	 DWord
 CONSOLE_CURSOR_INFO  . . . . . .	 00000005
   dwSize . . . . . . . . . . . .	 00000000	 DWord
   bVisible . . . . . . . . . . .	 00000004	 Byte
@@ -1030,6 +1099,13 @@ SYSTEMTIME . . . . . . . . . . .	 00000010
   wMinute  . . . . . . . . . . .	 0000000A	 Word
   wSecond  . . . . . . . . . . .	 0000000C	 Word
   wMilliseconds  . . . . . . . .	 0000000E	 Word
+Soilder  . . . . . . . . . . . .	 00000018
+  HP . . . . . . . . . . . . . .	 00000000	 DWord
+  XY . . . . . . . . . . . . . .	 00000004	 DWord
+  ATK  . . . . . . . . . . . . .	 00000008	 DWord
+  SPD  . . . . . . . . . . . . .	 0000000C	 DWord
+  LV . . . . . . . . . . . . . .	 00000010	 DWord
+  KIND . . . . . . . . . . . . .	 00000014	 DWord
 
 
 Segments and Groups:
@@ -1039,18 +1115,18 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000224 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 000002B2 DWord	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000037A DWord	  Public  'CODE'	
 
 
 Procedures,  parameters and locals:
 
                 N a m e                 Type     Value    Attr
 
-$$$00003 . . . . . . . . . . . .	P Near	 00000034 _TEXT	Length= 0000027E Private STDCALL
+$$$00003 . . . . . . . . . . . .	P Near	 000000FC _TEXT	Length= 0000027E Private STDCALL
 CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ClrScr . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-CoppingString  . . . . . . . . .	P Near	 0000002B _TEXT	Length= 00000009 Public STDCALL
-  CoppingS . . . . . . . . . . .	L Near	 0000002B _TEXT	
+CoppingString  . . . . . . . . .	P Near	 000000F3 _TEXT	Length= 00000009 Public STDCALL
+  CoppingS . . . . . . . . . . .	L Near	 000000F3 _TEXT	
 CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -1058,9 +1134,9 @@ DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 FlushConsoleInputBuffer  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-ForceCLS . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000002B Public STDCALL
-  NewLine  . . . . . . . . . . .	L Near	 00000006 _TEXT	
-  BLANKS . . . . . . . . . . . .	L Near	 0000000C _TEXT	
+ForceCLS . . . . . . . . . . . .	P Near	 000000C8 _TEXT	Length= 0000002B Public STDCALL
+  NewLine  . . . . . . . . . . .	L Near	 000000CE _TEXT	
+  BLANKS . . . . . . . . . . . .	L Near	 000000D4 _TEXT	
 GetCommandTail . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 GetConsoleCP . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 GetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -1203,13 +1279,14 @@ GENERIC_READ . . . . . . . . . .	Number	 -80000000h
 GENERIC_WRITE  . . . . . . . . .	Number	 40000000h   
 INVALID_HANDLE_VALUE . . . . . .	Number	 -00000001h   
 KEY_EVENT  . . . . . . . . . . .	Number	 00000001h   
-MAIN . . . . . . . . . . . . . .	L Near	 00000034 _TEXT	Public STDCALL
+MAIN . . . . . . . . . . . . . .	L Near	 000000FC _TEXT	Public STDCALL
 MENU_EVENT . . . . . . . . . . .	Number	 00000008h   
 MOUSE_EVENT  . . . . . . . . . .	Number	 00000002h   
 Monster_1_1  . . . . . . . . . .	Byte	 00000206 _DATA	
 Monster_2_1  . . . . . . . . . .	Byte	 0000020B _DATA	
 Monster_2_2  . . . . . . . . . .	Byte	 00000214 _DATA	
 Monster_2_3  . . . . . . . . . .	Byte	 0000021C _DATA	
+NA2  . . . . . . . . . . . . . .	Apple	 00000000 _TEXT	
 NL . . . . . . . . . . . . . . .	Text   	 Write 0AH
 NULL . . . . . . . . . . . . . .	Number	 00000000h   
 OPEN_ALWAYS  . . . . . . . . . .	Number	 00000004h   
@@ -1220,6 +1297,14 @@ ReadConsole  . . . . . . . . . .	Text   	 ReadConsoleA
 STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
 STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
 SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
+Soilder1 . . . . . . . . . . . .	Soilder	 00000008 _TEXT	
+Soilder2 . . . . . . . . . . . .	Soilder	 00000020 _TEXT	
+Soilder3 . . . . . . . . . . . .	Soilder	 00000038 _TEXT	
+Soilder4 . . . . . . . . . . . .	Soilder	 00000050 _TEXT	
+Soilder5 . . . . . . . . . . . .	Soilder	 00000068 _TEXT	
+Soilder6 . . . . . . . . . . . .	Soilder	 00000080 _TEXT	
+Soilder7 . . . . . . . . . . . .	Soilder	 00000098 _TEXT	
+Soilder8 . . . . . . . . . . . .	Soilder	 000000B0 _TEXT	
 TRUE . . . . . . . . . . . . . .	Number	 00000001h   
 TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
 Turrent_1_1  . . . . . . . . . .	Byte	 000001EC _DATA	

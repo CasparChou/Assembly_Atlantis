@@ -18,6 +18,9 @@ MAIN:
 
 
 	Draw
+	;MOV NA2.X, DWORD PTR 05H
+	;WriteD NA2.X
+	;WriteD NA2.Y
 NL
 NL
 NL
