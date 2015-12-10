@@ -1,14 +1,6 @@
+.Data
 
 
-Apple 	STRUCT
-
-	X DWORD 3
-	Y DWORD 4
-
-Apple	ENDS
-
-
-NA2		Apple <>
 
 Soilder STRUCT
 	HP		DWORD ?
