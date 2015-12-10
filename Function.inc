@@ -1,9 +1,12 @@
 Draw MACRO
 
+	DrawMonster  80, 17
 	DrawCastle	 0, 13
 	;DrawCastle2	20, 10
-	;DrawCastle3	40, 9
-	DrawSolider 20,10
+	DrawCastle3	95, 9
+	;DrawSolider 20,10
+	DrawMonster2 70,15
+	DrawTurrent  20,14
 
 	ENDM
 

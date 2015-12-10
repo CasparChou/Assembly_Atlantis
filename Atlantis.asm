@@ -10,6 +10,7 @@
 	INCLUDE	Graph_castle.inc
 	INCLUDE	Graph_soldier.inc
 	INCLUDE	Graph_turret.inc
+	INCLUDE	Graph_Monster.inc
 
 .Code
 MAIN:
@@ -17,8 +18,9 @@ MAIN:
 
 
 	Draw
-
-
+NL
+NL
+NL
 
 ExitMain
 END MAIN

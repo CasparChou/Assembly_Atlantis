@@ -1,0 +1,1251 @@
+Microsoft (R) Macro Assembler Version 6.15.8803		    12/10/15 16:52:44
+Atlantis.asm						     Page 1 - 1
+
+
+
+
+					INCLUDE	Irvine32.inc
+			      C ; Include file for Irvine32.lib             (Irvine32.inc)
+			      C 
+			      C INCLUDE SmallWin.inc		; MS-Windows prototypes, structures, and constants
+			      C .NOLIST
+			      C .LIST
+			      C 
+			      C .NOLIST
+			      C .LIST
+			      C 
+					INCLUDE	Motion.inc
+ 00000000		      C .Data
+			      C 
+			      C 
+			      C 	;MOVE MACRO Object, X, Y
+			      C 	;	LoopTimes 0
+			      C 	;	INVOKE	MovingFunction 3
+			      C 	;
+			      C 	;	ENDM
+			      C 
+ 00000000		      C .Code
+			      C 	
+			      C 	;MovingFunction	PROC, Times:DWORD
+			      C 	;
+			      C 	;	RUN:
+			      C 	;		CLS
+			      C 	;		;DrawSolider 5, 2
+			      C 	;		AnyKeyToContinue
+			      C 	;		NEXTINC Times, RUN
+			      C 	;
+			      C 	;	RET
+			      C 	;MovingFunction	ENDP
+			      C 
+					INCLUDE	Status.inc
+			      C 
+			      C 
+					INCLUDE	Function.inc
+			      C Draw MACRO
+			      C 
+			      C 	DrawMonster  80, 17
+			      C 	DrawCastle	 0, 13
+			      C 	;DrawCastle2	20, 10
+			      C 	DrawCastle3	95, 9
+			      C 	;DrawSolider 20,10
+			      C 	DrawMonster2 70,15
+			      C 	DrawTurrent  20,14
+			      C 
+			      C 	ENDM
+			      C 
+			      C 
+			      C 
+			      C 
+			      C 
+			      C GraphDisplay MACRO String
+			      C 		PUSH EDX
+			      C 			WriteS 	String
+			      C 		POP  EDX
+			      C 		INC  DH
+			      C 		Call GoToXY
+			      C 	ENDM
+			      C 
+					INCLUDE	Helpers.inc
+ 00000000		      C .Data
+			      C 
+			      C 
+			      C LoopTimes	MACRO	Times
+			      C 	MOV 	ECX,	Times
+			      C ENDM
+			      C Translate	MACRO X, Y
+			      C 	MOV  	dl, 	X
+			      C 	MOV  	dh, 	Y
+			      C 	CALL 	Gotoxy  
+			      C 	ENDM
+			      C ;Position 	MACRO X, Y
+			      C ;	MOV 	EAX,	EDX
+			      C ;	MOV  	 DL, 	X
+			      C ;	MOV  	 DH, 	Y 
+			      C ;	CALL 	Gotoxy
+			      C ;	MOV 	EDX,	EAX
+			      C ;	ENDM
+			      C PrintAt  	MACRO X, Y, Code
+			      C 	PUSH	EAX
+			      C 		MOV 	EAX,	EDX
+			      C 		ADD  	 DL, BYTE PTR X
+			      C 		ADD  	 DH, BYTE PTR Y 
+			      C 		CALL 	Gotoxy
+			      C 		MOV 	EDX,	EAX
+			      C 	POP		EAX
+			      C 	Write   Code
+			      C 	ENDM
+			      C PrintAtCoord  	MACRO Coord, Index, Code
+			      C 	PUSH	EAX
+			      C 		MOV 	EAX,	EDX
+			      C 		ADD  	 DL, BYTE PTR Coord[Index*4].X
+			      C 		ADD  	 DH, BYTE PTR Coord[Index*4].Y 
+			      C 		CALL 	Gotoxy
+			      C 		MOV 	EDX,	EAX
+			      C 	POP		EAX
+			      C 	Write   Code
+			      C 	ENDM
+			      C DecAtCoord  	MACRO Coord, Index, Dec
+			      C 	PUSH	EAX
+			      C 		MOV 	EAX,	EDX
+			      C 		ADD  	 DL, BYTE PTR Coord[Index*4].X
+			      C 		ADD  	 DH, BYTE PTR Coord[Index*4].Y 
+			      C 		CALL 	Gotoxy
+			      C 		MOV 	EDX,	EAX
+			      C 	POP		EAX
+			      C 	MOV EAX, Dec
+			      C 	.IF	EAX < 10
+			      C 		WriteD  0
+			      C 		WriteD  Dec
+			      C 	.ELSE
+			      C 		WriteD 	Dec
+			      C 	.ENDIF
+			      C 	ENDM
+			      C WriteDAtCoord 	MACRO Coord, Dec
+			      C 		PUSH	EAX
+			      C 		MOV 	EAX,	EDX
+			      C 		ADD  	 DL, BYTE PTR Coord.X
+			      C 		ADD  	 DH, BYTE PTR Coord.Y 
+			      C 		CALL 	Gotoxy
+			      C 		MOV 	EDX,	EAX
+			      C 	POP		EAX
+			      C 	MOV EAX, Dec
+			      C 	.IF	EAX < 10
+			      C 		WriteD  0
+			      C 		WriteD  Dec
+			      C 	.ELSE
+			      C 		WriteD 	Dec
+			      C 	.ENDIF
+			      C 	ENDM
+			      C 
+			      C WriteSAtCoord 	MACRO Coord, String
+			      C 
+			      C 	PUSH EAX
+			      C 	PUSH ECX
+			      C 	PUSH ESI
+			      C 
+			      C 		MOV 	EAX,	EDX
+			      C 		ADD  	 DL, BYTE PTR Coord.X
+			      C 		ADD  	 DH, BYTE PTR Coord.Y 
+			      C 		CALL 	Gotoxy
+			      C 		MOV 	EDX,	EAX
+			      C 
+			      C 		MOV EDX, String
+			      C 		CALL WriteString
+			      C 
+			      C 	POP EAX
+			      C 	POP ECX
+			      C 	POP ESI
+			      C 
+			      C 	ENDM
+			      C 
+			      C SettingColor MACRO Color
+			      C 	PUSH 	EAX
+			      C 		MOV 	EAX, Color
+			      C 		CALL	SetTextColor
+			      C 	POP 	EAX
+			      C 	ENDM
+			      C DefaultColor MACRO
+			      C 	PUSH 	EAX
+			      C 		MOV 	EAX, 00000111b
+			      C 		CALL	SetTextColor
+			      C 	POP 	EAX
+			      C 	ENDM
+			      C Write 		MACRO Code
+			      C 	PUSH 	EAX
+			      C 		MOV 	EAX,	Code
+			      C 		CALL 	WriteChar
+			      C 	POP 	EAX
+			      C 	ENDM
+			      C WriteD 		MACRO Dec
+			      C 	PUSH 	EAX
+			      C 		MOV 	EAX,	Dec
+			      C 		CALL 	WriteDec
+			      C 	POP 	EAX
+			      C 	ENDM
+			      C WriteS 		MACRO String
+			      C 	PUSH EDX
+			      C 	PUSH ECX
+			      C 	PUSH ESI
+			      C 
+			      C 		MOV EDX, OFFSET String
+			      C 		CALL WriteString
+			      C 
+			      C 	POP ECX
+			      C 	POP ECX
+			      C 	POP ESI
+			      C 	ENDM
+			      C WriteSAddr	MACRO String
+			      C 	PUSH EDX
+			      C 	PUSH ECX
+			      C 	PUSH ESI
+			      C 
+			      C 		MOV EDX, String
+			      C 		CALL WriteString
+			      C 
+			      C 	POP ECX
+			      C 	POP ECX
+			      C 	POP ESI
+			      C 	ENDM
+			      C 
+			      C NEXT		MACRO 	WHERE
+			      C 	DEC ECX
+			      C 	JNZ WHERE
+			      C 	ENDM
+			      C NEXTINC		MACRO 	LIMIT, WHERE
+			      C 	INC ECX
+			      C 	CMP ECX, LIMIT
+			      C 	JL WHERE
+			      C 	ENDM
+			      C 
+			      C 
+			      C PauseTime MACRO Timer
+			      C 	PUSH 	EAX
+			      C 	MOV 	EAX, Timer
+			      C 	CALL 	Delay
+			      C 	POP 	EAX
+			      C 	ENDM
+			      C ReadI	  MACRO StoreTo
+			      C 	PUSH 	EAX
+			      C 	CALL 	ReadInt
+			      C 	MOV 	StoreTo, EAX
+			      C 	POP 	EAX
+			      C 	ENDM
+			      C ReadS 	  MACRO InputHandler
+			      C 	PUSH ECX
+			      C 	PUSH EDX
+			      C 		MOV EDX, OFFSET InputHandler
+			      C 		MOV ECX, (SIZEOF InputHandler)-1
+			      C 		CALL ReadString
+			      C 	POP ECX
+			      C 	POP EDX
+			      C ENDM
+			      C Random 	  MACRO Range, Output
+			      C 	PUSH EAX
+			      C 	CALL 	Randomize
+			      C 	MOV  	EAX, Range
+			      C 	CALL 	RandomRange 
+			      C 	MOV  	Output, EAX
+			      C 	POP EAX
+			      C ENDM
+			      C AnyKeyToContinue MACRO
+			      C 	PUSH EAX
+			      C 		CALL ReadChar
+			      C 	POP  EAX
+			      C ENDM
+			      C CopyFrom MACRO A, B
+			      C 	PUSH EAX
+			      C 		MOV EAX, B
+			      C 		MOV A, 	EAX
+			      C 	POP EAX
+			      C ENDM
+			      C AddBy MACRO A, B
+			      C 	PUSH EAX
+			      C 		MOV EAX, B
+			      C 		ADD A, 	EAX
+			      C 	POP EAX
+			      C ENDM
+			      C ExitMain MACRO
+			      C 	;Translate 20,20
+			      C 	;PrintAt 0,0, 20H
+			      C 	EXIT
+			      C ENDM
+			      C 
+			      C CopyStringFrom MACRO A, B
+			      C 	PUSH 	ESI
+			      C 	PUSH 	EDI
+			      C 	PUSH 	ECX
+			      C 		MOV		ESI, 0
+			      C 		MOV		ESI, 0
+			      C 		MOV 	ECX, SIZEOF B
+			      C 		MOV 	ESI, OFFSET B
+			      C 		MOV 	EDI, OFFSET A
+			      C 
+			      C 	POP 	ESI
+			      C 	POP 	EDI
+			      C 	POP 	ECX
+			      C ENDM
+			      C 
+ = Write 0AH		      C NL	 EQU <Write 0AH>
+ = CALL DumpRegs	      C Dump EQU <CALL DumpRegs>	
+ = CALL 	ClrScr	      C CLS  EQU <CALL 	ClrScr>	
+ = CALL 	ForceCLS      C CLSALL  EQU <CALL 	ForceCLS>	
+			      C 
+			      C 
+ 00000000		      C .Code
+			      C 
+ 00000000		      C ForceCLS  PROC
+ 00000000  51		      C 	PUSH ECX
+			      C 	LoopTimes 100
+ 00000001  B9 00000064	     1C 	MOV 	ECX,	100
+ 00000006		      C 	NewLine:
+ 00000006  51		      C 		PUSH ECX
+			      C 			LoopTimes 100
+ 00000007  B9 00000064	     1C 	MOV 	ECX,	100
+ 0000000C		      C 			BLANKS:
+			      C 				Write 07FH
+ 0000000C  50		     1C 	PUSH 	EAX
+ 0000000D  B8 0000007F	     1C 		MOV 	EAX,	07FH
+ 00000012  E8 00000000 E     1C 		CALL 	WriteChar
+ 00000017  58		     1C 	POP 	EAX
+ 00000018  E2 F2	      C 				Loop BLANKS
+ 0000001A  59		      C 		POP  ECX
+			      C 		NL
+ 0000001B  50		     1C 	PUSH 	EAX
+ 0000001C  B8 0000000A	     1C 		MOV 	EAX,	0AH
+ 00000021  E8 00000000 E     1C 		CALL 	WriteChar
+ 00000026  58		     1C 	POP 	EAX
+ 00000027  E2 DD	      C 		Loop NewLine
+ 00000029  59		      C 	POP  ECX
+ 0000002A  C3		      C 	RET
+ 0000002B		      C ForceCLS ENDP
+			      C 
+ 0000002B		      C CoppingString PROC
+ 0000002B		      C 	CoppingS:
+ 0000002B  8A 06	      C 		MOV 	AL,	[ESI]
+ 0000002D  88 07	      C 		MOV 	[EDI], AL
+ 0000002F  46		      C         INC 	ESI
+ 00000030  47		      C         INC 	EDI
+ 00000031  E2 F8	      C         LOOP 	CoppingS
+ 00000033  C3		      C     RET
+ 00000034		      C CoppingString ENDP
+			      C 
+			      C 
+
+					INCLUDE	UI.inc
+			      C 
+			      C 
+					INCLUDE	Graph_castle.inc
+			      C ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+			      C ;This is a file defined Castle .
+			      C ;
+			      C ;EXAMPLE
+			      C ;	BOX_1_1    DB     "¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i",0
+			      C ;	BOX_1_2    DB     "¢i¡@¢i¡@¡@¡@¢i¡@¢i",0
+			      C ;	BOX_1_3    DB     "¢i¡@¢i¢i¢i¢i¢i¢i¢i¢i¡@¢i",0
+			      C ;	BOX_1_4    DB     "¢i¡@¢i¡@¡@¡@¢i¡@¢i",0
+			      C ;	BOX_1_5    DB     "¢i¡@¢i¢i¢i¢i¢i¢i¢i¢i¡@¢i",0
+			      C ;	BOX_1_6    DB     "¢i¡@¢i¡@¡@¡@¢i¡@¢i",0
+			      C ;	BOX_1_7    DB     "¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i",0
+			      C ;
+			      C ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+			      C 
+ 00000000		      C .Data
+			      C 
+			      C 
+			      C 
+ 00000000 20 20 20 20 20      C 	Castle_1_1    	DB     "      ¢i  ¢i      ",0
+	   20 A2 69 20 20
+	   A2 69 20 20 20
+	   20 20 20 00
+ 00000013 20 20 20 20 A2      C 	Castle_1_2    	DB     "    ¢i¢i¢i¢i¢i       ",0
+	   69 A2 69 A2 69
+	   A2 69 A2 69 20
+	   20 20 20 20 20
+	   20 00
+ 00000029 20 20 20 20 A2      C 	Castle_1_3    	DB     "    ¢i¢«  ¢ª¢i    ",0
+	   69 A2 AB 20 20
+	   A2 AA A2 69 20
+	   20 20 20 00
+ 0000003C 20 20 20 20 A2      C 	Castle_1_4    	DB     "    ¢i      ¢i    ",0
+	   69 20 20 20 20
+	   20 20 A2 69 20
+	   20 20 20 00
+ 0000004F A2 64 A2 64 A2      C 	Castle_1_5    	DB     "¢d¢d¢i      ¢i¢d¢d",0
+	   69 20 20 20 20
+	   20 20 A2 69 A2
+	   64 A2 64 00
+			      C 	
+ 00000062 20 20 20 20 20      C 	Castle_2_1    	DB     "         ¢«    ",0
+	   20 20 20 20 A2
+	   AB 20 20 20 20
+	   00
+ 00000072 20 20 20 20 20      C 	Castle_2_2    	DB     "         ¢k      ",0
+	   20 20 20 20 A2
+	   6B 20 20 20 20
+	   20 20 00
+ 00000084 20 20 20 20 20      C 	Castle_2_3    	DB     "        ¢i        ",0
+	   20 20 20 A2 69
+	   20 20 20 20 20
+	   20 20 20 00
+ 00000097 20 20 20 20 20      C 	Castle_2_4    	DB     "      ¢i¢i¢i        ",0
+	   20 A2 69 A2 69
+	   A2 69 20 20 20
+	   20 20 20 20 20
+	   00
+ 000000AC 20 20 20 20 A2      C 	Castle_2_5    	DB     "    ¢i¢i¢i¢i¢i        ",0
+	   69 A2 69 A2 69
+	   A2 69 A2 69 20
+	   20 20 20 20 20
+	   20 20 00
+ 000000C3 20 20 20 20 A2      C 	Castle_2_6    	DB     "    ¢i¢«  ¢ª¢i     ",0
+	   69 A2 AB 20 20
+	   A2 AA A2 69 20
+	   20 20 20 20 00
+ 000000D7 20 20 A2 69 A2      C 	Castle_2_7    	DB     "  ¢i¢i      ¢i¢i     ",0
+	   69 20 20 20 20
+	   20 20 A2 69 A2
+	   69 20 20 20 20
+	   20 00
+ 000000ED A2 64 A2 69 A2      C 	Castle_2_8    	DB     "¢d¢i¢i      ¢i¢i¢d   ",0
+	   69 20 20 20 20
+	   20 20 A2 69 A2
+	   69 A2 64 20 20
+	   20 00
+			      C 	
+ 00000103 20 20 20 20 20      C 	Castle_3_1 		DB	   "         ¢«      ",0
+	   20 20 20 20 A2
+	   AB 20 20 20 20
+	   20 20 00
+ 00000115 20 20 20 20 20      C 	Castle_3_2 		DB	   "     ¢«  ¢k  ¢«  ",0
+	   A2 AB 20 20 A2
+	   6B 20 20 A2 AB
+	   20 20 00
+ 00000127 20 20 20 20 20      C 	Castle_3_3 		DB	   "     ¢k ¡¶   ¢k   ",0
+	   A2 6B 20 A1 B6
+	   20 20 20 A2 6B
+	   20 20 20 00
+ 0000013A 20 20 20 20 A1      C 	Castle_3_4 		DB	   "    ¡¶  ¢i  ¡¶      ",0
+	   B6 20 20 A2 69
+	   20 20 A1 B6 20
+	   20 20 20 20 20
+	   00
+ 0000014F 20 20 20 20 A2      C 	Castle_3_5 		DB	   "    ¢i¢i¢i¢i¢i        ",0
+	   69 A2 69 A2 69
+	   A2 69 A2 69 20
+	   20 20 20 20 20
+	   20 20 00
+ 00000166 20 20 20 20 A2      C 	Castle_3_6 		DB	   "    ¢i¢i¢i¢i¢i        ",0
+	   69 A2 69 A2 69
+	   A2 69 A2 69 20
+	   20 20 20 20 20
+	   20 20 00
+ 0000017D A1 B6 20 20 A2      C 	Castle_3_7 		DB	   "¡¶  ¢i¢«  ¢ª¢i  ¡¶   ",0
+	   69 A2 AB 20 20
+	   A2 AA A2 69 20
+	   20 A1 B6 20 20
+	   20 00
+ 00000193 A2 69 A2 69 A2      C 	Castle_3_8 		DB	   "¢i¢i¢i      ¢i¢i¢i     ",0
+	   69 20 20 20 20
+	   20 20 A2 69 A2
+	   69 A2 69 20 20
+	   20 20 20 00
+ 000001AB A2 69 A2 69 A2      C 	Castle_3_9 		DB	   "¢i¢i¢i      ¢i¢i¢i     ",0
+	   69 20 20 20 20
+	   20 20 A2 69 A2
+	   69 A2 69 20 20
+	   20 20 20 00
+			      C 
+			      C 	DrawCastle MACRO X, Y
+			      C 
+			      C 		Translate X, Y
+			      C 
+			      C 		GraphDisplay Castle_1_1
+			      C 		GraphDisplay Castle_1_2
+			      C 		GraphDisplay Castle_1_3
+			      C 		GraphDisplay Castle_1_4
+			      C 		GraphDisplay Castle_1_5
+			      C 
+			      C 		ENDM
+			      C 	
+			      C 	DrawCastle2 MACRO X, Y
+			      C 
+			      C 		Translate X, Y
+			      C 
+			      C 		GraphDisplay Castle_2_1
+			      C 		GraphDisplay Castle_2_2
+			      C 		GraphDisplay Castle_2_3
+			      C 		GraphDisplay Castle_2_4
+			      C 		GraphDisplay Castle_2_5
+			      C 		GraphDisplay Castle_2_6
+			      C 		GraphDisplay Castle_2_7
+			      C 		GraphDisplay Castle_2_8
+			      C 
+			      C 		ENDM
+			      C 		
+			      C 	DrawCastle3 MACRO X, Y
+			      C 
+			      C 		Translate X, Y
+			      C 
+			      C 		GraphDisplay Castle_3_1
+			      C 		GraphDisplay Castle_3_2
+			      C 		GraphDisplay Castle_3_3
+			      C 		GraphDisplay Castle_3_4
+			      C 		GraphDisplay Castle_3_5
+			      C 		GraphDisplay Castle_3_6
+			      C 		GraphDisplay Castle_3_7
+			      C 		GraphDisplay Castle_3_8
+			      C 		GraphDisplay Castle_3_9
+			      C 
+			      C 		ENDM
+			      C 
+					INCLUDE	Graph_soldier.inc
+			      C ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+			      C ;This is a file defined Soldier .
+			      C ;
+			      C ;EXAMPLE
+			      C ;	BOY_1_1    DB     "¢i¢i¢i¢i¢i¢i¢i¡@     ",0
+			      C ;	BOY_1_2    DB     "¢i          ¢i  ",0
+			      C ;	BOY_1_3    DB     "¢i  ¢i  ¢i  ¢i    ",0
+			      C ;	BOY_1_4    DB     "¢i    ¢i    ¢i¡@ ",0
+			      C ;	BOY_1_5    DB     "¢i          ¢i  ",0
+			      C ;	BOY_1_6    DB     "¢i¢i¢i¢i¢i¢i¢i       ",0
+			      C ;	BOY_1_7    DB     "      ¢i 	     ",0
+			      C ;	BOY_1_8    DB     "      ¢i 	     ",0
+			      C ;	BOY_1_9    DB     "      ¢i 	     ",0
+			      C ;	BOY_1_10    DB    "  ¢i¢i¢i¢i¢i       ",0
+			      C ;	BOY_1_11   DB     "  ¢i      ¢i    ",0
+			      C ;
+			      C ;
+			      C ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+ 000001C3		      C .Data
+ 000001C3 A2 69 A2 69 A2      C 	BOY_1_1    DB     "¢i¢i¢i",0
+	   69 00
+ 000001CA A2 69 A2 69 A2      C 	BOY_1_2    DB     "¢i¢i¢i",0
+	   69 00
+ 000001D1 A2 69 A2 69 A2      C 	BOY_1_3    DB     "¢i¢i¢i",0
+	   69 00
+ 000001D8 20 20 A2 69 00      C 	BOY_1_4    DB     "  ¢i",0
+ 000001DD 20 20 A2 69 00      C 	BOY_1_5    DB     "  ¢i",0
+ 000001E2 20 20 A2 69 00      C 	BOY_1_6    DB     "  ¢i",0
+ 000001E7 20 20 A2 69 00      C 	BOY_1_7    DB     "  ¢i",0
+			      C 
+			      C 
+			      C 
+			      C 	DrawSolider MACRO X, Y
+			      C 
+			      C 		Translate X, Y
+			      C 
+			      C 		GraphDisplay BOY_1_1
+			      C 		GraphDisplay BOY_1_2
+			      C 		GraphDisplay BOY_1_3
+			      C 		GraphDisplay BOY_1_4
+			      C 		GraphDisplay BOY_1_5
+			      C 		GraphDisplay BOY_1_6
+			      C 		GraphDisplay BOY_1_7
+			      C 
+			      C 		ENDM
+			      C 
+					INCLUDE	Graph_turret.inc
+			      C ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+			      C ;This is a file defined Turrent .
+			      C ;
+			      C ;EXAMPLE
+			      C ;	Turrent_1_1    DB     "	  ¢i¢i¢i¢i	 	",0
+			      C ;	Turrent_1_2    DB     "	¢i¢i	  ¢i¢i 	",0
+			      C ;	Turrent_1_3    DB     "	  ¢i¢i    ¢i¢i	",0
+			      C ;	Turrent_1_4    DB     "		¢i¢i	  ¢i¢i",0
+			      C ;	Turrent_1_5    DB     "		¢i ¢i¢i¢i¢i¢i¢i",0
+			      C ;	Turrent_1_6    DB     "		¢i 		",0
+			      C ;	Turrent_1_7    DB     "		¢i  		",0
+			      C ;
+			      C ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+			      C 
+ 000001EC		      C .Data
+			      C 
+ 000001EC 20 20 A1 EF 20      C 	Turrent_1_1 	DB "  ¡ï ",0
+	   00
+ 000001F2 20 20 A2 69 20      C 	Turrent_1_2 	DB "  ¢i ",0
+	   00
+ 000001F8 20 20 A2 69 20      C 	Turrent_1_3 	DB "  ¢i ",0
+	   00
+ 000001FE A1 B6 A1 BF A1      C 	Turrent_1_4		DB "¡¶¡¿¡¶ ",0
+	   B6 20 00
+			      C 
+			      C 	DrawTurrent MACRO X, Y
+			      C 
+			      C 		Translate X, Y
+			      C 
+			      C 		GraphDisplay Turrent_1_1
+			      C 		GraphDisplay Turrent_1_2
+			      C 		GraphDisplay Turrent_1_3
+			      C 		GraphDisplay Turrent_1_4
+			      C 
+			      C 		ENDM
+			      C 
+					INCLUDE	Graph_Monster.inc
+			      C ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+			      C ;This is a file defined Monster .
+			      C ;
+			      C ;EXAMPLE
+			      C ;	BOY_1_1    DB     "¢i¢i¢i¢i¢i¢i¢i¡@     ",0
+			      C ;	BOY_1_2    DB     "¢i          ¢i  ",0
+			      C ;	BOY_1_3    DB     "¢i  ¢i  ¢i  ¢i    ",0
+			      C ;	BOY_1_4    DB     "¢i    ¢i    ¢i¡@ ",0
+			      C ;	BOY_1_5    DB     "¢i          ¢i  ",0
+			      C ;	BOY_1_6    DB     "¢i¢i¢i¢i¢i¢i¢i       ",0
+			      C ;	BOY_1_7    DB     "      ¢i 	     ",0
+			      C ;	BOY_1_8    DB     "      ¢i 	     ",0
+			      C ;	BOY_1_9    DB     "      ¢i 	     ",0
+			      C ;	BOY_1_10    DB    "  ¢i¢i¢i¢i¢i       ",0
+			      C ;	BOY_1_11   DB     "  ¢i      ¢i    ",0
+			      C ;
+			      C ;
+			      C ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+ 00000206		      C .Data
+			      C 
+ 00000206 3D A1 F3 3D 00      C 	Monster_1_1    	DB     	"=¡ó=",0
+			      C 		
+ 0000020B 20 20 A1 E5 20      C 	Monster_2_1		DB 		"  ¡å    ",0
+	   20 20 20 00
+ 00000214 3C 3D A1 F3 3D      C 	Monster_2_2		DB 		"<=¡ó=> ",0
+	   3E 20 00
+ 0000021C 20 20 A1 D0 20      C 	Monster_2_3		DB 		"  ¡Ð   ",0
+	   20 20 00
+			      C 	
+			      C 	
+			      C 	
+			      C 	
+			      C 	;Monster_2_1    DB     "",0
+			      C 	;Monster_2_2    DB     "¢i¢i¢i",0
+			      C 	;Monster_2_3    DB     "¢i¢i¢i",0
+			      C 	;Monster_2_4    DB     "  ¢i",0
+			      C 	;Monster_2_5    DB     "  ¢i",0
+			      C 	;Monster_2_6    DB     "  ¢i",0
+			      C 	;Monster_2_7    DB     "  ¢i",0
+			      C 
+			      C 
+			      C 	DrawMonster MACRO X, Y
+			      C 
+			      C 		Translate X, Y
+			      C 
+			      C 		GraphDisplay Monster_1_1
+			      C 
+			      C 		ENDM
+			      C 
+			      C 	DrawMonster2 MACRO X, Y
+			      C 
+			      C 		Translate X, Y
+			      C 
+			      C 		GraphDisplay Monster_2_1
+			      C 		GraphDisplay Monster_2_2
+			      C 		GraphDisplay Monster_2_3
+			      C 
+			      C 		ENDM
+			      C 		
+			      C 		
+			      C 		
+			      C 		
+			      C 		
+			      C 
+
+ 00000034			.Code
+ 00000034			MAIN:
+ 00000034
+
+
+					Draw
+ 00000034  B2 50	     3		MOV  	dl, 	80
+ 00000036  B6 11	     3		MOV  	dh, 	17
+ 00000038  E8 00000000 E     3		CALL 	Gotoxy  
+ 0000003D  52		     3			PUSH EDX
+ 0000003E  52		     4		PUSH EDX
+ 0000003F  51		     4		PUSH ECX
+ 00000040  56		     4		PUSH ESI
+ 00000041  BA 00000206 R     4			MOV EDX, OFFSET Monster_1_1
+ 00000046  E8 00000000 E     4			CALL WriteString
+ 0000004B  59		     4		POP ECX
+ 0000004C  59		     4		POP ECX
+ 0000004D  5E		     4		POP ESI
+ 0000004E  5A		     3			POP  EDX
+ 0000004F  FE C6	     3			INC  DH
+ 00000051  E8 00000000 E     3			Call GoToXY
+ 00000056  B2 00	     3		MOV  	dl, 	0
+ 00000058  B6 0D	     3		MOV  	dh, 	13
+ 0000005A  E8 00000000 E     3		CALL 	Gotoxy  
+ 0000005F  52		     3			PUSH EDX
+ 00000060  52		     4		PUSH EDX
+ 00000061  51		     4		PUSH ECX
+ 00000062  56		     4		PUSH ESI
+ 00000063  BA 00000000 R     4			MOV EDX, OFFSET Castle_1_1
+ 00000068  E8 00000000 E     4			CALL WriteString
+ 0000006D  59		     4		POP ECX
+ 0000006E  59		     4		POP ECX
+ 0000006F  5E		     4		POP ESI
+ 00000070  5A		     3			POP  EDX
+ 00000071  FE C6	     3			INC  DH
+ 00000073  E8 00000000 E     3			Call GoToXY
+ 00000078  52		     3			PUSH EDX
+ 00000079  52		     4		PUSH EDX
+ 0000007A  51		     4		PUSH ECX
+ 0000007B  56		     4		PUSH ESI
+ 0000007C  BA 00000013 R     4			MOV EDX, OFFSET Castle_1_2
+ 00000081  E8 00000000 E     4			CALL WriteString
+ 00000086  59		     4		POP ECX
+ 00000087  59		     4		POP ECX
+ 00000088  5E		     4		POP ESI
+ 00000089  5A		     3			POP  EDX
+ 0000008A  FE C6	     3			INC  DH
+ 0000008C  E8 00000000 E     3			Call GoToXY
+ 00000091  52		     3			PUSH EDX
+ 00000092  52		     4		PUSH EDX
+ 00000093  51		     4		PUSH ECX
+ 00000094  56		     4		PUSH ESI
+ 00000095  BA 00000029 R     4			MOV EDX, OFFSET Castle_1_3
+ 0000009A  E8 00000000 E     4			CALL WriteString
+ 0000009F  59		     4		POP ECX
+ 000000A0  59		     4		POP ECX
+ 000000A1  5E		     4		POP ESI
+ 000000A2  5A		     3			POP  EDX
+ 000000A3  FE C6	     3			INC  DH
+ 000000A5  E8 00000000 E     3			Call GoToXY
+ 000000AA  52		     3			PUSH EDX
+ 000000AB  52		     4		PUSH EDX
+ 000000AC  51		     4		PUSH ECX
+ 000000AD  56		     4		PUSH ESI
+ 000000AE  BA 0000003C R     4			MOV EDX, OFFSET Castle_1_4
+ 000000B3  E8 00000000 E     4			CALL WriteString
+ 000000B8  59		     4		POP ECX
+ 000000B9  59		     4		POP ECX
+ 000000BA  5E		     4		POP ESI
+ 000000BB  5A		     3			POP  EDX
+ 000000BC  FE C6	     3			INC  DH
+ 000000BE  E8 00000000 E     3			Call GoToXY
+ 000000C3  52		     3			PUSH EDX
+ 000000C4  52		     4		PUSH EDX
+ 000000C5  51		     4		PUSH ECX
+ 000000C6  56		     4		PUSH ESI
+ 000000C7  BA 0000004F R     4			MOV EDX, OFFSET Castle_1_5
+ 000000CC  E8 00000000 E     4			CALL WriteString
+ 000000D1  59		     4		POP ECX
+ 000000D2  59		     4		POP ECX
+ 000000D3  5E		     4		POP ESI
+ 000000D4  5A		     3			POP  EDX
+ 000000D5  FE C6	     3			INC  DH
+ 000000D7  E8 00000000 E     3			Call GoToXY
+ 000000DC  B2 5F	     3		MOV  	dl, 	95
+ 000000DE  B6 09	     3		MOV  	dh, 	9
+ 000000E0  E8 00000000 E     3		CALL 	Gotoxy  
+ 000000E5  52		     3			PUSH EDX
+ 000000E6  52		     4		PUSH EDX
+ 000000E7  51		     4		PUSH ECX
+ 000000E8  56		     4		PUSH ESI
+ 000000E9  BA 00000103 R     4			MOV EDX, OFFSET Castle_3_1
+ 000000EE  E8 00000000 E     4			CALL WriteString
+ 000000F3  59		     4		POP ECX
+ 000000F4  59		     4		POP ECX
+ 000000F5  5E		     4		POP ESI
+ 000000F6  5A		     3			POP  EDX
+ 000000F7  FE C6	     3			INC  DH
+ 000000F9  E8 00000000 E     3			Call GoToXY
+ 000000FE  52		     3			PUSH EDX
+ 000000FF  52		     4		PUSH EDX
+ 00000100  51		     4		PUSH ECX
+ 00000101  56		     4		PUSH ESI
+ 00000102  BA 00000115 R     4			MOV EDX, OFFSET Castle_3_2
+ 00000107  E8 00000000 E     4			CALL WriteString
+ 0000010C  59		     4		POP ECX
+ 0000010D  59		     4		POP ECX
+ 0000010E  5E		     4		POP ESI
+ 0000010F  5A		     3			POP  EDX
+ 00000110  FE C6	     3			INC  DH
+ 00000112  E8 00000000 E     3			Call GoToXY
+ 00000117  52		     3			PUSH EDX
+ 00000118  52		     4		PUSH EDX
+ 00000119  51		     4		PUSH ECX
+ 0000011A  56		     4		PUSH ESI
+ 0000011B  BA 00000127 R     4			MOV EDX, OFFSET Castle_3_3
+ 00000120  E8 00000000 E     4			CALL WriteString
+ 00000125  59		     4		POP ECX
+ 00000126  59		     4		POP ECX
+ 00000127  5E		     4		POP ESI
+ 00000128  5A		     3			POP  EDX
+ 00000129  FE C6	     3			INC  DH
+ 0000012B  E8 00000000 E     3			Call GoToXY
+ 00000130  52		     3			PUSH EDX
+ 00000131  52		     4		PUSH EDX
+ 00000132  51		     4		PUSH ECX
+ 00000133  56		     4		PUSH ESI
+ 00000134  BA 0000013A R     4			MOV EDX, OFFSET Castle_3_4
+ 00000139  E8 00000000 E     4			CALL WriteString
+ 0000013E  59		     4		POP ECX
+ 0000013F  59		     4		POP ECX
+ 00000140  5E		     4		POP ESI
+ 00000141  5A		     3			POP  EDX
+ 00000142  FE C6	     3			INC  DH
+ 00000144  E8 00000000 E     3			Call GoToXY
+ 00000149  52		     3			PUSH EDX
+ 0000014A  52		     4		PUSH EDX
+ 0000014B  51		     4		PUSH ECX
+ 0000014C  56		     4		PUSH ESI
+ 0000014D  BA 0000014F R     4			MOV EDX, OFFSET Castle_3_5
+ 00000152  E8 00000000 E     4			CALL WriteString
+ 00000157  59		     4		POP ECX
+ 00000158  59		     4		POP ECX
+ 00000159  5E		     4		POP ESI
+ 0000015A  5A		     3			POP  EDX
+ 0000015B  FE C6	     3			INC  DH
+ 0000015D  E8 00000000 E     3			Call GoToXY
+ 00000162  52		     3			PUSH EDX
+ 00000163  52		     4		PUSH EDX
+ 00000164  51		     4		PUSH ECX
+ 00000165  56		     4		PUSH ESI
+ 00000166  BA 00000166 R     4			MOV EDX, OFFSET Castle_3_6
+ 0000016B  E8 00000000 E     4			CALL WriteString
+ 00000170  59		     4		POP ECX
+ 00000171  59		     4		POP ECX
+ 00000172  5E		     4		POP ESI
+ 00000173  5A		     3			POP  EDX
+ 00000174  FE C6	     3			INC  DH
+ 00000176  E8 00000000 E     3			Call GoToXY
+ 0000017B  52		     3			PUSH EDX
+ 0000017C  52		     4		PUSH EDX
+ 0000017D  51		     4		PUSH ECX
+ 0000017E  56		     4		PUSH ESI
+ 0000017F  BA 0000017D R     4			MOV EDX, OFFSET Castle_3_7
+ 00000184  E8 00000000 E     4			CALL WriteString
+ 00000189  59		     4		POP ECX
+ 0000018A  59		     4		POP ECX
+ 0000018B  5E		     4		POP ESI
+ 0000018C  5A		     3			POP  EDX
+ 0000018D  FE C6	     3			INC  DH
+ 0000018F  E8 00000000 E     3			Call GoToXY
+ 00000194  52		     3			PUSH EDX
+ 00000195  52		     4		PUSH EDX
+ 00000196  51		     4		PUSH ECX
+ 00000197  56		     4		PUSH ESI
+ 00000198  BA 00000193 R     4			MOV EDX, OFFSET Castle_3_8
+ 0000019D  E8 00000000 E     4			CALL WriteString
+ 000001A2  59		     4		POP ECX
+ 000001A3  59		     4		POP ECX
+ 000001A4  5E		     4		POP ESI
+ 000001A5  5A		     3			POP  EDX
+ 000001A6  FE C6	     3			INC  DH
+ 000001A8  E8 00000000 E     3			Call GoToXY
+ 000001AD  52		     3			PUSH EDX
+ 000001AE  52		     4		PUSH EDX
+ 000001AF  51		     4		PUSH ECX
+ 000001B0  56		     4		PUSH ESI
+ 000001B1  BA 000001AB R     4			MOV EDX, OFFSET Castle_3_9
+ 000001B6  E8 00000000 E     4			CALL WriteString
+ 000001BB  59		     4		POP ECX
+ 000001BC  59		     4		POP ECX
+ 000001BD  5E		     4		POP ESI
+ 000001BE  5A		     3			POP  EDX
+ 000001BF  FE C6	     3			INC  DH
+ 000001C1  E8 00000000 E     3			Call GoToXY
+ 000001C6  B2 46	     3		MOV  	dl, 	70
+ 000001C8  B6 0F	     3		MOV  	dh, 	15
+ 000001CA  E8 00000000 E     3		CALL 	Gotoxy  
+ 000001CF  52		     3			PUSH EDX
+ 000001D0  52		     4		PUSH EDX
+ 000001D1  51		     4		PUSH ECX
+ 000001D2  56		     4		PUSH ESI
+ 000001D3  BA 0000020B R     4			MOV EDX, OFFSET Monster_2_1
+ 000001D8  E8 00000000 E     4			CALL WriteString
+ 000001DD  59		     4		POP ECX
+ 000001DE  59		     4		POP ECX
+ 000001DF  5E		     4		POP ESI
+ 000001E0  5A		     3			POP  EDX
+ 000001E1  FE C6	     3			INC  DH
+ 000001E3  E8 00000000 E     3			Call GoToXY
+ 000001E8  52		     3			PUSH EDX
+ 000001E9  52		     4		PUSH EDX
+ 000001EA  51		     4		PUSH ECX
+ 000001EB  56		     4		PUSH ESI
+ 000001EC  BA 00000214 R     4			MOV EDX, OFFSET Monster_2_2
+ 000001F1  E8 00000000 E     4			CALL WriteString
+ 000001F6  59		     4		POP ECX
+ 000001F7  59		     4		POP ECX
+ 000001F8  5E		     4		POP ESI
+ 000001F9  5A		     3			POP  EDX
+ 000001FA  FE C6	     3			INC  DH
+ 000001FC  E8 00000000 E     3			Call GoToXY
+ 00000201  52		     3			PUSH EDX
+ 00000202  52		     4		PUSH EDX
+ 00000203  51		     4		PUSH ECX
+ 00000204  56		     4		PUSH ESI
+ 00000205  BA 0000021C R     4			MOV EDX, OFFSET Monster_2_3
+ 0000020A  E8 00000000 E     4			CALL WriteString
+ 0000020F  59		     4		POP ECX
+ 00000210  59		     4		POP ECX
+ 00000211  5E		     4		POP ESI
+ 00000212  5A		     3			POP  EDX
+ 00000213  FE C6	     3			INC  DH
+ 00000215  E8 00000000 E     3			Call GoToXY
+ 0000021A  B2 14	     3		MOV  	dl, 	20
+ 0000021C  B6 0E	     3		MOV  	dh, 	14
+ 0000021E  E8 00000000 E     3		CALL 	Gotoxy  
+ 00000223  52		     3			PUSH EDX
+ 00000224  52		     4		PUSH EDX
+ 00000225  51		     4		PUSH ECX
+ 00000226  56		     4		PUSH ESI
+ 00000227  BA 000001EC R     4			MOV EDX, OFFSET Turrent_1_1
+ 0000022C  E8 00000000 E     4			CALL WriteString
+ 00000231  59		     4		POP ECX
+ 00000232  59		     4		POP ECX
+ 00000233  5E		     4		POP ESI
+ 00000234  5A		     3			POP  EDX
+ 00000235  FE C6	     3			INC  DH
+ 00000237  E8 00000000 E     3			Call GoToXY
+ 0000023C  52		     3			PUSH EDX
+ 0000023D  52		     4		PUSH EDX
+ 0000023E  51		     4		PUSH ECX
+ 0000023F  56		     4		PUSH ESI
+ 00000240  BA 000001F2 R     4			MOV EDX, OFFSET Turrent_1_2
+ 00000245  E8 00000000 E     4			CALL WriteString
+ 0000024A  59		     4		POP ECX
+ 0000024B  59		     4		POP ECX
+ 0000024C  5E		     4		POP ESI
+ 0000024D  5A		     3			POP  EDX
+ 0000024E  FE C6	     3			INC  DH
+ 00000250  E8 00000000 E     3			Call GoToXY
+ 00000255  52		     3			PUSH EDX
+ 00000256  52		     4		PUSH EDX
+ 00000257  51		     4		PUSH ECX
+ 00000258  56		     4		PUSH ESI
+ 00000259  BA 000001F8 R     4			MOV EDX, OFFSET Turrent_1_3
+ 0000025E  E8 00000000 E     4			CALL WriteString
+ 00000263  59		     4		POP ECX
+ 00000264  59		     4		POP ECX
+ 00000265  5E		     4		POP ESI
+ 00000266  5A		     3			POP  EDX
+ 00000267  FE C6	     3			INC  DH
+ 00000269  E8 00000000 E     3			Call GoToXY
+ 0000026E  52		     3			PUSH EDX
+ 0000026F  52		     4		PUSH EDX
+ 00000270  51		     4		PUSH ECX
+ 00000271  56		     4		PUSH ESI
+ 00000272  BA 000001FE R     4			MOV EDX, OFFSET Turrent_1_4
+ 00000277  E8 00000000 E     4			CALL WriteString
+ 0000027C  59		     4		POP ECX
+ 0000027D  59		     4		POP ECX
+ 0000027E  5E		     4		POP ESI
+ 0000027F  5A		     3			POP  EDX
+ 00000280  FE C6	     3			INC  DH
+ 00000282  E8 00000000 E     3			Call GoToXY
+				NL
+ 00000287  50		     1		PUSH 	EAX
+ 00000288  B8 0000000A	     1			MOV 	EAX,	0AH
+ 0000028D  E8 00000000 E     1			CALL 	WriteChar
+ 00000292  58		     1		POP 	EAX
+				NL
+ 00000293  50		     1		PUSH 	EAX
+ 00000294  B8 0000000A	     1			MOV 	EAX,	0AH
+ 00000299  E8 00000000 E     1			CALL 	WriteChar
+ 0000029E  58		     1		POP 	EAX
+				NL
+ 0000029F  50		     1		PUSH 	EAX
+ 000002A0  B8 0000000A	     1			MOV 	EAX,	0AH
+ 000002A5  E8 00000000 E     1			CALL 	WriteChar
+ 000002AA  58		     1		POP 	EAX
+
+				ExitMain
+ 000002B2			END MAIN
+Microsoft (R) Macro Assembler Version 6.15.8803		    12/10/15 16:52:44
+Atlantis.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+AddBy  . . . . . . . . . . . . .	Proc
+AnyKeyToContinue . . . . . . . .	Proc
+CopyFrom . . . . . . . . . . . .	Proc
+CopyStringFrom . . . . . . . . .	Proc
+DecAtCoord . . . . . . . . . . .	Proc
+DefaultColor . . . . . . . . . .	Proc
+DrawCastle2  . . . . . . . . . .	Proc
+DrawCastle3  . . . . . . . . . .	Proc
+DrawCastle . . . . . . . . . . .	Proc
+DrawMonster2 . . . . . . . . . .	Proc
+DrawMonster  . . . . . . . . . .	Proc
+DrawSolider  . . . . . . . . . .	Proc
+DrawTurrent  . . . . . . . . . .	Proc
+Draw . . . . . . . . . . . . . .	Proc
+ExitMain . . . . . . . . . . . .	Proc
+GraphDisplay . . . . . . . . . .	Proc
+LoopTimes  . . . . . . . . . . .	Proc
+NEXTINC  . . . . . . . . . . . .	Proc
+NEXT . . . . . . . . . . . . . .	Proc
+PauseTime  . . . . . . . . . . .	Proc
+PrintAtCoord . . . . . . . . . .	Proc
+PrintAt  . . . . . . . . . . . .	Proc
+Random . . . . . . . . . . . . .	Proc
+ReadI  . . . . . . . . . . . . .	Proc
+ReadS  . . . . . . . . . . . . .	Proc
+SettingColor . . . . . . . . . .	Proc
+Translate  . . . . . . . . . . .	Proc
+WriteDAtCoord  . . . . . . . . .	Proc
+WriteD . . . . . . . . . . . . .	Proc
+WriteSAddr . . . . . . . . . . .	Proc
+WriteSAtCoord  . . . . . . . . .	Proc
+WriteS . . . . . . . . . . . . .	Proc
+Write  . . . . . . . . . . . . .	Proc
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+CONSOLE_CURSOR_INFO  . . . . . .	 00000005
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  bVisible . . . . . . . . . . .	 00000004	 Byte
+CONSOLE_SCREEN_BUFFER_INFO . . .	 00000016
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  dwCursorPos  . . . . . . . . .	 00000004	 DWord
+  wAttributes  . . . . . . . . .	 00000008	 Word
+  srWindow . . . . . . . . . . .	 0000000A	 QWord
+  maxWinSize . . . . . . . . . .	 00000012	 DWord
+COORD  . . . . . . . . . . . . .	 00000004
+  X  . . . . . . . . . . . . . .	 00000000	 Word
+  Y  . . . . . . . . . . . . . .	 00000002	 Word
+FILETIME . . . . . . . . . . . .	 00000008
+  loDateTime . . . . . . . . . .	 00000000	 DWord
+  hiDateTime . . . . . . . . . .	 00000004	 DWord
+SMALL_RECT . . . . . . . . . . .	 00000008
+  Left . . . . . . . . . . . . .	 00000000	 Word
+  Top  . . . . . . . . . . . . .	 00000002	 Word
+  Right  . . . . . . . . . . . .	 00000004	 Word
+  Bottom . . . . . . . . . . . .	 00000006	 Word
+SYSTEMTIME . . . . . . . . . . .	 00000010
+  wYear  . . . . . . . . . . . .	 00000000	 Word
+  wMonth . . . . . . . . . . . .	 00000002	 Word
+  wDayOfWeek . . . . . . . . . .	 00000004	 Word
+  wDay . . . . . . . . . . . . .	 00000006	 Word
+  wHour  . . . . . . . . . . . .	 00000008	 Word
+  wMinute  . . . . . . . . . . .	 0000000A	 Word
+  wSecond  . . . . . . . . . . .	 0000000C	 Word
+  wMilliseconds  . . . . . . . .	 0000000E	 Word
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000224 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000002B2 DWord	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+$$$00003 . . . . . . . . . . . .	P Near	 00000034 _TEXT	Length= 0000027E Private STDCALL
+CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ClrScr . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CoppingString  . . . . . . . . .	P Near	 0000002B _TEXT	Length= 00000009 Public STDCALL
+  CoppingS . . . . . . . . . . .	L Near	 0000002B _TEXT	
+CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FlushConsoleInputBuffer  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ForceCLS . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000002B Public STDCALL
+  NewLine  . . . . . . . . . . .	L Near	 00000006 _TEXT	
+  BLANKS . . . . . . . . . . . .	L Near	 0000000C _TEXT	
+GetCommandTail . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCP . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleScreenBufferInfo . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetDateTime  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMseconds  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetNumberOfConsoleInputEvents  .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetStdHandle . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetSystemTime  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetTickCount . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Gotoxy . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+IsDigit  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+PeekConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Random32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RandomRange  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Randomize  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadChar . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleA . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadHex  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadInt  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleCursorPosition . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleScreenBufferSize . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTextAttribute  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTitleA . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleWindowInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetFilePointer . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Sleep  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_compare  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_copy . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_length . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_trim . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_ucase  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SystemTimeToFileTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WaitMsg  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteBin . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteChar  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleA  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputAttribute  . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputCharacterA . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteDec . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteHex . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteInt . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+BOY_1_1  . . . . . . . . . . . .	Byte	 000001C3 _DATA	
+BOY_1_2  . . . . . . . . . . . .	Byte	 000001CA _DATA	
+BOY_1_3  . . . . . . . . . . . .	Byte	 000001D1 _DATA	
+BOY_1_4  . . . . . . . . . . . .	Byte	 000001D8 _DATA	
+BOY_1_5  . . . . . . . . . . . .	Byte	 000001DD _DATA	
+BOY_1_6  . . . . . . . . . . . .	Byte	 000001E2 _DATA	
+BOY_1_7  . . . . . . . . . . . .	Byte	 000001E7 _DATA	
+CLSALL . . . . . . . . . . . . .	Text   	 CALL 	ForceCLS
+CLS  . . . . . . . . . . . . . .	Text   	 CALL 	ClrScr
+CREATE_ALWAYS  . . . . . . . . .	Number	 00000002h   
+CREATE_NEW . . . . . . . . . . .	Number	 00000001h   
+Castle_1_1 . . . . . . . . . . .	Byte	 00000000 _DATA	
+Castle_1_2 . . . . . . . . . . .	Byte	 00000013 _DATA	
+Castle_1_3 . . . . . . . . . . .	Byte	 00000029 _DATA	
+Castle_1_4 . . . . . . . . . . .	Byte	 0000003C _DATA	
+Castle_1_5 . . . . . . . . . . .	Byte	 0000004F _DATA	
+Castle_2_1 . . . . . . . . . . .	Byte	 00000062 _DATA	
+Castle_2_2 . . . . . . . . . . .	Byte	 00000072 _DATA	
+Castle_2_3 . . . . . . . . . . .	Byte	 00000084 _DATA	
+Castle_2_4 . . . . . . . . . . .	Byte	 00000097 _DATA	
+Castle_2_5 . . . . . . . . . . .	Byte	 000000AC _DATA	
+Castle_2_6 . . . . . . . . . . .	Byte	 000000C3 _DATA	
+Castle_2_7 . . . . . . . . . . .	Byte	 000000D7 _DATA	
+Castle_2_8 . . . . . . . . . . .	Byte	 000000ED _DATA	
+Castle_3_1 . . . . . . . . . . .	Byte	 00000103 _DATA	
+Castle_3_2 . . . . . . . . . . .	Byte	 00000115 _DATA	
+Castle_3_3 . . . . . . . . . . .	Byte	 00000127 _DATA	
+Castle_3_4 . . . . . . . . . . .	Byte	 0000013A _DATA	
+Castle_3_5 . . . . . . . . . . .	Byte	 0000014F _DATA	
+Castle_3_6 . . . . . . . . . . .	Byte	 00000166 _DATA	
+Castle_3_7 . . . . . . . . . . .	Byte	 0000017D _DATA	
+Castle_3_8 . . . . . . . . . . .	Byte	 00000193 _DATA	
+Castle_3_9 . . . . . . . . . . .	Byte	 000001AB _DATA	
+CreateFile . . . . . . . . . . .	Text   	 CreateFileA
+DO_NOT_SHARE . . . . . . . . . .	Number	 00000000h   
+Dump . . . . . . . . . . . . . .	Text   	 CALL DumpRegs
+ENABLE_ECHO_INPUT  . . . . . . .	Number	 00000004h   
+ENABLE_LINE_INPUT  . . . . . . .	Number	 00000002h   
+ENABLE_MOUSE_INPUT . . . . . . .	Number	 00000010h   
+ENABLE_PROCESSED_INPUT . . . . .	Number	 00000001h   
+ENABLE_PROCESSED_OUTPUT  . . . .	Number	 00000001h   
+ENABLE_WINDOW_INPUT  . . . . . .	Number	 00000008h   
+ENABLE_WRAP_AT_EOL_OUTPUT  . . .	Number	 00000002h   
+FALSE  . . . . . . . . . . . . .	Number	 00000000h   
+FILE_APPEND_DATA . . . . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_ARCHIVE . . . . .	Number	 00000020h   
+FILE_ATTRIBUTE_COMPRESSED  . . .	Number	 00000800h   
+FILE_ATTRIBUTE_DEVICE  . . . . .	Number	 00000040h   
+FILE_ATTRIBUTE_DIRECTORY . . . .	Number	 00000010h   
+FILE_ATTRIBUTE_ENCRYPTED . . . .	Number	 00004000h   
+FILE_ATTRIBUTE_HIDDEN  . . . . .	Number	 00000002h   
+FILE_ATTRIBUTE_NORMAL  . . . . .	Number	 00000080h   
+FILE_ATTRIBUTE_NOT_CONTENT_INDEXED .	Number	 00002000h   
+FILE_ATTRIBUTE_OFFLINE . . . . .	Number	 00001000h   
+FILE_ATTRIBUTE_READONLY  . . . .	Number	 00000001h   
+FILE_ATTRIBUTE_REPARSE_POINT . .	Number	 00000400h   
+FILE_ATTRIBUTE_SPARSE_FILE . . .	Number	 00000200h   
+FILE_ATTRIBUTE_SYSTEM  . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_TEMPORARY . . . .	Number	 00000100h   
+FILE_BEGIN . . . . . . . . . . .	Number	 00000000h   
+FILE_CURRENT . . . . . . . . . .	Number	 00000001h   
+FILE_DELETE_CHILD  . . . . . . .	Number	 00000040h   
+FILE_END . . . . . . . . . . . .	Number	 00000002h   
+FILE_READ_DATA . . . . . . . . .	Number	 00000001h   
+FILE_SHARE_DELETE  . . . . . . .	Number	 00000004h   
+FILE_SHARE_READ  . . . . . . . .	Number	 00000001h   
+FILE_SHARE_WRITE . . . . . . . .	Number	 00000002h   
+FILE_WRITE_DATA  . . . . . . . .	Number	 00000002h   
+FOCUS_EVENT  . . . . . . . . . .	Number	 00000010h   
+GENERIC_ALL  . . . . . . . . . .	Number	 10000000h   
+GENERIC_EXECUTE  . . . . . . . .	Number	 20000000h   
+GENERIC_READ . . . . . . . . . .	Number	 -80000000h   
+GENERIC_WRITE  . . . . . . . . .	Number	 40000000h   
+INVALID_HANDLE_VALUE . . . . . .	Number	 -00000001h   
+KEY_EVENT  . . . . . . . . . . .	Number	 00000001h   
+MAIN . . . . . . . . . . . . . .	L Near	 00000034 _TEXT	Public STDCALL
+MENU_EVENT . . . . . . . . . . .	Number	 00000008h   
+MOUSE_EVENT  . . . . . . . . . .	Number	 00000002h   
+Monster_1_1  . . . . . . . . . .	Byte	 00000206 _DATA	
+Monster_2_1  . . . . . . . . . .	Byte	 0000020B _DATA	
+Monster_2_2  . . . . . . . . . .	Byte	 00000214 _DATA	
+Monster_2_3  . . . . . . . . . .	Byte	 0000021C _DATA	
+NL . . . . . . . . . . . . . . .	Text   	 Write 0AH
+NULL . . . . . . . . . . . . . .	Number	 00000000h   
+OPEN_ALWAYS  . . . . . . . . . .	Number	 00000004h   
+OPEN_EXISTING  . . . . . . . . .	Number	 00000003h   
+PeekConsoleInput . . . . . . . .	Text   	 PeekConsoleInputA
+ReadConsoleInput . . . . . . . .	Text   	 ReadConsoleInputA
+ReadConsole  . . . . . . . . . .	Text   	 ReadConsoleA
+STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
+STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
+SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
+TRUE . . . . . . . . . . . . . .	Number	 00000001h   
+TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
+Turrent_1_1  . . . . . . . . . .	Byte	 000001EC _DATA	
+Turrent_1_2  . . . . . . . . . .	Byte	 000001F2 _DATA	
+Turrent_1_3  . . . . . . . . . .	Byte	 000001F8 _DATA	
+Turrent_1_4  . . . . . . . . . .	Byte	 000001FE _DATA	
+WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
+WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
+WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
+black  . . . . . . . . . . . . .	Number	 00000000h   
+blue . . . . . . . . . . . . . .	Number	 00000001h   
+brown  . . . . . . . . . . . . .	Number	 00000006h   
+cyan . . . . . . . . . . . . . .	Number	 00000003h   
+exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+gray . . . . . . . . . . . . . .	Number	 00000008h   
+green  . . . . . . . . . . . . .	Number	 00000002h   
+lightBlue  . . . . . . . . . . .	Number	 00000009h   
+lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
+lightGray  . . . . . . . . . . .	Number	 00000007h   
+lightGreen . . . . . . . . . . .	Number	 0000000Ah   
+lightMagenta . . . . . . . . . .	Number	 0000000Dh   
+lightRed . . . . . . . . . . . .	Number	 0000000Ch   
+magenta  . . . . . . . . . . . .	Number	 00000005h   
+red  . . . . . . . . . . . . . .	Number	 00000004h   
+white  . . . . . . . . . . . . .	Number	 0000000Fh   
+yellow . . . . . . . . . . . . .	Number	 0000000Eh   
+
+	   0 Warnings
+	   0 Errors
