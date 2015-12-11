@@ -17,26 +17,27 @@
 ;
 ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
 .Data
-	BOY_1_1    DB     "¢i¢i¢i",0
-	BOY_1_2    DB     "¢i¢i¢i",0
-	BOY_1_3    DB     "¢i¢i¢i",0
-	BOY_1_4    DB     "  ¢i",0
-	BOY_1_5    DB     "  ¢i",0
-	BOY_1_6    DB     "  ¢i",0
-	BOY_1_7    DB     "  ¢i",0
 
 
 
-	DrawSolider MACRO X, Y
+	Soldier_1_1_1		DB	"£» ",0
+	Soldier_1_1_2		DB	"¢p¡÷",0
+	Soldier_1_1_3		DB	"£J ",0
 
-		Translate X, Y
+	Soldier_1_2_1		DB	"£»",0
+	Soldier_1_2_2		DB	"¢p¡÷¡÷",0
+	Soldier_1_2_3		DB	"¢Ï",0
 
-		GraphDisplay BOY_1_1
-		GraphDisplay BOY_1_2
-		GraphDisplay BOY_1_3
-		GraphDisplay BOY_1_4
-		GraphDisplay BOY_1_5
-		GraphDisplay BOY_1_6
-		GraphDisplay BOY_1_7
+	DrawSolider MACRO X, Fram
 
+		Translate X, 13
+		.IF (Fram == 1)
+			GraphDisplay Soldier_1_1_1
+			GraphDisplay Soldier_1_1_2
+			GraphDisplay Soldier_1_1_3
+		.ELSEIF (Fram == 2)
+			GraphDisplay Soldier_1_2_1
+			GraphDisplay Soldier_1_2_2
+			GraphDisplay Soldier_1_2_3
+		.ENDIF
 		ENDM
