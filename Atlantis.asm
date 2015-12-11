@@ -12,27 +12,24 @@
 	INCLUDE	Graph_soldier.inc
 	INCLUDE	Graph_turret.inc
 	INCLUDE	Graph_Monster.inc
+
 .Code
 MAIN:
 	RegisterObjects
 	LoopTimes 0FFFH
 	DR:
 		CLS
-		;Draw
+		Draw
 
-		SettingSolderLV UserSoilders, 2, 3
-		SettingSolderLV UserSoilders, 1, 5
-		SettingSolderLV UserSoilders, 0, 4
-
-		GettingSolderLV UserSoilders, 1, GetterHandler
-		WriteD	GetterHandler
+		;SettingSoilderX UserSoilders, 2, 1
+		;SettingSoilderY UserSoilders, 2, 2
+		;SettingSoilderY UserSoilders, 1, 3
+		;SettingSoilderX UserSoilders, 1, 4
+		;SettingSoilderX UserSoilders, 1, 5
+		
 		NL
-		GettingSolderLV UserSoilders, 0, GetterHandler
-		WriteD	GetterHandler
 		NL
-		GettingSolderLV UserSoilders, 2, GetterHandler
-		WriteD	GetterHandler
-
+		NL
 		PauseTime 1000
 		NEXT DR
 ExitMain
