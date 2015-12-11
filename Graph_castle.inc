@@ -41,7 +41,7 @@
 	Castle_3_8 		DB	   "¢i¢i¢i      ¢i¢i¢i     ",0
 	Castle_3_9 		DB	   "¢i¢i¢i      ¢i¢i¢i     ",0
 
-	DrawCastle MACRO X, Y
+	DrawCastle MACRO X
 
 		Translate X, 13
 
@@ -53,7 +53,7 @@
 
 		ENDM
 	
-	DrawCastle2 MACRO X, Y
+	DrawCastle2 MACRO X
 
 		Translate X, 10
 
@@ -68,7 +68,7 @@
 
 		ENDM
 		
-	DrawCastle3 MACRO X, Y
+	DrawCastle3 MACRO X
 	
 		Translate X, 9
 

@@ -1,28 +1,15 @@
 .Data
 
+	GetterHandler DWORD ?
+
+	User_Curr_Soilder DWORD ?
+	Comp_Curr_Soilder DWORD ?
+
 
 	Beats5x 	DWORD 	1
 	Beats3x 	DWORD 	1
 	Beats2x 	DWORD 	1
-	Soilder STRUCT
-		HP			DWORD ?
-		XY			COORD <>
-		ATK			DWORD ?
-		SPD			DWORD ?
-		LV			DWORD ?
-		KIND		DWORD ?
-		Fram_Curr 	DWORD ?
-		Fram_MAX 	DWORD ?
-	Soilder ENDS
 	
-	Soilder1 Soilder <>
-	Soilder2 Soilder <>
-	Soilder3 Soilder <>
-	Soilder4 Soilder <>
-	Soilder5 Soilder <>
-	Soilder6 Soilder <>
-	Soilder7 Soilder <>
-	Soilder8 Soilder <>
 
 	Beats MACRO
 		INC Beats2x

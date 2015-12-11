@@ -28,9 +28,9 @@
 	Soldier_1_2_2		DB	"¢p¡÷¡÷",0
 	Soldier_1_2_3		DB	"¢Ï",0
 
-	DrawSolider MACRO X, Y, Fram
+	DrawSolider MACRO X, Fram
 
-		Translate X, Y
+		Translate X, 13
 		.IF (Fram == 1)
 			GraphDisplay Soldier_1_1_1
 			GraphDisplay Soldier_1_1_2

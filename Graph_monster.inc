@@ -46,9 +46,9 @@
 	;Monster_2_7    DB     "  ¢i",0
 
 
-	DrawMonster MACRO X, Y, Fram
+	DrawMonster MACRO X, Fram
 
-		Translate X, Y
+		Translate X, 15
 		.IF (Fram == 1 || Fram == 5)
 			GraphDisplay Monster_1_1_1
 			GraphDisplay Monster_1_1_2
@@ -64,9 +64,9 @@
 		.ENDIF
 		ENDM
 
-	DrawMonster2 MACRO X, Y
+	DrawMonster2 MACRO X
 
-		Translate X, Y
+		Translate X, 15
 
 		GraphDisplay Monster_2_1
 		GraphDisplay Monster_2_2
