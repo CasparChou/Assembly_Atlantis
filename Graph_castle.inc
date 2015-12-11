@@ -43,7 +43,7 @@
 
 	DrawCastle MACRO X, Y
 
-		Translate X, Y
+		Translate X, 13
 
 		GraphDisplay Castle_1_1
 		GraphDisplay Castle_1_2
@@ -55,7 +55,7 @@
 	
 	DrawCastle2 MACRO X, Y
 
-		Translate X, Y
+		Translate X, 10
 
 		GraphDisplay Castle_2_1
 		GraphDisplay Castle_2_2
@@ -69,8 +69,8 @@
 		ENDM
 		
 	DrawCastle3 MACRO X, Y
-
-		Translate X, Y
+	
+		Translate X, 9
 
 		GraphDisplay Castle_3_1
 		GraphDisplay Castle_3_2

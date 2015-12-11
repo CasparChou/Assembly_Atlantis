@@ -18,7 +18,17 @@
 ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
 .Data
 
-	Monster_1_1    	DB     	"=¡ó=",0
+	Monster_1_1_1    	DB     	"    ",0
+	Monster_1_1_2    	DB     	"    ",0
+	Monster_1_1_3   	DB     	"=¡ó=",0
+	
+	Monster_1_2_1    	DB     	"    ",0
+	Monster_1_2_2    	DB     	"=¡ó=",0
+	Monster_1_2_3    	DB     	"    ",0
+	
+	Monster_1_3_1    	DB     	"=¡ó=",0
+	Monster_1_3_2    	DB     	"    ",0
+	Monster_1_3_3    	DB     	"    ",0
 		
 	Monster_2_1		DB 		"  ¡å    ",0
 	Monster_2_2		DB 		"<=¡ó=> ",0
@@ -36,12 +46,22 @@
 	;Monster_2_7    DB     "  ¢i",0
 
 
-	DrawMonster MACRO X, Y
+	DrawMonster MACRO X, Y, Fram
 
 		Translate X, Y
-
-		GraphDisplay Monster_1_1
-
+		.IF (Fram == 1 || Fram == 5)
+			GraphDisplay Monster_1_1_1
+			GraphDisplay Monster_1_1_2
+			GraphDisplay Monster_1_1_3
+		.ELSEIF  (Fram == 2 || Fram == 4)
+			GraphDisplay Monster_1_2_1
+			GraphDisplay Monster_1_2_2
+			GraphDisplay Monster_1_2_3
+		.ELSE
+			GraphDisplay Monster_1_3_1
+			GraphDisplay Monster_1_3_2
+			GraphDisplay Monster_1_3_3
+		.ENDIF
 		ENDM
 
 	DrawMonster2 MACRO X, Y

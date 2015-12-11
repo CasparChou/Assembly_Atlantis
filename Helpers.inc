@@ -5,8 +5,8 @@ LoopTimes	MACRO	Times
 	MOV 	ECX,	Times
 ENDM
 Translate	MACRO X, Y
-	MOV  	dl, 	X
-	MOV  	dh, 	Y
+	MOV  	dl, BYTE PTR X
+	MOV  	dh, BYTE PTR Y
 	CALL 	Gotoxy  
 	ENDM
 ;Position 	MACRO X, Y
@@ -223,21 +223,42 @@ CLS  EQU <CALL 	ClrScr>
 CLSALL  EQU <CALL 	ForceCLS>	
 
 
+
+CLST MACRO
+    push        Eax
+    mov         Eax,0b800h  ; Start at memory 0b800
+    mov         esP,Eax
+    xor         Edi,Edi
+
+    mov         Ecx,2000  ; 
+    mov         Eax,0720h; Black bg, white fg, 20h = space char
+
+    rep         stosw
+           pop         esP
+    pop         Eax 
+   ENDM
+
 .Code
 
 ForceCLS  PROC
 	PUSH ECX
-	LoopTimes 100
+	Translate 0,0	;Gotoxy 0, 0
+	LoopTimes 50	;Same AS MOV ECX, 50
+	;SettingColor Black ;Set Font Color to Black
 	NewLine:
 		PUSH ECX
-			LoopTimes 100
+			LoopTimes 115
 			BLANKS:
-				Write 07FH
+				Write 65
+				; Same As MOV EAX, 020H 
+				; CALL 	WriteChar
 				Loop BLANKS
 		POP  ECX
-		NL
+		NL ;New Line
 		Loop NewLine
 	POP  ECX
+	Translate 0,0 	;Gotoxy 0, 0
+	DefaultColor 	;Set Font Color to Default
 	RET
 ForceCLS ENDP
 

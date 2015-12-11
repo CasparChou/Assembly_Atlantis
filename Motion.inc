@@ -1,11 +1,11 @@
 .Data
 
 
-	;MOVE MACRO Object, X, Y
-	;	LoopTimes 0
-	;	INVOKE	MovingFunction 3
-	;
-	;	ENDM
+	MOVE MACRO Object, X, Y
+		LoopTimes 0
+		INVOKE	MovingFunction, 3
+	
+		ENDM
 
 .Code
 	
@@ -14,6 +14,7 @@
 	;	RUN:
 	;		CLS
 	;		;DrawSolider 5, 2
+	;		WriteD Times
 	;		AnyKeyToContinue
 	;		NEXTINC Times, RUN
 	;
