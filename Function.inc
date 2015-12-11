@@ -1,12 +1,17 @@
+.Data
 Draw MACRO
 
 	DrawCastle	 	0
-	;DrawCastle2	20, 10
 	DrawCastle		95
-	DrawSolider 	20, Beats2x
-	DrawMonster2 	70
-	DrawMonster  	50, Beats5x
+
 	;DrawTurrent  10,14
+
+	
+	;DrawSolider 	20, Beats2x
+	DrawMonster  	50, Beats5x
+	DrawMonster2 	70
+	DrawSoilders
+
 	Beats
 	ENDM
 
