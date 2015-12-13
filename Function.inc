@@ -2,14 +2,15 @@
 
 	Draw MACRO
 
-		DrawCastle	 	0
-		DrawCastle		95
 		;DrawTurrent  10,14
 		;DrawSolider 	20, Beats2x
-		DrawMonster  	50, Beats5x
-		DrawMonster2 	70
+		;DrawMonster  	50, Beats5x
+		;DrawMonster2 	70
 		DrawSoilders
+		DrawCastle	 	0
+		DrawCastle		95
 
+		MoveOnSoilders
 		ENDM
 
 	Clear MACRO
@@ -20,9 +21,10 @@
 		ENDM
 
 
-	MOVE MACRO Object, X, Y
-		LoopTimes 0
-	;	INVOKE	MovingFunction, 3
+	MOVE MACRO Object, ID, AddX, AddY
+
+		AddBy Object[ID*4].X, AddX
+		AddBy Object[ID*4].Y, AddY
 
 		ENDM
 

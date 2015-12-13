@@ -30,7 +30,7 @@
 
 	DrawSoilder MACRO X, Fram
 
-		Translate X, 13
+		Translate X, 15
 		.IF (Fram == 1)
 			GraphDisplay Soldier_1_1_1
 			GraphDisplay Soldier_1_1_2

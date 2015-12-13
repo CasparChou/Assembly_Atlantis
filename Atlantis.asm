@@ -16,18 +16,17 @@
 
 .Code
 MAIN:
-	RegisterObjects
-	Initial
 	LoopTimes 0FFFH
 	CLS
+	Initial
 	DR:
 
 
-		;Draw
-		
+		Draw
 		KeyHandler
+		
 		PauseTime 1000
-		;Clear
+		Clear
 		NEXT DR
 ExitMain
 END MAIN
