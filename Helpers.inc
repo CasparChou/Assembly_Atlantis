@@ -114,6 +114,12 @@
 			CALL 	WriteDec
 		POP 	EAX
 		ENDM
+	WriteH 		MACRO Hex
+		PUSH 	EAX
+			MOV 	EAX,	Hex
+			CALL 	WriteHex
+		POP 	EAX
+		ENDM
 	WriteS 		MACRO String
 		PUSH EDX
 		PUSH ECX
@@ -244,12 +250,12 @@
 		PUSH ECX
 		Translate 0,0	;Gotoxy 0, 0
 		LoopTimes 50	;Same AS MOV ECX, 50
-		;SettingColor Black ;Set Font Color to Black
+		SettingColor Black ;Set Font Color to Black
 		NewLine:
 			PUSH ECX
 				LoopTimes 115
 				BLANKS:
-					Write 65
+					Write 020H
 					; Same As MOV EAX, 020H 
 					; CALL 	WriteChar
 					Loop BLANKS

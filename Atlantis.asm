@@ -1,36 +1,33 @@
-
+	
 
 	INCLUDE	Irvine32.inc
 	INCLUDE	Helpers.inc
 
-	INCLUDE	Object.inc
-	INCLUDE	Status.inc
-	INCLUDE	Function.inc
 
 	INCLUDE	UI.inc
 	INCLUDE	Graph_castle.inc
 	INCLUDE	Graph_soldier.inc
 	INCLUDE	Graph_turret.inc
 	INCLUDE	Graph_Monster.inc
+	
+	INCLUDE	Status.inc
+	INCLUDE	Function.inc
+	INCLUDE	Object.inc
 
 .Code
 MAIN:
 	RegisterObjects
+	Initial
 	LoopTimes 0FFFH
+	CLS
 	DR:
-		CLS
-		Draw
 
-		;SettingSoilderX UserSoilders, 2, 1
-		;SettingSoilderY UserSoilders, 2, 2
-		;SettingSoilderY UserSoilders, 1, 3
-		;SettingSoilderX UserSoilders, 1, 4
-		;SettingSoilderX UserSoilders, 1, 5
+
+		;Draw
 		
-		NL
-		NL
-		NL
+		KeyHandler
 		PauseTime 1000
+		;Clear
 		NEXT DR
 ExitMain
 END MAIN
