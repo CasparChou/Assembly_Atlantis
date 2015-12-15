@@ -11,8 +11,8 @@
 	INCLUDE	Graph_Monster.inc
 	
 	INCLUDE	Status.inc
-	INCLUDE	Function.inc
 	INCLUDE	Object.inc
+	INCLUDE	Function.inc
 
 .Code
 MAIN:
@@ -24,7 +24,7 @@ MAIN:
 
 		Draw
 		KeyHandler
-		
+		DumpList
 		PauseTime 1000
 		Clear
 		NEXT DR
