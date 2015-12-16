@@ -9,7 +9,7 @@
 		;DrawMonster2 	70
 		DrawSoilders
 		DrawCastle	 	0
-		DrawCastle		99
+		DrawCastle		100
 
 		ENDM
 
@@ -38,7 +38,18 @@
 			.IF( AL == 'Q' || AL == 'q' )
 				BuildUserSoilderA
 			.ELSEIF( AL == 'W' || AL == 'w')
+				BuildUserSoilderB
+			.ELSEIF( AL == 'E' || AL == 'e')
+				BuildUserSoilderC
+
+
+			.ELSEIF( AL == 'I' || AL == 'i')
 				BuildCompSoilderA
+			.ELSEIF( AL == 'O' || AL == 'o')
+				BuildCompSoilderB
+			.ELSEIF( AL == 'P' || AL == 'p')
+				BuildCompSoilderC
+
 			.ENDIF
 		POPA
 		ENDM
@@ -93,24 +104,13 @@
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .Data
-	BuildSoilder MACRO Object, League, Level, Speed
+	BuildSoilder MACRO Object, League, Arms, Speed
 		PUSHA
-			INVOKE FindUsableSoilder, League, Level, Speed
-			;.IF (ECX == 0)
-			;	CALL FindUsableUserSoilder
-			;	SettingSoilderLV 	Object, ECX, Level
-			;	SettingSoilderX	 	Object, ECX, 20
-			;	SettingSoilderSPD	Object, ECX, Speed
-			;.ELSE
-			;	CALL FindUsableCompSoilder
-			;	SettingSoilderLV 	Object, ECX, Level
-			;	SettingSoilderX	 	Object, ECX, 70
-			;	SettingSoilderSPD	Object, ECX, Speed
-			;.ENDIF
+			INVOKE FindUsableSoilder, League, Arms, Speed
 		POPA
 		ENDM
 .Code	
-	FindUsableSoilder PROC, League:DWORD, Level:DWORD, Speed:DWORD
+	FindUsableSoilder PROC, League:DWORD, Arms:DWORD, Speed:DWORD
 		PUSHA
 				;WriteD League
 				;AnyKeyToContinue
@@ -121,7 +121,7 @@
 					ObjectOffset ECX
 					.IF (UserSoilders[EBX].Alive == 0)
 						SettingSoilderAlive		UserSoilders, ECX, 1
-						SettingSoilderLV 		UserSoilders, ECX, Level
+						SettingSoilderArms 		UserSoilders, ECX, Arms
 						SettingSoilderX	 		UserSoilders, ECX, 20
 						SettingSoilderLeague	UserSoilders, ECX, 0
 						SettingSoilderSPD		UserSoilders, ECX, Speed
@@ -137,7 +137,7 @@
 					ObjectOffset ECX
 					.IF (CompSoilders[EBX].Alive == 0)
 						SettingSoilderAlive		CompSoilders, ECX, 1
-						SettingSoilderLV 		CompSoilders, ECX, Level
+						SettingSoilderArms 		CompSoilders, ECX, Arms
 						SettingSoilderX	 		CompSoilders, ECX, 90
 						SettingSoilderLeague	CompSoilders, ECX, 1
 						SettingSoilderSPD		CompSoilders, ECX, Speed
@@ -163,12 +163,18 @@
 		ObjectOffset ID
 		.IF (Object[EBX].Alive == 1)
 			.IF (Object[EBX].League == 0) 
-				DrawSoilder Object[EBX].X, Beats2x
+				.IF (Object[EBX].Arms == 1) 
+					DrawSoilderA1 Object[EBX].X, Beats2x
+				.ELSEIF (Object[EBX].Arms == 2) 
+					DrawSoilderB1 Object[EBX].X, Beats2x
+				.ELSEIF (Object[EBX].Arms == 3) 
+					DrawSoilderC1 Object[EBX].X, Beats4x
 
+				.ENDIF
 			.ELSEIF (Object[EBX].League == 1) 
 				DrawMonster Object[EBX].X, Beats2x
 			.ENDIF
-			WriteD ID
+			;WriteD ID
 		.ENDIF
 		ENDM
 .Code
