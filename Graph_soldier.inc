@@ -20,12 +20,12 @@
 
 
 
-	Soldier_1_1_1		DB	"£» ",0
-	Soldier_1_1_2		DB	"¢p¡÷",0
-	Soldier_1_1_3		DB	"£J ",0
+	Soldier_1_1_1		DB	"£»  ",0
+	Soldier_1_1_2		DB	"¢p¡÷ ",0
+	Soldier_1_1_3		DB	"£J  ",0
 
-	Soldier_1_2_1		DB	"£»",0
-	Soldier_1_2_2		DB	"¢p¡÷¡÷",0
+	Soldier_1_2_1		DB	"£» ",0
+	Soldier_1_2_2		DB	"¢p¡÷",0
 	Soldier_1_2_3		DB	"¢Ï",0
 
 	DrawSoilder MACRO X, Fram

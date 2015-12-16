@@ -1,6 +1,8 @@
 .Data
 
-	GetterHandler DWORD ?
+	AtlantisTitle 	DB 		"Atlantis",0
+	AtlantisSize	COORD	<10,10>
+	GetterHandler 	DWORD ?
 
 	User_Curr_Soilder DWORD ?
 	Comp_Curr_Soilder DWORD ?

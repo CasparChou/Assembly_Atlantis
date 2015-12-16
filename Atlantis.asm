@@ -3,7 +3,6 @@
 	INCLUDE	Irvine32.inc
 	INCLUDE	Helpers.inc
 
-
 	INCLUDE	UI.inc
 	INCLUDE	Graph_castle.inc
 	INCLUDE	Graph_soldier.inc
@@ -16,6 +15,9 @@
 
 .Code
 MAIN:
+	INVOKE		SetConsoleTitle, 	OFFSET AtlantisTitle
+	INVOKE		SetConsoleScreenBufferSize, 	EAX,	AtlantisSize
+
 	LoopTimes 0FFFH
 	CLS
 	Initial
@@ -25,6 +27,7 @@ MAIN:
 		Draw
 		KeyHandler
 		DumpList
+		;AnyKeyToContinue
 		PauseTime 1000
 		Clear
 		NEXT DR

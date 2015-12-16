@@ -1,5 +1,6 @@
 .Data
 
+	
 	RegisterObjects	EQU <CALL Register>
 	DrawSoilders 	EQU <CALL DrawingSoilders>
 	Initial 	EQU <CALL Init>
@@ -28,10 +29,24 @@
 		Alive		DWORD 0
 	Soilder ENDS
 
-	UserSoilders	Soilder	8 DUP(<>)
-	CompSoilders	Soilder	8 DUP(<>)
+	;UserSoilders	Soilder	<1,11,0,0,0,0,0,0,0>,
+	;						<2,12,0,0,0,0,0,0,0>,
+	;						<3,13,0,0,0,0,0,0,0>,
+	;						<4,14,0,0,0,0,0,0,0>,
+	;						<5,15,0,0,0,0,0,0,0>,
+	;						<6,16,0,0,0,0,0,0,0>,
+	;						<7,17,0,0,0,0,0,0,0>,
+	;						<8,18,0,0,0,0,0,0,0>
+	UserSoilders	Soilder	8 DUP(<0,0,0,0,0,0,0,0,0,0>)
+	CompSoilders	Soilder	8 DUP(<0,0,0,0,0,0,0,0,0,0>)
 
 
+	ObjectOffset MACRO ID
+		MOV EAX, 40
+		MOV EBX, ID
+		MUL EBX
+		MOV EBX, EAX
+	ENDM
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
@@ -39,21 +54,29 @@
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	GettingSoilderLV		MACRO	Object, ID, StoreTo
-		CopyFrom StoreTo, Object[ID*4].LV
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].LV
+		POPA
 		ENDM
 	SettingSoilderLV		MACRO	Object, ID, Number
-		CopyFrom Object[ID*4].LV, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom		Object[EBX].LV, Number
+		POPA
 		ENDM
 
 
 	GettingSoilderX		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].X
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].X
 		POPA
 		ENDM
 	SettingSoilderX		MACRO	Object, ID, Number
 		PUSHA
-			CopyFrom Object[ID*4].X, Number
+			ObjectOffset 	ID
+			CopyFrom		Object[EBX].X, Number
 		POPA
 		ENDM
 
@@ -70,78 +93,91 @@
 
 	GettingSoilderHP		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].HP
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].HP
 		POPA
 		ENDM
 	SettingSoilderHP		MACRO	Object, ID, Blood
 		PUSHA
-		CopyFrom  Object[ID*4].HP, Blood
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].HP, Blood
 		POPA
 		ENDM
 
 	GettingSoilderATK		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].ATK
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].ATK
 		POPA
 		ENDM
 	SettingSoilderATK		MACRO	Object, ID, Attack
 		PUSHA
-		CopyFrom  Object[ID*4].ATK, Attack
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].ATK, Attack
 		POPA
 		ENDM
 
 	GettingSoilderSPD		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].SPD
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].SPD
 		POPA
 		ENDM
 	SettingSoilderSPD		MACRO	Object, ID, Speeds
 		PUSHA
-		CopyFrom  Object[ID*4].SPD, Speeds
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].SPD, Speeds
 		POPA
 		ENDM
 
 	GettingSoilderArms		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].Arms
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].Arms
 		POPA
 		ENDM
 	SettingSoilderArms		MACRO	Object, ID, Kinds
 		PUSHA
-		CopyFrom  Object[ID*4].Arms, Kinds
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].Arms, Kinds
 		POPA
 		ENDM
 	GettingSoilderLeague		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].League
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].League
 		POPA
 		ENDM
 	SettingSoilderLeague		MACRO	Object, ID, Kinds
 		PUSHA
-		CopyFrom  Object[ID*4].League, Kinds
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].League, Kinds
 		POPA
 		ENDM
 
 	GettingSoilderState		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].State
+			ObjectOffset 	ID
+			CopyFrom		StoreTo, Object[EBX].State
 		POPA
 		ENDM
 	SettingSoilderState		MACRO	Object, ID, States
 		PUSHA
-			CopyFrom  Object[ID*4].State, States
-			DrawMonster  	50, Beats5x
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].State, States
 		POPA
 		ENDM
 
 	GettingSoilderAlive		MACRO	Object, ID, StoreTo
 		PUSHA
-			CopyFrom StoreTo, Object[ID*4].Alive
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].Alive
 		POPA
 		ENDM
 	SettingSoilderAlive		MACRO	Object, ID, SAlive
 		PUSHA
-			CopyFrom  Object[ID*4].Alive, SAlive
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].Alive, SAlive
 		POPA
 		ENDM
 
@@ -153,6 +189,7 @@
 			EACH:
 				SettingSoilderX 	UserSoilders, ECX, 0
 				SettingSoilderAlive UserSoilders, ECX, 0
+
 				NextInc	8, EACH
 		POPA
 		RET

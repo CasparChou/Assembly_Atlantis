@@ -1,5 +1,6 @@
 .Data
 
+	
 	Draw MACRO
 
 		;DrawTurrent  10,14
@@ -54,8 +55,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .Data
 	MOVE MACRO Object, ID, AddX, AddY
-		AddBy Object[ID*4].X, AddX
-		AddBy Object[ID*4].Y, AddY
+		ObjectOffset ID
+		AddBy Object[EBX].X, AddX
+		AddBy Object[EBX].Y, AddY
 		ENDM
 	MoveOnSoilders MACRO
 		CALL MoveOnUserSoilders
@@ -65,8 +67,9 @@
 	MoveOnUserSoilders PROC
 		LoopTimes 0
 		MS:
-			.IF UserSoilders[ECX*4].Alive == 1
-				MOVE UserSoilders, ECX, UserSoilders[ECX*4].SPD, 0
+			ObjectOffset ECX
+			.IF UserSoilders[EBX].Alive == 1
+				MOVE UserSoilders, ECX, UserSoilders[EBX].SPD, 0
 			.ENDIF
 			NextInc	16, MS
 		RET
@@ -74,8 +77,9 @@
 	MoveOnCompSoilders PROC
 		LoopTimes 0
 		MS:
-			.IF CompSoilders[ECX*4].Alive == 1
-				MOVE CompSoilders, ECX, CompSoilders[ECX*4].SPD, 0
+			ObjectOffset ECX
+			.IF CompSoilders[EBX].Alive == 1
+				MOVE CompSoilders, ECX, CompSoilders[EBX].SPD, 0
 			.ENDIF
 			NextInc	16, MS
 		RET
@@ -114,7 +118,8 @@
 			.IF (League == 0)
 				LoopTimes 0
 				FindUser:
-					.IF (UserSoilders[ECX*4].Alive == 0)
+					ObjectOffset ECX
+					.IF (UserSoilders[EBX].Alive == 0)
 						SettingSoilderAlive		UserSoilders, ECX, 1
 						SettingSoilderLV 		UserSoilders, ECX, Level
 						SettingSoilderX	 		UserSoilders, ECX, 20
@@ -129,7 +134,8 @@
 			.ELSEIF (League == 1)
 				LoopTimes 0
 				FindComp:
-					.IF (CompSoilders[ECX*4].Alive == 0)
+					ObjectOffset ECX
+					.IF (CompSoilders[EBX].Alive == 0)
 						SettingSoilderAlive		CompSoilders, ECX, 1
 						SettingSoilderLV 		CompSoilders, ECX, Level
 						SettingSoilderX	 		CompSoilders, ECX, 90
@@ -154,12 +160,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .Data
 	SoilderOn	MACRO Object, ID
-		.IF (Object[ID*4].Alive == 1)
-			.IF (Object[ID*4].League == 0) 
-				DrawSoilder Object[ID*4].X, Beats2x
+		ObjectOffset ID
+		.IF (Object[EBX].Alive == 1)
+			.IF (Object[EBX].League == 0) 
+				DrawSoilder Object[EBX].X, Beats2x
 
-			.ELSEIF (Object[ID*4].League == 1) 
-				DrawMonster Object[ID*4].X, Beats2x
+			.ELSEIF (Object[EBX].League == 1) 
+				DrawMonster Object[EBX].X, Beats2x
 			.ENDIF
 			WriteD ID
 		.ENDIF
@@ -176,69 +183,68 @@
 		RET
 	DrawingSoilders		ENDP
 
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;						;;;;
+;;;;	Dump 	 Soilders 	;;;;
+;;;;						;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.Data
+	DumpSoilder 	MACRO	Object, ID
+		ObjectOffset ID
+		Write  09H
+		WriteD	Object[EBX].HP
+		Write  09H
+		WriteD	Object[EBX].X
+		Write  09H
+		WriteD	Object[EBX].Y
+		Write  09H
+		WriteD	Object[EBX].ATK
+		Write  09H
+		WriteI	Object[EBX].SPD
+		Write  09H
+		WriteD	Object[EBX].LV
+		Write  09H
+		WriteD	Object[EBX].ARMS
+		Write  09H
+		WriteD	Object[EBX].League
+		Write  09H
+		WriteD	Object[EBX].State
+		Write  09H
+		WriteD	Object[EBX].Alive
+		Write  09H
+	ENDM
+
+	TableHead DB 	"ID",		09H,
+					"HP",		09H,
+					"X",		09H,
+					"Y",		09H,
+					"ATK",		09H,
+					"SPD",		09H,
+					"LV",		09H,
+					"AR",		09H,
+					"Leag",		09H,
+					"State",	09H,
+					"Alive",	09H, 0
+
 .Code
 	DumpSoilderList		PROC
 		PUSHA
 			NL
-				Write 'I'
-				Write 'D'
-				LoopTimes 2
-				A2AA:
-				Write  09H
-				Write 'H'
-				Write 'P'
-				Write  09H
-				Write 'X'
-				Write  09H
-				Write 'S'
-				Write 'P'
-				Write 'D'
-				Write  09H
-				Write 'L'
-				Write 'V'
-				Write  09H
-				Write 'A'
-				Write 'R'
-				Write  09H
-				Write 'L'
-				Write 'E'
-				Write  09H
-				Write 'A'
-				Write 'L'
-				NEXT A2AA
-				
+		
+				WriteS TableHead
+
 			LoopTimes 0
 			DSs:
+
 				NL
 				WriteD ECX
-				Write  09H
-				WriteD	UserSoilders[ECX*4].HP
-				Write  09H
-				WriteD	UserSoilders[ECX*4].X
-				Write  09H
-				WriteD	UserSoilders[ECX*4].SPD
-				Write  09H
-				WriteD	UserSoilders[ECX*4].LV
-				Write  09H
-				WriteD	UserSoilders[ECX*4].ARMS
-				Write  09H
-				WriteD	UserSoilders[ECX*4].League
-				Write  09H
-				WriteD	UserSoilders[ECX*4].Alive
-				Write  09H
-				WriteD	CompSoilders[ECX*4].HP
-				Write  09H
-				WriteD	CompSoilders[ECX*4].X
-				Write  09H
-				WriteD	CompSoilders[ECX*4].SPD
-				Write  09H
-				WriteD	CompSoilders[ECX*4].LV
-				Write  09H
-				WriteD	CompSoilders[ECX*4].ARMS
-				Write  09H
-				WriteD	CompSoilders[ECX*4].League
-				Write  09H
-				WriteD	CompSoilders[ECX*4].Alive
+
+				DumpSoilder CompSoilders, ECX
+				
 				NextInc	8, DSs
 		POPA
 
