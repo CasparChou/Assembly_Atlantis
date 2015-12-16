@@ -114,6 +114,12 @@
 			CALL 	WriteDec
 		POP 	EAX
 		ENDM
+	WriteI 		MACRO Int
+		PUSH 	EAX
+			MOV 	EAX,	Int
+			CALL 	WriteInt
+		POP 	EAX
+		ENDM
 	WriteH 		MACRO Hex
 		PUSH 	EAX
 			MOV 	EAX,	Hex
@@ -195,6 +201,12 @@
 			MOV EAX, B
 			MOV A, 	EAX
 		POP EAX
+	ENDM
+	CopyAddrFrom MACRO A, B
+		PUSHA
+			LEA  ESI,  B
+			MOV  A, ESI
+		POPA
 	ENDM
 	AddBy MACRO A, B
 		PUSH EAX

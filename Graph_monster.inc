@@ -34,17 +34,6 @@
 	Monster_2_2		DB 		"<=¡ó=> ",0
 	Monster_2_3		DB 		"  ¡Ð   ",0
 	
-	
-	
-	
-	;Monster_2_1    DB     "",0
-	;Monster_2_2    DB     "¢i¢i¢i",0
-	;Monster_2_3    DB     "¢i¢i¢i",0
-	;Monster_2_4    DB     "  ¢i",0
-	;Monster_2_5    DB     "  ¢i",0
-	;Monster_2_6    DB     "  ¢i",0
-	;Monster_2_7    DB     "  ¢i",0
-
 
 	DrawMonster MACRO X, Fram
 

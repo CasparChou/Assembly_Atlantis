@@ -1,8 +1,17 @@
 .Data
 
+	
 	RegisterObjects	EQU <CALL Register>
 	DrawSoilders 	EQU <CALL DrawingSoilders>
 	Initial 	EQU <CALL Init>
+
+	BuildUserSoilderA EQU <BuildSoilder UserSoilders, 0, 1, 1>
+	BuildUserSoilderB EQU <BuildSoilder UserSoilders, 0, 2, 1>
+	BuildUserSoilderC EQU <BuildSoilder UserSoilders, 0, 3, 1>
+
+	BuildCompSoilderA EQU <BuildSoilder CompSoilders, 1, 1, -1>
+	BuildCompSoilderB EQU <BuildSoilder CompSoilders, 1, 2, -1>
+	BuildCompSoilderC EQU <BuildSoilder CompSoilders, 1, 3, -1>
 
 
 	Soilder STRUCT
@@ -13,58 +22,61 @@
 
 		SPD			DWORD 0
 		LV			DWORD 0
-		KIND		DWORD 0
+		Arms		DWORD 0
+		League		DWORD 0
 		State		DWORD 0
 
 		Alive		DWORD 0
 	Soilder ENDS
 
-
-	
-	Soilder1 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder2 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder3 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder4 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder5 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder6 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder7 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder8 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder9 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder10 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder11 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder12 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder13 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder14 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder15 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder16 Soilder <0,0,0,0,0,0,0,0,0>
-
-	UserSoilders	Soilder	8 DUP(<>)
-	CompSoilders	Soilder	8 DUP(<>)
-
-	;Registing 	MACRO	Object, ObjectList, ID
-	;	PUSH ESI
-	;		LEA		ESI,	Object
-	;		MOV		ObjectList[ID*4],	ESI
-	;	POP ESI
-	;	ENDM
+	;UserSoilders	Soilder	<1,11,0,0,0,0,0,0,0>,
+	;						<2,12,0,0,0,0,0,0,0>,
+	;						<3,13,0,0,0,0,0,0,0>,
+	;						<4,14,0,0,0,0,0,0,0>,
+	;						<5,15,0,0,0,0,0,0,0>,
+	;						<6,16,0,0,0,0,0,0,0>,
+	;						<7,17,0,0,0,0,0,0,0>,
+	;						<8,18,0,0,0,0,0,0,0>
+	UserSoilders	Soilder	8 DUP(<0,0,0,0,0,0,0,0,0,0>)
+	CompSoilders	Soilder	8 DUP(<0,0,0,0,0,0,0,0,0,0>)
 
 
+	ObjectOffset MACRO ID
+		MOV EAX, 40
+		MOV EBX, ID
+		MUL EBX
+		MOV EBX, EAX
+	ENDM
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;						;;;;
+;;;;	Getter / Setter 	;;;;
+;;;;						;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	GettingSoilderLV		MACRO	Object, ID, StoreTo
-		CopyFrom StoreTo, Object[ID*4].LV
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].LV
+		POPA
 		ENDM
 	SettingSoilderLV		MACRO	Object, ID, Number
-		CopyFrom Object[ID*4].LV, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom		Object[EBX].LV, Number
+		POPA
 		ENDM
 
 
 	GettingSoilderX		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].X
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].X
 		POPA
 		ENDM
 	SettingSoilderX		MACRO	Object, ID, Number
 		PUSHA
-			CopyFrom Object[ID*4].X, Number
+			ObjectOffset 	ID
+			CopyFrom		Object[EBX].X, Number
 		POPA
 		ENDM
 
@@ -81,124 +93,95 @@
 
 	GettingSoilderHP		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].HP
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].HP
 		POPA
 		ENDM
 	SettingSoilderHP		MACRO	Object, ID, Blood
 		PUSHA
-		CopyFrom  Object[ID*4].HP, Blood
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].HP, Blood
 		POPA
 		ENDM
 
 	GettingSoilderATK		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].ATK
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].ATK
 		POPA
 		ENDM
 	SettingSoilderATK		MACRO	Object, ID, Attack
 		PUSHA
-		CopyFrom  Object[ID*4].ATK, Attack
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].ATK, Attack
 		POPA
 		ENDM
 
 	GettingSoilderSPD		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].SPD
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].SPD
 		POPA
 		ENDM
 	SettingSoilderSPD		MACRO	Object, ID, Speeds
 		PUSHA
-		CopyFrom  Object[ID*4].SPD, Speeds
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].SPD, Speeds
 		POPA
 		ENDM
 
-	GettingSoilderKIND		MACRO	Object, ID, StoreTo
+	GettingSoilderArms		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].KIND
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].Arms
 		POPA
 		ENDM
-	SettingSoilderKIND		MACRO	Object, ID, Kinds
+	SettingSoilderArms		MACRO	Object, ID, Kinds
 		PUSHA
-		CopyFrom  Object[ID*4].KIND, Kinds
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].Arms, Kinds
+		POPA
+		ENDM
+	GettingSoilderLeague		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].League
+		POPA
+		ENDM
+	SettingSoilderLeague		MACRO	Object, ID, Kinds
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].League, Kinds
 		POPA
 		ENDM
 
 	GettingSoilderState		MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].State
+			ObjectOffset 	ID
+			CopyFrom		StoreTo, Object[EBX].State
 		POPA
 		ENDM
 	SettingSoilderState		MACRO	Object, ID, States
 		PUSHA
-			CopyFrom  Object[ID*4].State, States
-			DrawMonster  	50, Beats5x
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].State, States
 		POPA
 		ENDM
 
 	GettingSoilderAlive		MACRO	Object, ID, StoreTo
 		PUSHA
-			CopyFrom StoreTo, Object[ID*4].Alive
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].Alive
 		POPA
 		ENDM
 	SettingSoilderAlive		MACRO	Object, ID, SAlive
 		PUSHA
-			CopyFrom  Object[ID*4].Alive, SAlive
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].Alive, SAlive
 		POPA
 		ENDM
 
-
-	SoilderOn	MACRO Object, ID
-
-		.IF Object[ID*4].Alive == 1
-
-			DrawSoilder Object[ID*4].X, Beats2x
-			WriteD Object[ID*4].SPD
-		.ENDIF
-
-
-		ENDM
-
-	BuildUserSoilderA EQU <BuildSoilder UserSoilders, 1, 1>
-	BuildUserSoilderB EQU <BuildSoilder UserSoilders, 2, 1>
-	BuildUserSoilderC EQU <BuildSoilder UserSoilders, 3, 1>
-
-	BuildSoilder MACRO Object, Level, Speed
-		PUSHA
-			CALL FindUsableUserSoilder
-			.IF ECX < 9
-				SettingSoilderLV 	Object, ECX, Level
-				SettingSoilderX	 	Object, ECX, 20
-				SettingSoilderSPD	Object, ECX, Speed
-			.ENDIF
-		POPA
-		ENDM
-
-	MoveOnSoilders MACRO
-		CALL MoveOnUserSoilders
-		;CALL MoveOnCompSoilders
-		ENDM
 .Code
-
-	FindUsableUserSoilder PROC
-		LoopTimes 0
-		BS:
-			.IF UserSoilders[ECX*4].Alive == 0
-				CopyFrom UserSoilders[ECX*4].Alive, 1
-				RET
-			.ENDIF
-			NextInc	9, BS
-		RET
-	FindUsableUserSoilder ENDP
-	
-	MoveOnUserSoilders PROC
-		LoopTimes 0
-		MS:
-			.IF UserSoilders[ECX*4].Alive == 1
-				MOVE UserSoilders, ECX, UserSoilders[ECX*4].SPD, 0
-			.ENDIF
-			NextInc	16, MS
-		RET
-	MoveOnUserSoilders ENDP
 	
 	Init PROC
 		PUSHA
@@ -206,18 +189,9 @@
 			EACH:
 				SettingSoilderX 	UserSoilders, ECX, 0
 				SettingSoilderAlive UserSoilders, ECX, 0
+
 				NextInc	8, EACH
 		POPA
 		RET
 	Init ENDP
 
-
-	DrawingSoilders 	PROC
-		PUSHA
-			LoopTimes 0
-			DSs:
-				SoilderOn	UserSoilders, ECX
-				NextInc	8, DSs
-		POPA
-		RET
-	DrawingSoilders		ENDP
