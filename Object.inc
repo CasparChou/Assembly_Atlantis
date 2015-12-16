@@ -4,6 +4,7 @@
 	RegisterObjects	EQU <CALL Register>
 	DrawSoilders 	EQU <CALL DrawingSoilders>
 	Initial 	EQU <CALL Init>
+	
 
 	BuildUserSoilderA EQU <BuildSoilder UserSoilders, 0, 1, 1>
 	BuildUserSoilderB EQU <BuildSoilder UserSoilders, 0, 2, 1>
@@ -29,14 +30,7 @@
 		Alive		DWORD 0
 	Soilder ENDS
 
-	;UserSoilders	Soilder	<1,11,0,0,0,0,0,0,0>,
-	;						<2,12,0,0,0,0,0,0,0>,
-	;						<3,13,0,0,0,0,0,0,0>,
-	;						<4,14,0,0,0,0,0,0,0>,
-	;						<5,15,0,0,0,0,0,0,0>,
-	;						<6,16,0,0,0,0,0,0,0>,
-	;						<7,17,0,0,0,0,0,0,0>,
-	;						<8,18,0,0,0,0,0,0,0>
+
 	UserSoilders	Soilder	8 DUP(<0,0,0,0,0,0,0,0,0,0>)
 	CompSoilders	Soilder	8 DUP(<0,0,0,0,0,0,0,0,0,0>)
 

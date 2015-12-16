@@ -15,21 +15,23 @@
 
 .Code
 MAIN:
-	INVOKE		SetConsoleTitle, 	OFFSET AtlantisTitle
-	INVOKE		SetConsoleScreenBufferSize, 	EAX,	AtlantisSize
 
+	StartUp
 	LoopTimes 0FFFH
 	CLS
-	Initial
+	;Initial
 	DR:
 
 
 		Draw
 		KeyHandler
-		DumpList
-		;AnyKeyToContinue
-		PauseTime 1000
+		;DumpList
+		PauseTime 800
 		Clear
+
+		NL
+		NL
+		LoopTimes 0FFFH
 		NEXT DR
 ExitMain
 END MAIN
