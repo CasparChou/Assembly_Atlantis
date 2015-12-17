@@ -8,8 +8,8 @@
 		;DrawMonster  	50, Beats5x
 		;DrawMonster2 	70
 		DrawSoilders
-		DrawCastle	 	0
-		DrawCastle		100
+		DrawCastle	 	0, 0
+		DrawCastle		1, 98
 
 		ENDM
 
@@ -19,8 +19,20 @@
 		DefaultColor
 		Beats
 		MoveOnSoilders
+		LevelUpCheck
 		ENDM
 
+	LevelUpCheck MACRO
+		.IF( UserLevelUpFlag == 1)
+			INC UserCurrLevel
+			CopyFrom UserCurrLevel, 0
+		.ENDIF
+		.IF( CompLevelUpFlag == 1)
+			INC CompCurrLevel
+			CopyFrom CompCurrLevel, 0
+		.ENDIF
+
+		ENDM
 
 	GraphDisplay MACRO String
 			PUSH EDX
@@ -49,6 +61,13 @@
 				BuildCompSoilderB
 			.ELSEIF( AL == 'P' || AL == 'p')
 				BuildCompSoilderC
+
+
+			.ELSEIF( AL == 'Z' || AL == 'z')
+				CopyFrom UserLevelUpFlag, 1
+
+			.ELSEIF( AL == 'X' || AL == 'x')
+				CopyFrom CompLevelUpFlag, 1
 
 			.ENDIF
 		POPA
@@ -125,6 +144,7 @@
 						SettingSoilderX	 		UserSoilders, ECX, 20
 						SettingSoilderLeague	UserSoilders, ECX, 0
 						SettingSoilderSPD		UserSoilders, ECX, Speed
+						SettingSoilderLevel		UserSoilders, ECX, UserCurrLevel
 						RET
 					.ELSE
 						SettingSoilderAlive		UserSoilders, ECX, 1
@@ -141,6 +161,7 @@
 						SettingSoilderX	 		CompSoilders, ECX, 90
 						SettingSoilderLeague	CompSoilders, ECX, 1
 						SettingSoilderSPD		CompSoilders, ECX, Speed
+						SettingSoilderLevel		CompSoilders, ECX, CompCurrLevel
 						RET
 					.ELSE
 						SettingSoilderAlive		CompSoilders, ECX, 1
@@ -166,9 +187,9 @@
 				.IF (Object[EBX].Arms == 1) 
 					DrawSoilderA1 Object[EBX].X, Beats2x
 				.ELSEIF (Object[EBX].Arms == 2) 
-					DrawSoilderB1 Object[EBX].X, Beats2x
+					;DrawSoilderB Object[EBX].X, Beats2x
 				.ELSEIF (Object[EBX].Arms == 3) 
-					DrawSoilderC1 Object[EBX].X, Beats4x
+					;DrawSoilderC1 Object[EBX].X, Beats4x
 
 				.ENDIF
 			.ELSEIF (Object[EBX].League == 1) 
@@ -224,7 +245,8 @@
 		Write  09H
 	ENDM
 
-	TableHead DB 	"ID",		09H,
+	TableHead DB 	0AH,
+					"ID",		09H,
 					"HP",		09H,
 					"X",		09H,
 					"Y",		09H,
@@ -239,18 +261,12 @@
 .Code
 	DumpSoilderList		PROC
 		PUSHA
-			NL
-		
-				WriteS TableHead
-
+			WriteS TableHead
 			LoopTimes 0
 			DSs:
-
 				NL
 				WriteD ECX
-
-				DumpSoilder CompSoilders, ECX
-				
+				DumpSoilder UserSoilders, ECX
 				NextInc	8, DSs
 		POPA
 
