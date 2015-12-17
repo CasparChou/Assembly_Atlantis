@@ -3,7 +3,7 @@
 	
 	RegisterObjects	EQU <CALL Register>
 	DrawSoilders 	EQU <CALL DrawingSoilders>
-	Initial 	EQU <CALL Init>
+	Initial 		EQU <CALL Init>
 	
 
 	BuildUserSoilderA EQU <BuildSoilder UserSoilders, 0, 1, 1>
@@ -47,13 +47,13 @@
 ;;;;	Getter / Setter 	;;;;
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	GettingSoilderLV		MACRO	Object, ID, StoreTo
+	GettingSoilderLevel		MACRO	Object, ID, StoreTo
 		PUSHA
 			ObjectOffset 	ID
 			CopyFrom 		StoreTo, Object[EBX].LV
 		POPA
 		ENDM
-	SettingSoilderLV		MACRO	Object, ID, Number
+	SettingSoilderLevel		MACRO	Object, ID, Number
 		PUSHA
 			ObjectOffset 	ID
 			CopyFrom		Object[EBX].LV, Number

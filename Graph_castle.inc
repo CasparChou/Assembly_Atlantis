@@ -1,85 +1,139 @@
-;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
-;This is a file defined Castle .
-;
-;EXAMPLE
-;	BOX_1_1    DB     "¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i",0
-;	BOX_1_2    DB     "¢i¡@¢i¡@¡@¡@¢i¡@¢i",0
-;	BOX_1_3    DB     "¢i¡@¢i¢i¢i¢i¢i¢i¢i¢i¡@¢i",0
-;	BOX_1_4    DB     "¢i¡@¢i¡@¡@¡@¢i¡@¢i",0
-;	BOX_1_5    DB     "¢i¡@¢i¢i¢i¢i¢i¢i¢i¢i¡@¢i",0
-;	BOX_1_6    DB     "¢i¡@¢i¡@¡@¡@¢i¡@¢i",0
-;	BOX_1_7    DB     "¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i",0
-;
-;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
-
 .Data
 
+;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i      ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i      ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i        ¢i¢i¢i¢i¢i      ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
 
 
-	Castle_1_1    	DB     "      ¢i  ¢i      ",0
-	Castle_1_2    	DB     "    ¢i¢i¢i¢i¢i       ",0
-	Castle_1_3    	DB     "    ¢i¢«  ¢ª¢i    ",0
-	Castle_1_4    	DB     "    ¢i      ¢i    ",0
-	Castle_1_5    	DB     "¢d¢d¢i      ¢i¢d¢d",0
+
+	UserCastle_1_1    	DB     "       ¢i  ¢i       ",0
+	UserCastle_1_2    	DB     "     ¢i¢i¢i¢i¢i        ",0
+	UserCastle_1_3    	DB     "     ¢i¢«  ¢ª¢i     ",0
+	UserCastle_1_4    	DB     "     ¢i      ¢i     ",0
+	UserCastle_1_5    	DB     " ¢d¢d¢i      ¢i¢d¢d ",0
 	
-	Castle_2_1    	DB     "         ¢«    ",0
-	Castle_2_2    	DB     "         ¢k      ",0
-	Castle_2_3    	DB     "        ¢i        ",0
-	Castle_2_4    	DB     "      ¢i¢i¢i        ",0
-	Castle_2_5    	DB     "    ¢i¢i¢i¢i¢i        ",0
-	Castle_2_6    	DB     "    ¢i¢«  ¢ª¢i     ",0
-	Castle_2_7    	DB     "  ¢i¢i      ¢i¢i     ",0
-	Castle_2_8    	DB     "¢d¢i¢i      ¢i¢i¢d   ",0
+	UserCastle_2_1    	DB     "           ¢«     ",0
+	UserCastle_2_2    	DB     "           ¢k     ",0
+	UserCastle_2_3    	DB     "          ¢i       ",0
+	UserCastle_2_4    	DB     "        ¢i¢i¢i       ",0
+	UserCastle_2_5    	DB     "      ¢i¢i¢i¢i¢i       ",0
+	UserCastle_2_6    	DB     "      ¢i¢«  ¢ª¢i    ",0
+	UserCastle_2_7    	DB     "    ¢i¢i      ¢i¢i    ",0
+	UserCastle_2_8    	DB     "  ¢d¢i¢i      ¢i¢i¢d  ",0
 	
-	Castle_3_1 		DB	   "         ¢«      ",0
-	Castle_3_2 		DB	   "     ¢«  ¢k  ¢«  ",0
-	Castle_3_3 		DB	   "     ¢k ¡¶   ¢k   ",0
-	Castle_3_4 		DB	   "    ¡¶  ¢i  ¡¶      ",0
-	Castle_3_5 		DB	   "    ¢i¢i¢i¢i¢i        ",0
-	Castle_3_6 		DB	   "    ¢i¢i¢i¢i¢i        ",0
-	Castle_3_7 		DB	   "¡¶  ¢i¢«  ¢ª¢i  ¡¶   ",0
-	Castle_3_8 		DB	   "¢i¢i¢i      ¢i¢i¢i     ",0
-	Castle_3_9 		DB	   "¢i¢i¢i      ¢i¢i¢i     ",0
+	UserCastle_3_1 		DB	   "          ¢«     ",0
+	UserCastle_3_2 		DB	   "      ¢«  ¢k  ¢« ",0
+	UserCastle_3_3 		DB	   "      ¢k ¡¶   ¢k   	",0
+	UserCastle_3_4 		DB	   "     ¡¶  ¢i  ¡¶     ",0
+	UserCastle_3_5 		DB	   "     ¢i¢i¢i¢i¢i       ",0
+	UserCastle_3_6 		DB	   "     ¢i¢i¢i¢i¢i       ",0
+	UserCastle_3_7 		DB	   " ¡¶  ¢i¢«  ¢ª¢i  ¡¶    ",0
+	UserCastle_3_8 		DB	   " ¢i¢i¢i      ¢i¢i¢i    ",0
+	UserCastle_3_9 		DB	   " ¢i¢i¢i      ¢i¢i¢i    ",0
 
-	DrawCastle MACRO X
+	DrawUserCastle1 MACRO X
 
 		Translate X, 13
 
-		GraphDisplay Castle_1_1
-		GraphDisplay Castle_1_2
-		GraphDisplay Castle_1_3
-		GraphDisplay Castle_1_4
-		GraphDisplay Castle_1_5
+		GraphDisplay UserCastle_1_1
+		GraphDisplay UserCastle_1_2
+		GraphDisplay UserCastle_1_3
+		GraphDisplay UserCastle_1_4
+		GraphDisplay UserCastle_1_5
 
 		ENDM
 	
-	DrawCastle2 MACRO X
+	DrawUserCastle2 MACRO X
 
 		Translate X, 10
 
-		GraphDisplay Castle_2_1
-		GraphDisplay Castle_2_2
-		GraphDisplay Castle_2_3
-		GraphDisplay Castle_2_4
-		GraphDisplay Castle_2_5
-		GraphDisplay Castle_2_6
-		GraphDisplay Castle_2_7
-		GraphDisplay Castle_2_8
+		GraphDisplay UserCastle_2_1
+		GraphDisplay UserCastle_2_2
+		GraphDisplay UserCastle_2_3
+		GraphDisplay UserCastle_2_4
+		GraphDisplay UserCastle_2_5
+		GraphDisplay UserCastle_2_6
+		GraphDisplay UserCastle_2_7
+		GraphDisplay UserCastle_2_8
 
 		ENDM
 		
-	DrawCastle3 MACRO X
+	DrawUserCastle3 MACRO X
 	
 		Translate X, 9
 
-		GraphDisplay Castle_3_1
-		GraphDisplay Castle_3_2
-		GraphDisplay Castle_3_3
-		GraphDisplay Castle_3_4
-		GraphDisplay Castle_3_5
-		GraphDisplay Castle_3_6
-		GraphDisplay Castle_3_7
-		GraphDisplay Castle_3_8
-		GraphDisplay Castle_3_9
+		GraphDisplay UserCastle_3_1
+		GraphDisplay UserCastle_3_2
+		GraphDisplay UserCastle_3_3
+		GraphDisplay UserCastle_3_4
+		GraphDisplay UserCastle_3_5
+		GraphDisplay UserCastle_3_6
+		GraphDisplay UserCastle_3_7
+		GraphDisplay UserCastle_3_8
+		GraphDisplay UserCastle_3_9
+
+		ENDM
+	
+	
+;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i         ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i       ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+;¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i  ¢i¢i          ¢i¢i¢i
+;¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i¢i  ¢i¢i  ¢i¢i  ¢i¢i  ¢i¢i¢i
+;¢i¢i¢i¢i  ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i       ¢i¢i  ¢i¢i  ¢i¢i  ¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i         ¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i  ¢i¢i  ¢i¢i  ¢i¢i¢i
+;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	DrawCastle MACRO League, X 
+		MOV EAX,	League
+		.IF ( EAX == 0 )
+			.IF ( UserCurrLevel == 1)
+				DrawUserCastle1 X
+			.ELSEIF ( UserCurrLevel == 2)
+				DrawUserCastle2 X
+			.ELSEIF ( UserCurrLevel == 3)
+				DrawUserCastle3 X
+			.ENDIF
+		.ELSE
+			;.IF ( CompCurrLevel == 1)
+			;	DrawMonsterCastle1 X
+			;.ELSEIF ( CompCurrLevel == 2)
+			;	DrawMonsterCastle2 X
+			;.ELSEIF ( CompCurrLevel == 3)
+			;	DrawMonsterCastle3 X
+			;.ENDIF
+		.ENDIF	
 
 		ENDM

@@ -22,11 +22,11 @@ MAIN:
 	;Initial
 	DR:
 
-
 		Draw
 		KeyHandler
-		;DumpList
-		PauseTime 800
+		DumpList
+		PauseTime 1200
+
 		Clear
 
 		NL
