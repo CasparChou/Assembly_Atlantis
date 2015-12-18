@@ -16,6 +16,11 @@
 	User_Curr_Soilder DWORD ?
 	Comp_Curr_Soilder DWORD ?
 
+	UserCurrLevel 	DWORD	1
+	CompCurrLevel 	DWORD	1
+	UserLevelUpFlag	DWORD	0
+	CompLevelUpFlag	DWORD	0
+
 
 	Beats5x 	DWORD 	1
 	Beats4x 	DWORD 	1
