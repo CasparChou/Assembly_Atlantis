@@ -13,8 +13,8 @@
 
 	GetterHandler 	DWORD ?
 
-	User_Curr_Soilder DWORD ?
-	Comp_Curr_Soilder DWORD ?
+	User_Curr_Soldier DWORD ?
+	Comp_Curr_Soldier DWORD ?
 
 	UserCurrLevel 	DWORD	1
 	CompCurrLevel 	DWORD	1

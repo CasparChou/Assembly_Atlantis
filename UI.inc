@@ -2,3 +2,11 @@
 
 
 
+DisplayHP	MACRO
+
+
+
+	ENDM
+
+
+
