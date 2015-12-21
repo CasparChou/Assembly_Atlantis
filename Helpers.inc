@@ -16,79 +16,79 @@
 	;	CALL 	Gotoxy
 	;	MOV 	EDX,	EAX
 	;	ENDM
-	PrintAt  	MACRO X, Y, Code
-		PUSH	EAX
-			MOV 	EAX,	EDX
-			ADD  	 DL, BYTE PTR X
-			ADD  	 DH, BYTE PTR Y 
-			CALL 	Gotoxy
-			MOV 	EDX,	EAX
-		POP		EAX
-		Write   Code
-		ENDM
-	PrintAtCoord  	MACRO Coord, Index, Code
-		PUSH	EAX
-			MOV 	EAX,	EDX
-			ADD  	 DL, BYTE PTR Coord[Index*4].X
-			ADD  	 DH, BYTE PTR Coord[Index*4].Y 
-			CALL 	Gotoxy
-			MOV 	EDX,	EAX
-		POP		EAX
-		Write   Code
-		ENDM
-	DecAtCoord  	MACRO Coord, Index, Dec
-		PUSH	EAX
-			MOV 	EAX,	EDX
-			ADD  	 DL, BYTE PTR Coord[Index*4].X
-			ADD  	 DH, BYTE PTR Coord[Index*4].Y 
-			CALL 	Gotoxy
-			MOV 	EDX,	EAX
-		POP		EAX
-		MOV EAX, Dec
-		.IF	EAX < 10
-			WriteD  0
-			WriteD  Dec
-		.ELSE
-			WriteD 	Dec
-		.ENDIF
-		ENDM
-	WriteDAtCoord 	MACRO Coord, Dec
-			PUSH	EAX
-			MOV 	EAX,	EDX
-			ADD  	 DL, BYTE PTR Coord.X
-			ADD  	 DH, BYTE PTR Coord.Y 
-			CALL 	Gotoxy
-			MOV 	EDX,	EAX
-		POP		EAX
-		MOV EAX, Dec
-		.IF	EAX < 10
-			WriteD  0
-			WriteD  Dec
-		.ELSE
-			WriteD 	Dec
-		.ENDIF
-		ENDM
-
-	WriteSAtCoord 	MACRO Coord, String
-
-		PUSH EAX
-		PUSH ECX
-		PUSH ESI
-
-			MOV 	EAX,	EDX
-			ADD  	 DL, BYTE PTR Coord.X
-			ADD  	 DH, BYTE PTR Coord.Y 
-			CALL 	Gotoxy
-			MOV 	EDX,	EAX
-
-			MOV EDX, String
-			CALL WriteString
-
-		POP EAX
-		POP ECX
-		POP ESI
-
-		ENDM
+	;PrintAt  	MACRO X, Y, Code
+	;	PUSH	EAX
+	;		MOV 	EAX,	EDX
+	;		ADD  	 DL, BYTE PTR X
+	;		ADD  	 DH, BYTE PTR Y 
+	;		CALL 	Gotoxy
+	;		MOV 	EDX,	EAX
+	;	POP		EAX
+	;	Write   Code
+	;	ENDM
+	;PrintAtCoord  	MACRO Coord, Index, Code
+	;	PUSH	EAX
+	;		MOV 	EAX,	EDX
+	;		ADD  	 DL, BYTE PTR Coord[Index*4].X
+	;		ADD  	 DH, BYTE PTR Coord[Index*4].Y 
+	;		CALL 	Gotoxy
+	;		MOV 	EDX,	EAX
+	;	POP		EAX
+	;	Write   Code
+	;	ENDM
+	;DecAtCoord  	MACRO Coord, Index, Dec
+	;	PUSH	EAX
+	;		MOV 	EAX,	EDX
+	;		ADD  	 DL, BYTE PTR Coord[Index*4].X
+	;		ADD  	 DH, BYTE PTR Coord[Index*4].Y 
+	;		CALL 	Gotoxy
+	;		MOV 	EDX,	EAX
+	;	POP		EAX
+	;	MOV EAX, Dec
+	;	.IF	EAX < 10
+	;		WriteD  0
+	;		WriteD  Dec
+	;	.ELSE
+	;		WriteD 	Dec
+	;	.ENDIF
+	;	ENDM
+	;WriteDAtCoord 	MACRO Coord, Dec
+	;		PUSH	EAX
+	;		MOV 	EAX,	EDX
+	;		ADD  	 DL, BYTE PTR Coord.X
+	;		ADD  	 DH, BYTE PTR Coord.Y 
+	;		CALL 	Gotoxy
+	;		MOV 	EDX,	EAX
+	;	POP		EAX
+	;	MOV EAX, Dec
+	;	.IF	EAX < 10
+	;		WriteD  0
+	;		WriteD  Dec
+	;	.ELSE
+	;		WriteD 	Dec
+	;	.ENDIF
+	;	ENDM
+;
+	;WriteSAtCoord 	MACRO Coord, String
+;
+	;	PUSH EAX
+	;	PUSH ECX
+	;	PUSH ESI
+;
+	;		MOV 	EAX,	EDX
+	;		ADD  	 DL, BYTE PTR Coord.X
+	;		ADD  	 DH, BYTE PTR Coord.Y 
+	;		CALL 	Gotoxy
+	;		MOV 	EDX,	EAX
+;
+	;		MOV EDX, String
+	;		CALL WriteString
+;
+	;	POP EAX
+	;	POP ECX
+	;	POP ESI
+;
+;		ENDM
 
 	SettingColor MACRO Color
 		.IF( ClearOn == 0)

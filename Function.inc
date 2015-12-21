@@ -6,7 +6,7 @@
 		DrawCastle	 	0, 0
 		DrawCastle		1, 103
 		DrawSoldiers
-		DrawInfo
+		;DrawInfo
 		ENDM
 
 	Clear MACRO
@@ -90,7 +90,11 @@
 .Data
 	MOVE MACRO Object, ID, AddX, AddY
 		ObjectOffset ID
-		AddBy Object[EBX].X, AddX
+		.IF Object[EBX].League == 0
+			INC Object[EBX].X
+		.ELSE
+			DEC Object[EBX].X
+		.ENDIF
 		AddBy Object[EBX].Y, AddY
 		ENDM
 	MoveOnSoldiers MACRO
@@ -103,7 +107,7 @@
 		MS:
 			ObjectOffset ECX
 			.IF UserSoldiers[EBX].Alive == 1
-				MOVE UserSoldiers, ECX, UserSoldiers[EBX].SPD, 0
+				MOVE UserSoldiers, ECX, 1, 0
 			.ENDIF
 			NextInc	16, MS
 		RET
@@ -113,7 +117,7 @@
 		MS:
 			ObjectOffset ECX
 			.IF CompSoldiers[EBX].Alive == 1
-				MOVE CompSoldiers, ECX, CompSoldiers[EBX].SPD, 0
+				MOVE CompSoldiers, ECX, -1, 0
 			.ENDIF
 			NextInc	16, MS
 		RET
@@ -129,11 +133,11 @@
 .Data
 	BuildSoldier MACRO Object, League, Arms, Speed
 		PUSHA
-			INVOKE FindUsableSoldier, League, Arms, Speed
+			INVOKE FindUsableSoldier, League, Arms
 		POPA
 		ENDM
 .Code	
-	FindUsableSoldier PROC, League:DWORD, Arms:DWORD, Speed:DWORD
+	FindUsableSoldier PROC, League:DWORD, Arms:DWORD
 		PUSHA
 				;WriteD League
 				;AnyKeyToContinue
@@ -147,11 +151,10 @@
 						SettingSoldierArms 		UserSoldiers, ECX, Arms
 						SettingSoldierX	 		UserSoldiers, ECX, 20
 						SettingSoldierLeague	UserSoldiers, ECX, 0
-						SettingSoldierSPD		UserSoldiers, ECX, Speed
 						SettingSoldierLevel		UserSoldiers, ECX, UserCurrLevel
-
-						SettingSoldierSize		UserSoldiers, ECX
-						
+						SettingSoldierInitialHP	UserSoldiers, ECX
+						SettingSoldierAttack	UserSoldiers, ECX
+						;SettingSoldierSize		UserSoldiers, ECX
 						POPA
 						RET
 					.ENDIF
@@ -165,10 +168,10 @@
 						SettingSoldierArms 		CompSoldiers, ECX, Arms
 						SettingSoldierX	 		CompSoldiers, ECX, 90
 						SettingSoldierLeague	CompSoldiers, ECX, 1
-						SettingSoldierSPD		CompSoldiers, ECX, Speed
 						SettingSoldierLevel		CompSoldiers, ECX, CompCurrLevel
-
-						SettingSoldierSize		CompSoldiers, ECX
+						SettingSoldierInitialHP	CompSoldiers, ECX
+						SettingSoldierAttack	CompSoldiers, ECX
+						;SettingSoldierSize		CompSoldiers, ECX
 						POPA
 						RET
 					.ENDIF
@@ -209,8 +212,10 @@
 				.ENDIF
 
 			.ENDIF
-			;WriteD MonsterWidth[((Object[EBX].LV-1)*4)+((Object[EBX].Arms-1)*12)]
+			;WriteD MonsterWidth[((Object[EBX].Level-1)*4)+((Object[EBX].Arms-1)*12)]
 			;WriteD ID
+			GettingSoldierWidth Object, ID, GetterHandler
+			WriteD GetterHandler
 		.ENDIF
 		ENDM
 .Code
@@ -243,23 +248,21 @@
 		WriteD	Object[EBX].X
 		Write  09H
 		WriteD	Object[EBX].Y
-		Write  09H
-		WriteD	Object[EBX].SWidth
-		Write  09H
-		WriteD	Object[EBX].SHeight
+		;Write  09H
+		;WriteD	Object[EBX].SWidth
+		;Write  09H
+		;WriteD	Object[EBX].SHeight
 		Write  09H
 		WriteD	Object[EBX].ATK
 		Write  09H
-		WriteI	Object[EBX].SPD
-		Write  09H
-		WriteD	Object[EBX].LV
+		WriteD	Object[EBX].Level
 		Write  09H
 		WriteD	Object[EBX].ARMS
 		Write  09H
 		WriteD	Object[EBX].League
 		Write  09H
-		WriteD	Object[EBX].State
-		Write  09H
+		;WriteD	Object[EBX].State
+		;Write  09H
 		WriteD	Object[EBX].Alive
 		Write  09H
 	ENDM
@@ -269,14 +272,10 @@
 					"HP",		09H,
 					"X",		09H,
 					"Y",		09H,
-					"W",		09H,
-					"H",		09H,
 					"ATK",		09H,
-					"SPD",		09H,
-					"LV",		09H,
+					"Level",	09H,
 					"AR",		09H,
 					"Leag",		09H,
-					"State",	09H,
 					"Alive",	09H, 0
 
 .Code
@@ -287,7 +286,7 @@
 			DSs:
 				NL
 				WriteD ECX
-				DumpSoldier UserSoldiers, ECX
+				DumpSoldier CompSoldiers, ECX
 				NextInc	8, DSs
 		POPA
 

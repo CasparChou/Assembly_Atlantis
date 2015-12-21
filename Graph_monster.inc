@@ -16,11 +16,11 @@
 
 	DrawMonsterA	MACRO	Object, Fram
 		
-		.IF ( Object.LV == 1)
+		.IF ( Object.Level == 1)
 			DrawMonsterA1 Object.X, Fram
-		.ELSEIF ( Object.LV == 2)
+		.ELSEIF ( Object.Level == 2)
 			DrawMonsterA2 Object.X, Fram
-		.ELSEIF ( Object.LV == 3)
+		.ELSEIF ( Object.Level == 3)
 			DrawMonsterA3 Object.X, Fram
 		.ENDIF
 		
@@ -123,11 +123,11 @@
 
 	DrawMonsterB	MACRO	Object, Fram
 		
-		.IF ( Object.LV == 1)
+		.IF ( Object.Level == 1)
 			DrawMonsterB1 Object.X, Fram
-		.ELSEIF ( Object.LV == 2)
+		.ELSEIF ( Object.Level == 2)
 			DrawMonsterB2 Object.X, Fram
-		.ELSEIF ( Object.LV == 3)
+		.ELSEIF ( Object.Level == 3)
 			DrawMonsterB3 Object.X, Fram
 		.ENDIF
 		
@@ -273,11 +273,11 @@
 
 	DrawMonsterC	MACRO	Object, Fram
 		
-		.IF ( Object.LV == 1)
+		.IF ( Object.Level == 1)
 			DrawMonsterC1 Object.X, Fram
-		.ELSEIF ( Object.LV == 2)
+		.ELSEIF ( Object.Level == 2)
 			DrawMonsterC2 Object.X
-		.ELSEIF ( Object.LV == 3)
+		.ELSEIF ( Object.Level == 3)
 			DrawMonsterC3 Object.X, Fram
 		.ENDIF
 		

@@ -14,6 +14,8 @@
 	INCLUDE	Object.inc
 	INCLUDE	Function.inc
 
+	INCLUDE	AI.inc
+
 .Code
 MAIN:
 
@@ -23,11 +25,13 @@ MAIN:
 	;Initial
 	DR:
 
-
 		DrawPanel
 		Draw
+		AI
 		KeyHandler
-		;DumpList
+		DumpList
+		Translate 15, 2
+		WriteD Timer1
 		PauseTime 800
 
 		Clear
