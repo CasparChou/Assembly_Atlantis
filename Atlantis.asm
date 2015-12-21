@@ -4,6 +4,7 @@
 	INCLUDE	Helpers.inc
 
 	INCLUDE	UI.inc
+	INCLUDE	Graph_UI.inc
 	INCLUDE	Graph_castle.inc
 	INCLUDE	Graph_soldier.inc
 	INCLUDE	Graph_turret.inc
@@ -12,6 +13,8 @@
 	INCLUDE	Status.inc
 	INCLUDE	Object.inc
 	INCLUDE	Function.inc
+
+	INCLUDE	AI.inc
 
 .Code
 MAIN:
@@ -22,16 +25,21 @@ MAIN:
 	;Initial
 	DR:
 
-
+		DrawPanel
 		Draw
+		AI
 		KeyHandler
-		;DumpList
+		DumpList
+		Translate 15, 2
+		WriteD Timer1
 		PauseTime 800
 
 		Clear
 
-		NL
-		NL
+		Beats
+		MoveOnSoldiers
+		LevelUpCheck
+
 		LoopTimes 0FFFH
 		NEXT DR
 ExitMain

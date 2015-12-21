@@ -18,11 +18,11 @@
 
 	DrawSoldierA	MACRO Object, Fram
 	
-		.IF ( Object.LV == 1)
+		.IF ( Object.Level == 1)
 			DrawSoldierA1 Object.X, Fram
-		.ELSEIF ( Object.LV == 2)
+		.ELSEIF ( Object.Level == 2)
 			DrawSoldierA2 Object.X, Fram
-		.ELSEIF ( Object.LV == 3)
+		.ELSEIF ( Object.Level == 3)
 			DrawSoldierA3 Object.X, Fram
 		.ENDIF
 		
@@ -115,11 +115,11 @@
 
 	DrawSoldierB	MACRO Object, Fram
 	
-		.IF ( Object.LV == 1)
+		.IF ( Object.Level == 1)
 			DrawSoldierB1 Object.X, Fram
-		.ELSEIF ( Object.LV == 2)
+		.ELSEIF ( Object.Level == 2)
 			DrawSoldierB2 Object.X, Fram
-		.ELSEIF ( Object.LV == 3)
+		.ELSEIF ( Object.Level == 3)
 			DrawSoldierB3 Object.X, Fram
 		.ENDIF
 		
@@ -230,11 +230,11 @@
 
 
 	DrawSoldierC	MACRO Object, Fram
-		.IF ( Object.LV == 1)
+		.IF ( Object.Level == 1)
 			DrawSoldierC1 Object.X, Fram
-		.ELSEIF ( Object.LV == 2)
+		.ELSEIF ( Object.Level == 2)
 			DrawSoldierC2 Object.X, Fram
-		.ELSEIF ( Object.LV == 3)
+		.ELSEIF ( Object.Level == 3)
 			DrawSoldierC3 Object.X, Fram
 		.ENDIF
 		

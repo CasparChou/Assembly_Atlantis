@@ -19,27 +19,44 @@
 		HP			DWORD 0
 		X			DWORD 0
 		Y 			DWORD 0
-		SWidth		DWORD 0
-		SHeight		DWORD 0
 		ATK			DWORD 0
 
-		SPD			DWORD 0
-		LV			DWORD 0
+		Level		DWORD 0
 		Arms		DWORD 0
 		League		DWORD 0
-		State		DWORD 0
 
 		Alive		DWORD 0
 	Soldier ENDS
 
 
-	UserSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0,0,0,0>)
-	CompSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0,0,0,0>)
+	UserSoldiers	Soldier	8 DUP(<0,0,0,0,0,0>)
+	CompSoldiers	Soldier	8 DUP(<0,0,0,0,0,0>)
 
 	
-	SoilderHeight	DWORD	3, 4, 4,
-							3, 3, 3,
-							3, 4, 5
+	UserSoldier_Height	DWORD	3, 4, 4,	;A
+								3, 3, 3,	;B
+								3, 4, 5		;C
+
+	UserSoldier_Width	DWORD	3, 4, 4,	;A
+								3, 3, 3,	;B
+								3, 4, 5		;C
+
+	CompSoldier_Height	DWORD	4, 4, 6,	;A
+								3, 5, 5,	;B
+								2, 5, 6		;C
+
+	CompSoldier_Width	DWORD	3, 4, 4,	;A
+								3, 3, 3,	;B
+								3, 4, 5		;C
+
+
+	Soldier_HP			DWORD	4, 6, 8,	;A
+								3, 4, 5,	;B
+								5, 8, 11	;C
+
+	Soldier_Attack		DWORD	2, 4, 6,	;A
+								3, 6, 9,	;B
+								1, 2, 3		;C
 
 
 	ObjectOffset MACRO ID
@@ -57,16 +74,15 @@
 	GettingSoldierLevel		MACRO	Object, ID, StoreTo
 		PUSHA
 			ObjectOffset 	ID
-			CopyFrom 		StoreTo, Object[EBX].LV
+			CopyFrom 		StoreTo, Object[EBX].Level
 		POPA
 		ENDM
 	SettingSoldierLevel		MACRO	Object, ID, Number
 		PUSHA
 			ObjectOffset 	ID
-			CopyFrom		Object[EBX].LV, Number
+			CopyFrom		Object[EBX].Level, Number
 		POPA
 		ENDM
-
 
 	GettingSoldierX		MACRO	Object, ID, StoreTo
 		PUSHA
@@ -93,42 +109,62 @@
 			CopyFrom  		Object[EBX].Y, Number
 		POPA
 		ENDM
+;
+;
+	;GettingSoldierHeight	MACRO	Object, ID, StoreTo
+	;	PUSHA
+	;		ObjectOffset 	ID
+	;		CopyFrom 		StoreTo, Object[EBX].SHeight
+	;	POPA
+	;	ENDM
+	;SettingSoldierHeight	MACRO	Object, ID, Number
+	;	PUSHA
+	;		ObjectOffset 	ID
+	;		CopyFrom  		Object[EBX].SHeight, Number
+	;	POPA
+	;	ENDM
+;
+;
+	CounterSoldierOffset	MACRO Object
+		MOV EAX, Object[EBX].Arms
+		DEC EAX
+		MOV EDX, 12
+		MUL EDX
+		MOV EDX, EAX
+		MOV EAX, Object[EBX].Level
+		DEC EAX
+		SHL EAX, 2
+		ADD EAX, EDX
+				; 0 	12	24
+				; 0		0	0
+				
+				; 0 	12	24
+				; 4		4	4
 
-
+				; 0 	12	24
+				; 8		8	8
+		ENDM
 	GettingSoldierHeight	MACRO	Object, ID, StoreTo
 		PUSHA
 			ObjectOffset 	ID
-			CopyFrom 		StoreTo, Object[EBX].SHeight
+			.IF( Object[EBX].League == 0)
+				CopyFrom StoreTo, UserSoldier_Height[EAX]
+			.ELSE
+				CopyFrom StoreTo, CompSoldier_Height[EAX]
+			.ENDIF
 		POPA
 		ENDM
-	SettingSoldierHeight	MACRO	Object, ID, Number
-		PUSHA
-			ObjectOffset 	ID
-			CopyFrom  		Object[EBX].SHeight, Number
-		POPA
-		ENDM
-
-
 	GettingSoldierWidth		MACRO	Object, ID, StoreTo
 		PUSHA
 			ObjectOffset 	ID
-			CopyFrom 		StoreTo, Object[EBX].SWidth
+			CounterSoldierOffset Object
+			.IF( Object[EBX].League == 0)
+				CopyFrom StoreTo, UserSoldier_Width[EAX]
+			.ELSE
+				CopyFrom StoreTo, CompSoldier_Width[EAX]
+			.ENDIF
 		POPA
 		ENDM
-	SettingSoldierWidth		MACRO	Object, ID, Number
-		PUSHA
-			ObjectOffset 	ID
-			CopyFrom  		Object[EBX].SWidth, Number
-		POPA
-		ENDM
-
-	;SettingSoliderSize		MACRO	Object,	ObjectID, League, Arms, Level
-	;	PUSHA
-	;		SettingSoliderWidth		UserSoldiers, ObjectID, EBX
-	;		SettingSoliderHeight	UserSoldiers, ObjectID, SoilderHeight[]		
-	;	POPA
-	;	ENDM
-
 
 	GettingSoldierHP		MACRO	Object, ID, StoreTo
 		PUSHA
@@ -142,30 +178,26 @@
 			CopyFrom  		Object[EBX].HP, Blood
 		POPA
 		ENDM
-
-	GettingSoldierATK		MACRO	Object, ID, StoreTo
+	SettingSoldierInitialHP		MACRO	Object, ID
 		PUSHA
 			ObjectOffset 	ID
-			CopyFrom 		StoreTo, Object[EBX].ATK
-		POPA
-		ENDM
-	SettingSoldierATK		MACRO	Object, ID, Attack
-		PUSHA
-			ObjectOffset 	ID
-			CopyFrom  		Object[EBX].ATK, Attack
+			CounterSoldierOffset Object
+			CopyFrom 		Object[EBX].HP, Soldier_HP[EAX]
 		POPA
 		ENDM
 
-	GettingSoldierSPD		MACRO	Object, ID, StoreTo
+	GettingSoldierAttack	MACRO	Object, ID
 		PUSHA
 			ObjectOffset 	ID
-			CopyFrom 		StoreTo, Object[EBX].SPD
+			CounterSoldierOffset Object
+			CopyFrom 		StoreTo, Soldier_Attack[EAX]
 		POPA
 		ENDM
-	SettingSoldierSPD		MACRO	Object, ID, Speeds
+	SettingSoldierAttack	MACRO	Object, ID
 		PUSHA
 			ObjectOffset 	ID
-			CopyFrom  		Object[EBX].SPD, Speeds
+			CounterSoldierOffset Object
+			CopyFrom 		Object[EBX].ATK, Soldier_Attack[EAX]
 		POPA
 		ENDM
 
@@ -191,19 +223,6 @@
 		PUSHA
 			ObjectOffset 	ID
 			CopyFrom  		Object[EBX].League, Kinds
-		POPA
-		ENDM
-
-	GettingSoldierState		MACRO	Object, ID, StoreTo
-		PUSHA
-			ObjectOffset 	ID
-			CopyFrom		StoreTo, Object[EBX].State
-		POPA
-		ENDM
-	SettingSoldierState		MACRO	Object, ID, States
-		PUSHA
-			ObjectOffset 	ID
-			CopyFrom  		Object[EBX].State, States
 		POPA
 		ENDM
 

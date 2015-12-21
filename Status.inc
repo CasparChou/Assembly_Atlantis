@@ -11,6 +11,7 @@
 		AnyKeyToContinue
 	ENDM
 
+	SetterBuffer 	DWORD ?
 	GetterHandler 	DWORD ?
 
 	User_Curr_Soldier DWORD ?
@@ -43,6 +44,15 @@
 			CopyFrom Beats4x, 1
 		.ENDIF
 		.IF Beats5x == 6
+			INC Timer1
 			CopyFrom Beats5x, 1
 		.ENDIF
 	ENDM
+
+
+	ClearOn 	DWORD 0
+	KeyPress 	DWORD 0
+
+
+
+	Timer1		DWORD 0

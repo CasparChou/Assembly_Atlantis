@@ -3,24 +3,19 @@
 	
 	Draw MACRO
 
-		;DrawTurrent  10,14
-		;DrawSolider 	20, Beats2x
-		;DrawMonster  	50, Beats5x
-		;DrawMonster2 	70
-		DrawSoldiers
 		DrawCastle	 	0, 0
-		DrawCastle		1, 98
-		;DrawUserCastle2 0
-		;WriteD UserCurrLevel
+		DrawCastle		1, 103
+		DrawSoldiers
+		;DrawInfo
 		ENDM
 
 	Clear MACRO
 		SettingColor 	Black
+		CopyFrom		ClearOn, 1
 		Draw
 		DefaultColor
-		Beats
-		MoveOnSoldiers
-		LevelUpCheck
+		CopyFrom		ClearOn, 0
+		;CopyFrom 		KeyPress, 0
 		ENDM
 
 	LevelUpCheck MACRO
@@ -49,10 +44,16 @@
 			MOV EAX, 0
 			Call ReadKey
 			.IF( AL == 'Q' || AL == 'q' )
+				CopyFrom KeyPress, 1
+				;BuildUserSoldierBufferTime
 				BuildUserSoldierA
 			.ELSEIF( AL == 'W' || AL == 'w')
+				CopyFrom KeyPress, 2
+				;BuildUserSoldierBufferTime
 				BuildUserSoldierB
 			.ELSEIF( AL == 'E' || AL == 'e')
+				CopyFrom KeyPress, 3
+				;BuildUserSoldierBufferTime
 				BuildUserSoldierC
 
 
@@ -65,11 +66,13 @@
 
 
 			.ELSEIF( AL == 'Z' || AL == 'z')
-				CopyFrom UserLevelUpFlag, 1
-
+				.IF( UserCurrLevel < 3)
+					CopyFrom UserLevelUpFlag, 1
+				.ENDIF
 			.ELSEIF( AL == 'X' || AL == 'x')
-				CopyFrom CompLevelUpFlag, 1
-
+				.IF( CompCurrLevel < 3)
+					CopyFrom CompLevelUpFlag, 1
+				.ENDIF
 			.ENDIF
 		POPA
 		ENDM
@@ -87,7 +90,11 @@
 .Data
 	MOVE MACRO Object, ID, AddX, AddY
 		ObjectOffset ID
-		AddBy Object[EBX].X, AddX
+		.IF Object[EBX].League == 0
+			INC Object[EBX].X
+		.ELSE
+			DEC Object[EBX].X
+		.ENDIF
 		AddBy Object[EBX].Y, AddY
 		ENDM
 	MoveOnSoldiers MACRO
@@ -100,7 +107,7 @@
 		MS:
 			ObjectOffset ECX
 			.IF UserSoldiers[EBX].Alive == 1
-				MOVE UserSoldiers, ECX, UserSoldiers[EBX].SPD, 0
+				MOVE UserSoldiers, ECX, 1, 0
 			.ENDIF
 			NextInc	16, MS
 		RET
@@ -110,7 +117,7 @@
 		MS:
 			ObjectOffset ECX
 			.IF CompSoldiers[EBX].Alive == 1
-				MOVE CompSoldiers, ECX, CompSoldiers[EBX].SPD, 0
+				MOVE CompSoldiers, ECX, -1, 0
 			.ENDIF
 			NextInc	16, MS
 		RET
@@ -126,11 +133,11 @@
 .Data
 	BuildSoldier MACRO Object, League, Arms, Speed
 		PUSHA
-			INVOKE FindUsableSoldier, League, Arms, Speed
+			INVOKE FindUsableSoldier, League, Arms
 		POPA
 		ENDM
 .Code	
-	FindUsableSoldier PROC, League:DWORD, Arms:DWORD, Speed:DWORD
+	FindUsableSoldier PROC, League:DWORD, Arms:DWORD
 		PUSHA
 				;WriteD League
 				;AnyKeyToContinue
@@ -144,11 +151,10 @@
 						SettingSoldierArms 		UserSoldiers, ECX, Arms
 						SettingSoldierX	 		UserSoldiers, ECX, 20
 						SettingSoldierLeague	UserSoldiers, ECX, 0
-						SettingSoldierSPD		UserSoldiers, ECX, Speed
 						SettingSoldierLevel		UserSoldiers, ECX, UserCurrLevel
-
-						;SettingSoliderSize		UserSoldiers, ECX, 0, Arms, UserCurrLevel
-						
+						SettingSoldierInitialHP	UserSoldiers, ECX
+						SettingSoldierAttack	UserSoldiers, ECX
+						;SettingSoldierSize		UserSoldiers, ECX
 						POPA
 						RET
 					.ENDIF
@@ -162,10 +168,10 @@
 						SettingSoldierArms 		CompSoldiers, ECX, Arms
 						SettingSoldierX	 		CompSoldiers, ECX, 90
 						SettingSoldierLeague	CompSoldiers, ECX, 1
-						SettingSoldierSPD		CompSoldiers, ECX, Speed
 						SettingSoldierLevel		CompSoldiers, ECX, CompCurrLevel
-
-						;SettingSoliderSize		UserSoldiers, ECX, 1, Arms, UserCurrLevel
+						SettingSoldierInitialHP	CompSoldiers, ECX
+						SettingSoldierAttack	CompSoldiers, ECX
+						;SettingSoldierSize		CompSoldiers, ECX
 						POPA
 						RET
 					.ENDIF
@@ -206,7 +212,10 @@
 				.ENDIF
 
 			.ENDIF
+			;WriteD MonsterWidth[((Object[EBX].Level-1)*4)+((Object[EBX].Arms-1)*12)]
 			;WriteD ID
+			GettingSoldierWidth Object, ID, GetterHandler
+			WriteD GetterHandler
 		.ENDIF
 		ENDM
 .Code
@@ -239,19 +248,21 @@
 		WriteD	Object[EBX].X
 		Write  09H
 		WriteD	Object[EBX].Y
+		;Write  09H
+		;WriteD	Object[EBX].SWidth
+		;Write  09H
+		;WriteD	Object[EBX].SHeight
 		Write  09H
 		WriteD	Object[EBX].ATK
 		Write  09H
-		WriteI	Object[EBX].SPD
-		Write  09H
-		WriteD	Object[EBX].LV
+		WriteD	Object[EBX].Level
 		Write  09H
 		WriteD	Object[EBX].ARMS
 		Write  09H
 		WriteD	Object[EBX].League
 		Write  09H
-		WriteD	Object[EBX].State
-		Write  09H
+		;WriteD	Object[EBX].State
+		;Write  09H
 		WriteD	Object[EBX].Alive
 		Write  09H
 	ENDM
@@ -262,11 +273,9 @@
 					"X",		09H,
 					"Y",		09H,
 					"ATK",		09H,
-					"SPD",		09H,
-					"LV",		09H,
+					"Level",	09H,
 					"AR",		09H,
 					"Leag",		09H,
-					"State",	09H,
 					"Alive",	09H, 0
 
 .Code
