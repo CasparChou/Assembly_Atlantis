@@ -3,24 +3,19 @@
 	
 	Draw MACRO
 
-		;DrawTurrent  10,14
-		;DrawSolider 	20, Beats2x
-		;DrawMonster  	50, Beats5x
-		;DrawMonster2 	70
-		DrawSoldiers
 		DrawCastle	 	0, 0
-		DrawCastle		1, 98
-		;DrawUserCastle2 0
-		;WriteD UserCurrLevel
+		DrawCastle		1, 103
+		DrawSoldiers
+		DrawInfo
 		ENDM
 
 	Clear MACRO
 		SettingColor 	Black
+		CopyFrom		ClearOn, 1
 		Draw
 		DefaultColor
-		Beats
-		MoveOnSoldiers
-		LevelUpCheck
+		CopyFrom		ClearOn, 0
+		;CopyFrom 		KeyPress, 0
 		ENDM
 
 	LevelUpCheck MACRO
@@ -49,10 +44,16 @@
 			MOV EAX, 0
 			Call ReadKey
 			.IF( AL == 'Q' || AL == 'q' )
+				CopyFrom KeyPress, 1
+				;BuildUserSoldierBufferTime
 				BuildUserSoldierA
 			.ELSEIF( AL == 'W' || AL == 'w')
+				CopyFrom KeyPress, 2
+				;BuildUserSoldierBufferTime
 				BuildUserSoldierB
 			.ELSEIF( AL == 'E' || AL == 'e')
+				CopyFrom KeyPress, 3
+				;BuildUserSoldierBufferTime
 				BuildUserSoldierC
 
 
@@ -65,11 +66,13 @@
 
 
 			.ELSEIF( AL == 'Z' || AL == 'z')
-				CopyFrom UserLevelUpFlag, 1
-
+				.IF( UserCurrLevel < 3)
+					CopyFrom UserLevelUpFlag, 1
+				.ENDIF
 			.ELSEIF( AL == 'X' || AL == 'x')
-				CopyFrom CompLevelUpFlag, 1
-
+				.IF( CompCurrLevel < 3)
+					CopyFrom CompLevelUpFlag, 1
+				.ENDIF
 			.ENDIF
 		POPA
 		ENDM
@@ -147,7 +150,7 @@
 						SettingSoldierSPD		UserSoldiers, ECX, Speed
 						SettingSoldierLevel		UserSoldiers, ECX, UserCurrLevel
 
-						;SettingSoliderSize		UserSoldiers, ECX, 0, Arms, UserCurrLevel
+						SettingSoldierSize		UserSoldiers, ECX
 						
 						POPA
 						RET
@@ -165,7 +168,7 @@
 						SettingSoldierSPD		CompSoldiers, ECX, Speed
 						SettingSoldierLevel		CompSoldiers, ECX, CompCurrLevel
 
-						;SettingSoliderSize		UserSoldiers, ECX, 1, Arms, UserCurrLevel
+						SettingSoldierSize		CompSoldiers, ECX
 						POPA
 						RET
 					.ENDIF
@@ -206,6 +209,7 @@
 				.ENDIF
 
 			.ENDIF
+			;WriteD MonsterWidth[((Object[EBX].LV-1)*4)+((Object[EBX].Arms-1)*12)]
 			;WriteD ID
 		.ENDIF
 		ENDM
@@ -240,6 +244,10 @@
 		Write  09H
 		WriteD	Object[EBX].Y
 		Write  09H
+		WriteD	Object[EBX].SWidth
+		Write  09H
+		WriteD	Object[EBX].SHeight
+		Write  09H
 		WriteD	Object[EBX].ATK
 		Write  09H
 		WriteI	Object[EBX].SPD
@@ -261,6 +269,8 @@
 					"HP",		09H,
 					"X",		09H,
 					"Y",		09H,
+					"W",		09H,
+					"H",		09H,
 					"ATK",		09H,
 					"SPD",		09H,
 					"LV",		09H,
@@ -277,7 +287,7 @@
 			DSs:
 				NL
 				WriteD ECX
-				DumpSoldier CompSoldiers, ECX
+				DumpSoldier UserSoldiers, ECX
 				NextInc	8, DSs
 		POPA
 

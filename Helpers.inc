@@ -91,10 +91,12 @@
 		ENDM
 
 	SettingColor MACRO Color
-		PUSH 	EAX
-			MOV 	EAX, Color
-			CALL	SetTextColor
-		POP 	EAX
+		.IF( ClearOn == 0)
+			PUSH 	EAX
+				MOV 	EAX, Color
+				CALL	SetTextColor
+			POP 	EAX
+		.ENDIF
 		ENDM
 	DefaultColor MACRO
 		PUSH 	EAX
@@ -235,6 +237,14 @@
 		POP 	ECX
 	ENDM
 
+	ResetReg	MACRO
+		MOV EAX, 0h
+		MOV EBX, 0h
+		MOV ECX, 0h
+		MOV EDX, 0h
+		MOV ESI, 0h
+		MOV EDI, 0h
+		ENDM
 	NL	 EQU <Write 0AH>
 	Dump EQU <CALL DumpRegs>	
 	CLS  EQU <CALL 	ClrScr>	

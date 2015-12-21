@@ -29,7 +29,7 @@
 
 
 
-	MonsterA1_1_1 		DB 		" ¢¬¢­" ,0
+	MonsterA1_1_1 		DB 		" ¢¬¢­ " ,0
 	MonsterA1_1_2 		DB 		"¡ü¡ü¡ü   "	,0
 	MonsterA1_1_3 		DB 		"ùõ¡óù÷ " ,0
 	MonsterA1_1_4 		DB 		"  ¢p " ,0

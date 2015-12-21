@@ -4,6 +4,7 @@
 	INCLUDE	Helpers.inc
 
 	INCLUDE	UI.inc
+	INCLUDE	Graph_UI.inc
 	INCLUDE	Graph_castle.inc
 	INCLUDE	Graph_soldier.inc
 	INCLUDE	Graph_turret.inc
@@ -23,6 +24,7 @@ MAIN:
 	DR:
 
 
+		DrawPanel
 		Draw
 		KeyHandler
 		;DumpList
@@ -30,8 +32,10 @@ MAIN:
 
 		Clear
 
-		NL
-		NL
+		Beats
+		MoveOnSoldiers
+		LevelUpCheck
+
 		LoopTimes 0FFFH
 		NEXT DR
 ExitMain

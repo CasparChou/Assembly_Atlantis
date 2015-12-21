@@ -11,6 +11,7 @@
 		AnyKeyToContinue
 	ENDM
 
+	SetterBuffer 	DWORD ?
 	GetterHandler 	DWORD ?
 
 	User_Curr_Soldier DWORD ?
@@ -46,3 +47,7 @@
 			CopyFrom Beats5x, 1
 		.ENDIF
 	ENDM
+
+
+	ClearOn 	DWORD 0
+	KeyPress 	DWORD 0

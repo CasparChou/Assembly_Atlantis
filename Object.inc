@@ -37,9 +37,21 @@
 	CompSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0,0,0,0>)
 
 	
-	SoilderHeight	DWORD	3, 4, 4,
-							3, 3, 3,
-							3, 4, 5
+	UserSoldierA_Height	DWORD	3, 4, 4		;A
+	UserSoldierB_Height	DWORD	3, 3, 3		;B
+	UserSoldierC_Height	DWORD	3, 4, 5		;C
+
+	UserSoldierA_Width	DWORD	3, 4, 4		;A
+	UserSoldierB_Width	DWORD	3, 3, 3		;B
+	UserSoldierC_Width	DWORD	3, 4, 5		;C
+
+	CompSoldierA_Height	DWORD	4, 4, 6		;A
+	CompSoldierB_Height	DWORD	3, 5, 5		;B
+	CompSoldierC_Height	DWORD	2, 5, 6		;C
+
+	CompSoldierA_Width	DWORD	3, 4, 4		;A
+	CompSoldierB_Width	DWORD	3, 3, 3		;B
+	CompSoldierC_Width	DWORD	3, 4, 5		;C
 
 
 	ObjectOffset MACRO ID
@@ -122,13 +134,43 @@
 		POPA
 		ENDM
 
-	;SettingSoliderSize		MACRO	Object,	ObjectID, League, Arms, Level
-	;	PUSHA
-	;		SettingSoliderWidth		UserSoldiers, ObjectID, EBX
-	;		SettingSoliderHeight	UserSoldiers, ObjectID, SoilderHeight[]		
-	;	POPA
-	;	ENDM
+	SettingSoldierWH		MACRO	Object,	ID, Level, W, H	
+		.IF( Level == 1 )
+			SettingSoldierWidth		Object, ID, W[0]
+			SettingSoldierHeight	Object, ID, H[0]
+		.ELSEIF( Level == 2 )
+			SettingSoldierWidth		Object, ID, W[4]
+			SettingSoldierHeight	Object, ID, H[4]
+		.ELSEIF( Level == 3 )
+			SettingSoldierWidth		Object, ID, W[8]
+			SettingSoldierHeight	Object, ID, H[8]
+		.ENDIF
+		ENDM	
+	SettingSoldierSize		MACRO	Object,	ID
+		PUSHA
+			ObjectOffset 	ID
+			.IF( Object[EBX].League == 0 )
+				.IF( Object[EBX].Arms == 1 )
+					SettingSoldierWH 	Object, ID, Object[EBX].LV, UserSoldierA_Width, UserSoldierA_Height
+				.ELSEIF( Object[EBX].Arms == 2 )
+					SettingSoldierWH 	Object, ID, Object[EBX].LV, UserSoldierB_Width, UserSoldierB_Height
+				.ELSEIF( Object[EBX].Arms == 3 )
+					SettingSoldierWH 	Object, ID, Object[EBX].LV, UserSoldierC_Width, UserSoldierC_Height
+				.ENDIF
+			.ELSE
+				.IF( Object[EBX].Arms == 1 )
+					SettingSoldierWH 	Object, ID, Object[EBX].LV, CompSoldierA_Width, CompSoldierA_Height
+				.ELSEIF( Object[EBX].Arms == 2 )
+					SettingSoldierWH 	Object, ID, Object[EBX].LV, CompSoldierB_Width, CompSoldierB_Height
+				.ELSEIF( Object[EBX].Arms == 3 )
+					SettingSoldierWH 	Object, ID, Object[EBX].LV, CompSoldierC_Width, CompSoldierC_Height
+				.ENDIF
 
+			.ENDIF
+			;WriteD SoldierWidth[EBX]	
+
+		POPA
+		ENDM
 
 	GettingSoldierHP		MACRO	Object, ID, StoreTo
 		PUSHA
