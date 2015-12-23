@@ -27,11 +27,14 @@ MAIN:
 
 		DrawPanel
 		Draw
-		AI
+		;AI
 		KeyHandler
-		DumpList
+		;DumpList
 		Translate 15, 2
-		WriteD Timer1
+		;WriteD Timer1
+		;Write 	' '
+		;WriteD Timer_UserBuild
+		
 		PauseTime 800
 
 		Clear

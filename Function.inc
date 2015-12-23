@@ -45,24 +45,27 @@
 			Call ReadKey
 			.IF( AL == 'Q' || AL == 'q' )
 				CopyFrom KeyPress, 1
-				;BuildUserSoldierBufferTime
-				BuildUserSoldierA
+				;BuildUserSoldierA
+				BuildSoldierBufferTime 	0,	1
 			.ELSEIF( AL == 'W' || AL == 'w')
 				CopyFrom KeyPress, 2
-				;BuildUserSoldierBufferTime
-				BuildUserSoldierB
+				;BuildUserSoldierB
+				BuildSoldierBufferTime 	0,	2
 			.ELSEIF( AL == 'E' || AL == 'e')
 				CopyFrom KeyPress, 3
-				;BuildUserSoldierBufferTime
-				BuildUserSoldierC
+				;BuildUserSoldierC
+				BuildSoldierBufferTime 	0,	3
 
 
 			.ELSEIF( AL == 'I' || AL == 'i')
-				BuildCompSoldierA
+				;BuildCompSoldierA
+				BuildSoldierBufferTime 	1, 1
 			.ELSEIF( AL == 'O' || AL == 'o')
-				BuildCompSoldierB
+				;BuildCompSoldierB
+				BuildSoldierBufferTime 	1, 2
 			.ELSEIF( AL == 'P' || AL == 'p')
-				BuildCompSoldierC
+				;BuildCompSoldierC
+				BuildSoldierBufferTime 	1, 3
 
 
 			.ELSEIF( AL == 'Z' || AL == 'z')
@@ -131,6 +134,42 @@
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .Data
+	TriggleBuild MACRO 	League,	Arms
+		PUSHA
+			MOV EAX, League
+			MOV EBX, Arms
+			.IF( EAX == 0)
+				.IF( EBX == 1)
+					BuildUserSoldierA
+				.ELSEIF( EBX == 2)
+					BuildUserSoldierB
+				.ELSEIF( EBX == 3)
+					BuildUserSoldierC
+				.ENDIF
+			.ELSE
+				.IF( EBX == 1)
+					BuildCompSoldierA
+				.ELSEIF( EBX == 2)
+					BuildCompSoldierB
+				.ELSEIF( EBX == 3)
+					BuildCompSoldierC
+				.ENDIF
+			.ENDIF
+		POPA
+		ENDM
+	BuildSoldierBufferTime 	MACRO	League,		Arms
+		PUSHA
+			.IF( Timer_UserBuild == 0)
+				CopyFrom Timer_UserBuild, 1
+			.ENDIF
+			MOV EAX,	League
+			.IF( EAX == 0 )
+				PUSHArray 	User_BuildQueue,	Arms
+			.ELSE
+				PUSHArray	Comp_BuildQueue,	Arms
+			.ENDIF
+		POPA
+		ENDM
 	BuildSoldier MACRO Object, League, Arms, Speed
 		PUSHA
 			INVOKE FindUsableSoldier, League, Arms
@@ -214,8 +253,8 @@
 			.ENDIF
 			;WriteD MonsterWidth[((Object[EBX].Level-1)*4)+((Object[EBX].Arms-1)*12)]
 			;WriteD ID
-			GettingSoldierWidth Object, ID, GetterHandler
-			WriteD GetterHandler
+			;GettingSoldierWidth Object, ID, GetterHandler
+			;WriteD GetterHandler
 		.ENDIF
 		ENDM
 .Code
@@ -286,7 +325,7 @@
 			DSs:
 				NL
 				WriteD ECX
-				DumpSoldier CompSoldiers, ECX
+				DumpSoldier UserSoldiers, ECX
 				NextInc	8, DSs
 		POPA
 
