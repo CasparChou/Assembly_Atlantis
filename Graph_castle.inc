@@ -96,8 +96,77 @@
 ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
 
 	
+	CompCastle_1_1 DB "¡¶¡¶¡¶¡¶¡¶¡¶   ",0
+	CompCastle_1_2 DB "¢g¢g¢g¢g¢g¢g",0
+	CompCastle_1_3 DB "¢g¢g    ¢g¢g",0
+	CompCastle_1_4 DB "¢g¢«    ¢ª¢g",0
+	CompCastle_1_5 DB "¢g        ¢p",0
+	CompCastle_1_6 DB "¢g        ¢g",0
+		
 	
+	CompCastle_2_1 DB "      ¡¶¡¶",0
+	CompCastle_2_2 DB "      ¢g¢g",0
+	CompCastle_2_3 DB "  ¡¶¢g¢g¢g¢g¡¶",0
+	CompCastle_2_4 DB "  ¢g¢g¡¿¡¿¢g¢g",0
+	CompCastle_2_5 DB "¡¶¢g¢g    ¢g¢g¡¶",0
+	CompCastle_2_6 DB "¢p¢g¢«    ¢ª¢g¢p",0
+	CompCastle_2_7 DB "  ¢g        ¢g",0
+	CompCastle_2_8 DB "  ¢p        ¢p",0
+
 	
+	CompCastle_3_1 DB "    ¡¶    ¡¶      ",0
+	CompCastle_3_2 DB "    ¢g¡¶¡¶¢g        ",0
+	CompCastle_3_3 DB "    ¢g¢g¢g¢g    ",0
+	CompCastle_3_4 DB "  ¡¶¢g¢g¢g¢g¡¶       ",0
+	CompCastle_3_5 DB "  ¢g¢g¡¿¡¿¢g¢g       ",0
+	CompCastle_3_6 DB "¡¶¢g¢g    ¢g¢g¡¶     ",0
+	CompCastle_3_7 DB "¢p¢g¡¿    ¡¿¢g¢p      ",0
+	CompCastle_3_8 DB "¢p¢g        ¢g¢p",0
+	CompCastle_3_9 DB "¢p¢p        ¢p¢p",0
+
+	DrawCompCastle1 MACRO X
+	
+		Translate X, 12
+
+		GraphDisplay CompCastle_1_1
+		GraphDisplay CompCastle_1_2
+		GraphDisplay CompCastle_1_3
+		GraphDisplay CompCastle_1_4
+		GraphDisplay CompCastle_1_5
+		GraphDisplay CompCastle_1_6
+
+		ENDM	
+	
+	DrawCompCastle2 MACRO X
+	
+		Translate X, 10
+
+		GraphDisplay CompCastle_2_1
+		GraphDisplay CompCastle_2_2
+		GraphDisplay CompCastle_2_3
+		GraphDisplay CompCastle_2_4
+		GraphDisplay CompCastle_2_5
+		GraphDisplay CompCastle_2_6
+		GraphDisplay CompCastle_2_7
+		GraphDisplay CompCastle_2_8
+
+		ENDM	
+	
+	DrawCompCastle3 MACRO X
+	
+		Translate X, 9
+
+		GraphDisplay CompCastle_3_1
+		GraphDisplay CompCastle_3_2
+		GraphDisplay CompCastle_3_3
+		GraphDisplay CompCastle_3_4
+		GraphDisplay CompCastle_3_5
+		GraphDisplay CompCastle_3_6
+		GraphDisplay CompCastle_3_7
+		GraphDisplay CompCastle_3_8
+		GraphDisplay CompCastle_3_9
+
+		ENDM	
 	
 	
 	
@@ -127,13 +196,13 @@
 				DrawUserCastle3 X
 			.ENDIF
 		.ELSE
-			;.IF ( CompCurrLevel == 1)
-			;	DrawMonsterCastle1 X
-			;.ELSEIF ( CompCurrLevel == 2)
-			;	DrawMonsterCastle2 X
-			;.ELSEIF ( CompCurrLevel == 3)
-			;	DrawMonsterCastle3 X
-			;.ENDIF
+			.IF ( CompCurrLevel == 1)
+				DrawCompCastle1 X
+			.ELSEIF ( CompCurrLevel == 2)
+				DrawCompCastle2 X
+			.ELSEIF ( CompCurrLevel == 3)
+				DrawCompCastle3 X
+			.ENDIF
 		.ENDIF	
 
 		ENDM

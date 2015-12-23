@@ -3,33 +3,29 @@
 	
 	Draw MACRO
 
-		;DrawTurrent  10,14
-		;DrawSolider 	20, Beats2x
-		;DrawMonster  	50, Beats5x
-		;DrawMonster2 	70
-		DrawSoilders
 		DrawCastle	 	0, 0
-		DrawCastle		1, 98
-
+		DrawCastle		1, 103
+		DrawSoldiers
+		;DrawInfo
 		ENDM
 
 	Clear MACRO
 		SettingColor 	Black
+		CopyFrom		ClearOn, 1
 		Draw
 		DefaultColor
-		Beats
-		MoveOnSoilders
-		LevelUpCheck
+		CopyFrom		ClearOn, 0
+		;CopyFrom 		KeyPress, 0
 		ENDM
 
 	LevelUpCheck MACRO
 		.IF( UserLevelUpFlag == 1)
 			INC UserCurrLevel
-			CopyFrom UserCurrLevel, 0
+			CopyFrom UserLevelUpFlag, 0
 		.ENDIF
 		.IF( CompLevelUpFlag == 1)
 			INC CompCurrLevel
-			CopyFrom CompCurrLevel, 0
+			CopyFrom CompLevelUpFlag, 0
 		.ENDIF
 
 		ENDM
@@ -48,33 +44,44 @@
 			MOV EAX, 0
 			Call ReadKey
 			.IF( AL == 'Q' || AL == 'q' )
-				BuildUserSoilderA
+				CopyFrom KeyPress, 1
+				;BuildUserSoldierA
+				BuildSoldierBufferTime 	0,	1
 			.ELSEIF( AL == 'W' || AL == 'w')
-				BuildUserSoilderB
+				CopyFrom KeyPress, 2
+				;BuildUserSoldierB
+				BuildSoldierBufferTime 	0,	2
 			.ELSEIF( AL == 'E' || AL == 'e')
-				BuildUserSoilderC
+				CopyFrom KeyPress, 3
+				;BuildUserSoldierC
+				BuildSoldierBufferTime 	0,	3
 
 
 			.ELSEIF( AL == 'I' || AL == 'i')
-				BuildCompSoilderA
+				;BuildCompSoldierA
+				BuildSoldierBufferTime 	1, 1
 			.ELSEIF( AL == 'O' || AL == 'o')
-				BuildCompSoilderB
+				;BuildCompSoldierB
+				BuildSoldierBufferTime 	1, 2
 			.ELSEIF( AL == 'P' || AL == 'p')
-				BuildCompSoilderC
+				;BuildCompSoldierC
+				BuildSoldierBufferTime 	1, 3
 
 
 			.ELSEIF( AL == 'Z' || AL == 'z')
-				CopyFrom UserLevelUpFlag, 1
-
+				.IF( UserCurrLevel < 3)
+					CopyFrom UserLevelUpFlag, 1
+				.ENDIF
 			.ELSEIF( AL == 'X' || AL == 'x')
-				CopyFrom CompLevelUpFlag, 1
-
+				.IF( CompCurrLevel < 3)
+					CopyFrom CompLevelUpFlag, 1
+				.ENDIF
 			.ENDIF
 		POPA
 		ENDM
 	DumpList 	MACRO
 
-		CALL DumpSoilderList
+		CALL DumpSoldierList
 
 		ENDM
 
@@ -86,50 +93,90 @@
 .Data
 	MOVE MACRO Object, ID, AddX, AddY
 		ObjectOffset ID
-		AddBy Object[EBX].X, AddX
+		.IF Object[EBX].League == 0
+			INC Object[EBX].X
+		.ELSE
+			DEC Object[EBX].X
+		.ENDIF
 		AddBy Object[EBX].Y, AddY
 		ENDM
-	MoveOnSoilders MACRO
-		CALL MoveOnUserSoilders
-		CALL MoveOnCompSoilders
+	MoveOnSoldiers MACRO
+		CALL MoveOnUserSoldiers
+		CALL MoveOnCompSoldiers
 		ENDM
 .Code
-	MoveOnUserSoilders PROC
+	MoveOnUserSoldiers PROC
 		LoopTimes 0
 		MS:
 			ObjectOffset ECX
-			.IF UserSoilders[EBX].Alive == 1
-				MOVE UserSoilders, ECX, UserSoilders[EBX].SPD, 0
+			.IF UserSoldiers[EBX].Alive == 1
+				MOVE UserSoldiers, ECX, 1, 0
 			.ENDIF
 			NextInc	16, MS
 		RET
-	MoveOnUserSoilders ENDP
-	MoveOnCompSoilders PROC
+	MoveOnUserSoldiers ENDP
+	MoveOnCompSoldiers PROC
 		LoopTimes 0
 		MS:
 			ObjectOffset ECX
-			.IF CompSoilders[EBX].Alive == 1
-				MOVE CompSoilders, ECX, CompSoilders[EBX].SPD, 0
+			.IF CompSoldiers[EBX].Alive == 1
+				MOVE CompSoldiers, ECX, -1, 0
 			.ENDIF
 			NextInc	16, MS
 		RET
-	MoveOnCompSoilders ENDP
+	MoveOnCompSoldiers ENDP
 	
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
-;;;;	Build New Soilder 	;;;;
+;;;;	Build New Soldier 	;;;;
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .Data
-	BuildSoilder MACRO Object, League, Arms, Speed
+	TriggleBuild MACRO 	League,	Arms
 		PUSHA
-			INVOKE FindUsableSoilder, League, Arms, Speed
+			MOV EAX, League
+			MOV EBX, Arms
+			.IF( EAX == 0)
+				.IF( EBX == 1)
+					BuildUserSoldierA
+				.ELSEIF( EBX == 2)
+					BuildUserSoldierB
+				.ELSEIF( EBX == 3)
+					BuildUserSoldierC
+				.ENDIF
+			.ELSE
+				.IF( EBX == 1)
+					BuildCompSoldierA
+				.ELSEIF( EBX == 2)
+					BuildCompSoldierB
+				.ELSEIF( EBX == 3)
+					BuildCompSoldierC
+				.ENDIF
+			.ENDIF
+		POPA
+		ENDM
+	BuildSoldierBufferTime 	MACRO	League,		Arms
+		PUSHA
+			.IF( Timer_UserBuild == 0)
+				CopyFrom Timer_UserBuild, 1
+			.ENDIF
+			MOV EAX,	League
+			.IF( EAX == 0 )
+				PUSHArray 	User_BuildQueue,	Arms
+			.ELSE
+				PUSHArray	Comp_BuildQueue,	Arms
+			.ENDIF
+		POPA
+		ENDM
+	BuildSoldier MACRO Object, League, Arms, Speed
+		PUSHA
+			INVOKE FindUsableSoldier, League, Arms
 		POPA
 		ENDM
 .Code	
-	FindUsableSoilder PROC, League:DWORD, Arms:DWORD, Speed:DWORD
+	FindUsableSoldier PROC, League:DWORD, Arms:DWORD
 		PUSHA
 				;WriteD League
 				;AnyKeyToContinue
@@ -138,77 +185,89 @@
 				LoopTimes 0
 				FindUser:
 					ObjectOffset ECX
-					.IF (UserSoilders[EBX].Alive == 0)
-						SettingSoilderAlive		UserSoilders, ECX, 1
-						SettingSoilderArms 		UserSoilders, ECX, Arms
-						SettingSoilderX	 		UserSoilders, ECX, 20
-						SettingSoilderLeague	UserSoilders, ECX, 0
-						SettingSoilderSPD		UserSoilders, ECX, Speed
-						SettingSoilderLevel		UserSoilders, ECX, UserCurrLevel
+					.IF (UserSoldiers[EBX].Alive == 0)
+						SettingSoldierAlive		UserSoldiers, ECX, 1
+						SettingSoldierArms 		UserSoldiers, ECX, Arms
+						SettingSoldierX	 		UserSoldiers, ECX, 20
+						SettingSoldierLeague	UserSoldiers, ECX, 0
+						SettingSoldierLevel		UserSoldiers, ECX, UserCurrLevel
+						SettingSoldierInitialHP	UserSoldiers, ECX
+						SettingSoldierAttack	UserSoldiers, ECX
+						;SettingSoldierSize		UserSoldiers, ECX
+						POPA
 						RET
-					.ELSE
-						SettingSoilderAlive		UserSoilders, ECX, 1
-						SettingSoilderLeague	UserSoilders, ECX, 0
 					.ENDIF
 					NextInc 8, FindUser
 			.ELSEIF (League == 1)
 				LoopTimes 0
 				FindComp:
 					ObjectOffset ECX
-					.IF (CompSoilders[EBX].Alive == 0)
-						SettingSoilderAlive		CompSoilders, ECX, 1
-						SettingSoilderArms 		CompSoilders, ECX, Arms
-						SettingSoilderX	 		CompSoilders, ECX, 90
-						SettingSoilderLeague	CompSoilders, ECX, 1
-						SettingSoilderSPD		CompSoilders, ECX, Speed
-						SettingSoilderLevel		CompSoilders, ECX, CompCurrLevel
+					.IF (CompSoldiers[EBX].Alive == 0)
+						SettingSoldierAlive		CompSoldiers, ECX, 1
+						SettingSoldierArms 		CompSoldiers, ECX, Arms
+						SettingSoldierX	 		CompSoldiers, ECX, 90
+						SettingSoldierLeague	CompSoldiers, ECX, 1
+						SettingSoldierLevel		CompSoldiers, ECX, CompCurrLevel
+						SettingSoldierInitialHP	CompSoldiers, ECX
+						SettingSoldierAttack	CompSoldiers, ECX
+						;SettingSoldierSize		CompSoldiers, ECX
+						POPA
 						RET
-					.ELSE
-						SettingSoilderAlive		CompSoilders, ECX, 1
-						SettingSoilderLeague	CompSoilders, ECX, 1
 					.ENDIF
 					NextInc 8,	FindComp
 			.ENDIF
 		POPA
 		RET
-	FindUsableSoilder ENDP
+	FindUsableSoldier ENDP
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
-;;;;	Drawing Soilders 	;;;;
+;;;;	Drawing Soldiers 	;;;;
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .Data
-	SoilderOn	MACRO Object, ID
+	SoldierOn	MACRO Object, ID
 		ObjectOffset ID
 		.IF (Object[EBX].Alive == 1)
 			.IF (Object[EBX].League == 0) 
+				
 				.IF (Object[EBX].Arms == 1) 
-					DrawSoilderA1 Object[EBX].X, Beats2x
+					DrawSoldierA Object[EBX], Beats2x
 				.ELSEIF (Object[EBX].Arms == 2) 
-					;DrawSoilderB Object[EBX].X, Beats2x
+					DrawSoldierB Object[EBX], Beats2x
 				.ELSEIF (Object[EBX].Arms == 3) 
-					;DrawSoilderC1 Object[EBX].X, Beats4x
-
+					DrawSoldierC Object[EBX], Beats4x
 				.ENDIF
+
 			.ELSEIF (Object[EBX].League == 1) 
-				DrawMonster Object[EBX].X, Beats2x
+
+				.IF (Object[EBX].Arms == 1) 
+					DrawMonsterA Object[EBX], Beats2x
+				.ELSEIF (Object[EBX].Arms == 2) 
+					DrawMonsterB Object[EBX], Beats4x
+				.ELSEIF (Object[EBX].Arms == 3) 
+					DrawMonsterC Object[EBX], Beats4x
+				.ENDIF
+
 			.ENDIF
+			;WriteD MonsterWidth[((Object[EBX].Level-1)*4)+((Object[EBX].Arms-1)*12)]
 			;WriteD ID
+			;GettingSoldierWidth Object, ID, GetterHandler
+			;WriteD GetterHandler
 		.ENDIF
 		ENDM
 .Code
-	DrawingSoilders 	PROC
+	DrawingSoldiers 	PROC
 		PUSHA
 			LoopTimes 0
 			DSs:
-				SoilderOn	UserSoilders, ECX
-				SoilderOn	CompSoilders, ECX
+				SoldierOn	UserSoldiers, ECX
+				SoldierOn	CompSoldiers, ECX
 				NextInc	8, DSs
 		POPA
 		RET
-	DrawingSoilders		ENDP
+	DrawingSoldiers		ENDP
 
 
 
@@ -216,11 +275,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
-;;;;	Dump 	 Soilders 	;;;;
+;;;;	Dump 	 Soldiers 	;;;;
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .Data
-	DumpSoilder 	MACRO	Object, ID
+	DumpSoldier 	MACRO	Object, ID
 		ObjectOffset ID
 		Write  09H
 		WriteD	Object[EBX].HP
@@ -228,19 +287,21 @@
 		WriteD	Object[EBX].X
 		Write  09H
 		WriteD	Object[EBX].Y
+		;Write  09H
+		;WriteD	Object[EBX].SWidth
+		;Write  09H
+		;WriteD	Object[EBX].SHeight
 		Write  09H
 		WriteD	Object[EBX].ATK
 		Write  09H
-		WriteI	Object[EBX].SPD
-		Write  09H
-		WriteD	Object[EBX].LV
+		WriteD	Object[EBX].Level
 		Write  09H
 		WriteD	Object[EBX].ARMS
 		Write  09H
 		WriteD	Object[EBX].League
 		Write  09H
-		WriteD	Object[EBX].State
-		Write  09H
+		;WriteD	Object[EBX].State
+		;Write  09H
 		WriteD	Object[EBX].Alive
 		Write  09H
 	ENDM
@@ -251,24 +312,22 @@
 					"X",		09H,
 					"Y",		09H,
 					"ATK",		09H,
-					"SPD",		09H,
-					"LV",		09H,
+					"Level",	09H,
 					"AR",		09H,
 					"Leag",		09H,
-					"State",	09H,
 					"Alive",	09H, 0
 
 .Code
-	DumpSoilderList		PROC
+	DumpSoldierList		PROC
 		PUSHA
 			WriteS TableHead
 			LoopTimes 0
 			DSs:
 				NL
 				WriteD ECX
-				DumpSoilder UserSoilders, ECX
+				DumpSoldier UserSoldiers, ECX
 				NextInc	8, DSs
 		POPA
 
 		RET
-	DumpSoilderList		ENDP
+	DumpSoldierList		ENDP
