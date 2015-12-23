@@ -1,223 +1,279 @@
 .Data
 
+	
 	RegisterObjects	EQU <CALL Register>
-	DrawSoilders 	EQU <CALL DrawingSoilders>
-	Initial 	EQU <CALL Init>
+	DrawSoldiers 	EQU <CALL DrawingSoldiers>
+	Initial 		EQU <CALL Init>
+	
+
+	BuildUserSoldierA EQU <BuildSoldier UserSoldiers, 0, 1>
+	BuildUserSoldierB EQU <BuildSoldier UserSoldiers, 0, 2>
+	BuildUserSoldierC EQU <BuildSoldier UserSoldiers, 0, 3>
+
+	BuildCompSoldierA EQU <BuildSoldier CompSoldiers, 1, 1>
+	BuildCompSoldierB EQU <BuildSoldier CompSoldiers, 1, 2>
+	BuildCompSoldierC EQU <BuildSoldier CompSoldiers, 1, 3>
 
 
-	Soilder STRUCT
+	Soldier STRUCT
 		HP			DWORD 0
 		X			DWORD 0
 		Y 			DWORD 0
 		ATK			DWORD 0
 
-		SPD			DWORD 0
-		LV			DWORD 0
-		KIND		DWORD 0
-		State		DWORD 0
+		Level		DWORD 0
+		Arms		DWORD 0
+		League		DWORD 0
 
 		Alive		DWORD 0
-	Soilder ENDS
+	Soldier ENDS
 
+
+	UserSoldiers	Soldier	8 DUP(<0,0,0,0,0,0>)
+	CompSoldiers	Soldier	8 DUP(<0,0,0,0,0,0>)
 
 	
-	Soilder1 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder2 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder3 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder4 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder5 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder6 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder7 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder8 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder9 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder10 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder11 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder12 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder13 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder14 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder15 Soilder <0,0,0,0,0,0,0,0,0>
-	Soilder16 Soilder <0,0,0,0,0,0,0,0,0>
+	UserSoldier_Height	DWORD	3, 4, 4,	;A
+								3, 3, 3,	;B
+								3, 4, 5		;C
 
-	UserSoilders	Soilder	8 DUP(<>)
-	CompSoilders	Soilder	8 DUP(<>)
+	UserSoldier_Width	DWORD	3, 4, 4,	;A
+								3, 3, 3,	;B
+								3, 4, 5		;C
 
-	;Registing 	MACRO	Object, ObjectList, ID
-	;	PUSH ESI
-	;		LEA		ESI,	Object
-	;		MOV		ObjectList[ID*4],	ESI
-	;	POP ESI
+	CompSoldier_Height	DWORD	4, 4, 6,	;A
+								3, 5, 5,	;B
+								2, 5, 6		;C
+
+	CompSoldier_Width	DWORD	3, 4, 4,	;A
+								3, 3, 3,	;B
+								3, 4, 5		;C
+
+
+	Soldier_HP			DWORD	4, 6, 8,	;A
+								3, 4, 5,	;B
+								5, 8, 11	;C
+
+	Soldier_Attack		DWORD	2, 4, 6,	;A
+								3, 6, 9,	;B
+								1, 2, 3		;C
+
+	Soldier_Buffer		DWORD	4, 6, 7,	;A
+								5, 7, 8,	;B
+								6, 8, 9		;C
+
+
+	ObjectOffset MACRO ID
+		MOV EAX, (SIZEOF Soldier)
+		MOV EBX, ID
+		MUL EBX
+		MOV EBX, EAX
+	ENDM
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;						;;;;
+;;;;	Getter / Setter 	;;;;
+;;;;						;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	GettingSoldierLevel		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].Level
+		POPA
+		ENDM
+	SettingSoldierLevel		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom		Object[EBX].Level, Number
+		POPA
+		ENDM
+
+	GettingSoldierX		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].X
+		POPA
+		ENDM
+	SettingSoldierX		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom		Object[EBX].X, Number
+		POPA
+		ENDM
+
+	GettingSoldierY		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].Y
+		POPA
+		ENDM
+	SettingSoldierY		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].Y, Number
+		POPA
+		ENDM
+;
+;
+	;GettingSoldierHeight	MACRO	Object, ID, StoreTo
+	;	PUSHA
+	;		ObjectOffset 	ID
+	;		CopyFrom 		StoreTo, Object[EBX].SHeight
+	;	POPA
 	;	ENDM
-
-
-	GettingSoilderLV		MACRO	Object, ID, StoreTo
-		CopyFrom StoreTo, Object[ID*4].LV
+	;SettingSoldierHeight	MACRO	Object, ID, Number
+	;	PUSHA
+	;		ObjectOffset 	ID
+	;		CopyFrom  		Object[EBX].SHeight, Number
+	;	POPA
+	;	ENDM
+;
+;
+	CounterSoldierOffsetIndex	MACRO Arms, Level
+		MOV EAX, Arms
+		DEC EAX
+		MOV EDX, 12
+		MUL EDX
+		MOV EDX, EAX
+		MOV EAX, Level
+		DEC EAX
+		SHL EAX, 2
+		ADD EAX, EDX
 		ENDM
-	SettingSoilderLV		MACRO	Object, ID, Number
-		CopyFrom Object[ID*4].LV, Number
+
+	CounterSoldierOffset	MACRO Object
+		MOV EAX, Object[EBX].Arms
+		DEC EAX
+		MOV EDX, 12
+		MUL EDX
+		MOV EDX, EAX
+		MOV EAX, Object[EBX].Level
+		DEC EAX
+		SHL EAX, 2
+		ADD EAX, EDX
+				; 0 	12	24
+				; 0		0	0
+				
+				; 0 	12	24
+				; 4		4	4
+
+				; 0 	12	24
+				; 8		8	8
 		ENDM
-
-
-	GettingSoilderX		MACRO	Object, ID, StoreTo
+	GettingSoldierHeight	MACRO	Object, ID, StoreTo
 		PUSHA
-		CopyFrom StoreTo, Object[ID*4].X
+			ObjectOffset 	ID
+			.IF( Object[EBX].League == 0)
+				CopyFrom StoreTo, UserSoldier_Height[EAX]
+			.ELSE
+				CopyFrom StoreTo, CompSoldier_Height[EAX]
+			.ENDIF
 		POPA
 		ENDM
-	SettingSoilderX		MACRO	Object, ID, Number
+	GettingSoldierWidth		MACRO	Object, ID, StoreTo
 		PUSHA
-			CopyFrom Object[ID*4].X, Number
-		POPA
-		ENDM
-
-;	GettingSoilderY		MACRO	Object, ID, StoreTo
-;		PUSHA
-;		CopyFrom StoreTo, Object[ID*4].PosY
-;		POPA
-;		ENDM
-;	SettingSoilderY		MACRO	Object, ID, Number
-;		PUSHA
-;		CopyFrom  Object[ID*4].PosY, Number
-;		POPA
-;		ENDM
-
-	GettingSoilderHP		MACRO	Object, ID, StoreTo
-		PUSHA
-		CopyFrom StoreTo, Object[ID*4].HP
-		POPA
-		ENDM
-	SettingSoilderHP		MACRO	Object, ID, Blood
-		PUSHA
-		CopyFrom  Object[ID*4].HP, Blood
-		POPA
-		ENDM
-
-	GettingSoilderATK		MACRO	Object, ID, StoreTo
-		PUSHA
-		CopyFrom StoreTo, Object[ID*4].ATK
-		POPA
-		ENDM
-	SettingSoilderATK		MACRO	Object, ID, Attack
-		PUSHA
-		CopyFrom  Object[ID*4].ATK, Attack
-		POPA
-		ENDM
-
-	GettingSoilderSPD		MACRO	Object, ID, StoreTo
-		PUSHA
-		CopyFrom StoreTo, Object[ID*4].SPD
-		POPA
-		ENDM
-	SettingSoilderSPD		MACRO	Object, ID, Speeds
-		PUSHA
-		CopyFrom  Object[ID*4].SPD, Speeds
-		POPA
-		ENDM
-
-	GettingSoilderKIND		MACRO	Object, ID, StoreTo
-		PUSHA
-		CopyFrom StoreTo, Object[ID*4].KIND
-		POPA
-		ENDM
-	SettingSoilderKIND		MACRO	Object, ID, Kinds
-		PUSHA
-		CopyFrom  Object[ID*4].KIND, Kinds
-		POPA
-		ENDM
-
-	GettingSoilderState		MACRO	Object, ID, StoreTo
-		PUSHA
-		CopyFrom StoreTo, Object[ID*4].State
-		POPA
-		ENDM
-	SettingSoilderState		MACRO	Object, ID, States
-		PUSHA
-			CopyFrom  Object[ID*4].State, States
-			DrawMonster  	50, Beats5x
-		POPA
-		ENDM
-
-	GettingSoilderAlive		MACRO	Object, ID, StoreTo
-		PUSHA
-			CopyFrom StoreTo, Object[ID*4].Alive
-		POPA
-		ENDM
-	SettingSoilderAlive		MACRO	Object, ID, SAlive
-		PUSHA
-			CopyFrom  Object[ID*4].Alive, SAlive
-		POPA
-		ENDM
-
-
-	SoilderOn	MACRO Object, ID
-
-		.IF Object[ID*4].Alive == 1
-
-			DrawSoilder Object[ID*4].X, Beats2x
-			WriteD Object[ID*4].SPD
-		.ENDIF
-
-
-		ENDM
-
-	BuildUserSoilderA EQU <BuildSoilder UserSoilders, 1, 1>
-	BuildUserSoilderB EQU <BuildSoilder UserSoilders, 2, 1>
-	BuildUserSoilderC EQU <BuildSoilder UserSoilders, 3, 1>
-
-	BuildSoilder MACRO Object, Level, Speed
-		PUSHA
-			CALL FindUsableUserSoilder
-			.IF ECX < 9
-				SettingSoilderLV 	Object, ECX, Level
-				SettingSoilderX	 	Object, ECX, 20
-				SettingSoilderSPD	Object, ECX, Speed
+			ObjectOffset 	ID
+			CounterSoldierOffset Object
+			.IF( Object[EBX].League == 0)
+				CopyFrom StoreTo, UserSoldier_Width[EAX]
+			.ELSE
+				CopyFrom StoreTo, CompSoldier_Width[EAX]
 			.ENDIF
 		POPA
 		ENDM
 
-	MoveOnSoilders MACRO
-		CALL MoveOnUserSoilders
-		;CALL MoveOnCompSoilders
+	GettingSoldierHP		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].HP
+		POPA
 		ENDM
+	SettingSoldierHP		MACRO	Object, ID, Blood
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].HP, Blood
+		POPA
+		ENDM
+	SettingSoldierInitialHP		MACRO	Object, ID
+		PUSHA
+			ObjectOffset 	ID
+			CounterSoldierOffset Object
+			CopyFrom 		Object[EBX].HP, Soldier_HP[EAX]
+		POPA
+		ENDM
+
+	GettingSoldierAttack	MACRO	Object, ID
+		PUSHA
+			ObjectOffset 	ID
+			CounterSoldierOffset Object
+			CopyFrom 		StoreTo, Soldier_Attack[EAX]
+		POPA
+		ENDM
+	SettingSoldierAttack	MACRO	Object, ID
+		PUSHA
+			ObjectOffset 	ID
+			CounterSoldierOffset Object
+			CopyFrom 		Object[EBX].ATK, Soldier_Attack[EAX]
+		POPA
+		ENDM
+
+	GettingSoldierArms		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].Arms
+		POPA
+		ENDM
+	SettingSoldierArms		MACRO	Object, ID, Kinds
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].Arms, Kinds
+		POPA
+		ENDM
+	GettingSoldierLeague		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].League
+		POPA
+		ENDM
+	SettingSoldierLeague		MACRO	Object, ID, Kinds
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].League, Kinds
+		POPA
+		ENDM
+
+	GettingSoldierAlive		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].Alive
+		POPA
+		ENDM
+	SettingSoldierAlive		MACRO	Object, ID, SAlive
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].Alive, SAlive
+		POPA
+		ENDM
+
+
+	GettingSoldierTime	MACRO	Arms, Level, StoreTo
+		PUSHA
+			CounterSoldierOffsetIndex Arms, Level
+			CopyFrom 		StoreTo, Soldier_Buffer[EAX]
+		POPA
+		ENDM
+
 .Code
-
-	FindUsableUserSoilder PROC
-		LoopTimes 0
-		BS:
-			.IF UserSoilders[ECX*4].Alive == 0
-				CopyFrom UserSoilders[ECX*4].Alive, 1
-				RET
-			.ENDIF
-			NextInc	9, BS
-		RET
-	FindUsableUserSoilder ENDP
-	
-	MoveOnUserSoilders PROC
-		LoopTimes 0
-		MS:
-			.IF UserSoilders[ECX*4].Alive == 1
-				MOVE UserSoilders, ECX, UserSoilders[ECX*4].SPD, 0
-			.ENDIF
-			NextInc	16, MS
-		RET
-	MoveOnUserSoilders ENDP
 	
 	Init PROC
 		PUSHA
 			LoopTimes 0
 			EACH:
-				SettingSoilderX 	UserSoilders, ECX, 0
-				SettingSoilderAlive UserSoilders, ECX, 0
+				SettingSoldierX 	UserSoldiers, ECX, 0
+				SettingSoldierAlive UserSoldiers, ECX, 0
+
 				NextInc	8, EACH
 		POPA
 		RET
 	Init ENDP
 
-
-	DrawingSoilders 	PROC
-		PUSHA
-			LoopTimes 0
-			DSs:
-				SoilderOn	UserSoilders, ECX
-				NextInc	8, DSs
-		POPA
-		RET
-	DrawingSoilders		ENDP
