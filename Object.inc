@@ -6,13 +6,13 @@
 	Initial 		EQU <CALL Init>
 	
 
-	BuildUserSoldierA EQU <BuildSoldier UserSoldiers, 0, 1, 1>
-	BuildUserSoldierB EQU <BuildSoldier UserSoldiers, 0, 2, 1>
-	BuildUserSoldierC EQU <BuildSoldier UserSoldiers, 0, 3, 1>
+	BuildUserSoldierA EQU <BuildSoldier UserSoldiers, 0, 1>
+	BuildUserSoldierB EQU <BuildSoldier UserSoldiers, 0, 2>
+	BuildUserSoldierC EQU <BuildSoldier UserSoldiers, 0, 3>
 
-	BuildCompSoldierA EQU <BuildSoldier CompSoldiers, 1, 1, -1>
-	BuildCompSoldierB EQU <BuildSoldier CompSoldiers, 1, 2, -1>
-	BuildCompSoldierC EQU <BuildSoldier CompSoldiers, 1, 3, -1>
+	BuildCompSoldierA EQU <BuildSoldier CompSoldiers, 1, 1>
+	BuildCompSoldierB EQU <BuildSoldier CompSoldiers, 1, 2>
+	BuildCompSoldierC EQU <BuildSoldier CompSoldiers, 1, 3>
 
 
 	Soldier STRUCT
@@ -57,6 +57,10 @@
 	Soldier_Attack		DWORD	2, 4, 6,	;A
 								3, 6, 9,	;B
 								1, 2, 3		;C
+
+	Soldier_Buffer		DWORD	4, 6, 7,	;A
+								5, 7, 8,	;B
+								6, 8, 9		;C
 
 
 	ObjectOffset MACRO ID
@@ -125,6 +129,18 @@
 	;	ENDM
 ;
 ;
+	CounterSoldierOffsetIndex	MACRO Arms, Level
+		MOV EAX, Arms
+		DEC EAX
+		MOV EDX, 12
+		MUL EDX
+		MOV EDX, EAX
+		MOV EAX, Level
+		DEC EAX
+		SHL EAX, 2
+		ADD EAX, EDX
+		ENDM
+
 	CounterSoldierOffset	MACRO Object
 		MOV EAX, Object[EBX].Arms
 		DEC EAX
@@ -236,6 +252,14 @@
 		PUSHA
 			ObjectOffset 	ID
 			CopyFrom  		Object[EBX].Alive, SAlive
+		POPA
+		ENDM
+
+
+	GettingSoldierTime	MACRO	Arms, Level, StoreTo
+		PUSHA
+			CounterSoldierOffsetIndex Arms, Level
+			CopyFrom 		StoreTo, Soldier_Buffer[EAX]
 		POPA
 		ENDM
 
