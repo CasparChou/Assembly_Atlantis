@@ -12,6 +12,7 @@
 	
 	INCLUDE	Status.inc
 	INCLUDE	Object.inc
+	INCLUDE collision.inc
 	INCLUDE	Function.inc
 
 	INCLUDE	AI.inc

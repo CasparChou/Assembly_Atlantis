@@ -38,6 +38,8 @@
 			Building_Dialog Beats6x
 			;DrawLoading 	Beats4x
 		.ENDIF
+
+		collision		0,0,GetterHandler
 		ENDM
 
 	Clear MACRO
