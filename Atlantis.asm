@@ -12,7 +12,9 @@
 	
 	INCLUDE	Status.inc
 	INCLUDE	Object.inc
-	INCLUDE collision.inc
+	INCLUDE Collision.inc
+	INCLUDE	Draw.inc
+	INCLUDE	Build.inc
 	INCLUDE	Function.inc
 
 	INCLUDE	AI.inc
@@ -32,13 +34,15 @@ MAIN:
 	DR:
 
 		
+		;AnyKeyToContinue
 		Draw
-		AI
+		;AI
 		;DumpList
 		KeyHandler
 		Translate 60, 28
 		
-		PauseTime 500
+		PauseTime 600
+		
 		Clear
 
 		Beats
