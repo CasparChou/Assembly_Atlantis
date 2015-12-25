@@ -25,12 +25,13 @@
 		Arms		DWORD 0
 		League		DWORD 0
 
+		State		DWORD 0
 		Alive		DWORD 0
 	Soldier ENDS
 
 
-	UserSoldiers	Soldier	8 DUP(<0,0,0,0,0,0>)
-	CompSoldiers	Soldier	8 DUP(<0,0,0,0,0,0>)
+	UserSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0>)
+	CompSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0>)
 
 	
 	UserSoldier_Height	DWORD	3, 4, 4,	;A
@@ -111,6 +112,19 @@
 		PUSHA
 			ObjectOffset 	ID
 			CopyFrom  		Object[EBX].Y, Number
+		POPA
+		ENDM
+
+	GettingSoldierState		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].State
+		POPA
+		ENDM
+	SettingSoldierState		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].State, Number
 		POPA
 		ENDM
 ;
