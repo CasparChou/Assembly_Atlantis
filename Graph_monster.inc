@@ -355,7 +355,7 @@
 
 	DrawMonsterC3 MACRO X, Fram
 
-		Translate X, 12
+		Translate X, 13
 		.IF (Fram == 1 || Fram == 5)
 			GraphDisplay MonsterC3_1_1
 			GraphDisplay MonsterC3_1_2

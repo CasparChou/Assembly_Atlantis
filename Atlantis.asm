@@ -19,25 +19,24 @@
 .Code
 MAIN:
 
-	;StartUpLogo
 	StartUp
 	LoopTimes 0FFFH
 	CLS
 	;Initial
-	DrawPanel
-	Introduce
-
-
 	DR:
 
-		
+		DrawPanel
 		Draw
-		AI
-		;DumpList
+		;AI
 		KeyHandler
-		Translate 60, 28
+		;DumpList
+		Translate 15, 2
+		;WriteD Timer1
+		;Write 	' '
+		;WriteD Timer_UserBuild
 		
-		PauseTime 500
+		PauseTime 800
+
 		Clear
 
 		Beats

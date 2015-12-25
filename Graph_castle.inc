@@ -188,7 +188,6 @@
 	DrawCastle MACRO League, X 
 		MOV EAX,	League
 		.IF ( EAX == 0 )
-			SettingColor Yellow
 			.IF ( UserCurrLevel == 1)
 				DrawUserCastle1 X
 			.ELSEIF ( UserCurrLevel == 2)
@@ -196,9 +195,7 @@
 			.ELSEIF ( UserCurrLevel == 3)
 				DrawUserCastle3 X
 			.ENDIF
-			DefaultColor
 		.ELSE
-			SettingColor LightRed
 			.IF ( CompCurrLevel == 1)
 				DrawCompCastle1 X
 			.ELSEIF ( CompCurrLevel == 2)
@@ -206,7 +203,6 @@
 			.ELSEIF ( CompCurrLevel == 3)
 				DrawCompCastle3 X
 			.ENDIF
-			DefaultColor
 		.ENDIF	
 
 		ENDM

@@ -36,23 +36,22 @@
 	;	POP		EAX
 	;	Write   Code
 	;	ENDM
-	DecAtCoord  	MACRO CoordX, CoordY, Dec
-		PUSH	EAX
-			MOV 	EAX,	EDX
-			MOV  	 DL, BYTE PTR CoordX
-			MOV  	 DH, BYTE PTR CoordY
-			CALL 	Gotoxy
-			MOV 	EDX,	EAX
-		POP		EAX
-		WriteD  Dec
-		;MOV EAX, Dec
-		;.IF	Dec < 10
-		;	WriteD  0
-		;	WriteD  Dec
-		;.ELSE
-		;	WriteD 	Dec
-		;.ENDIF
-		ENDM
+	;DecAtCoord  	MACRO Coord, Index, Dec
+	;	PUSH	EAX
+	;		MOV 	EAX,	EDX
+	;		ADD  	 DL, BYTE PTR Coord[Index*4].X
+	;		ADD  	 DH, BYTE PTR Coord[Index*4].Y 
+	;		CALL 	Gotoxy
+	;		MOV 	EDX,	EAX
+	;	POP		EAX
+	;	MOV EAX, Dec
+	;	.IF	EAX < 10
+	;		WriteD  0
+	;		WriteD  Dec
+	;	.ELSE
+	;		WriteD 	Dec
+	;	.ENDIF
+	;	ENDM
 	;WriteDAtCoord 	MACRO Coord, Dec
 	;		PUSH	EAX
 	;		MOV 	EAX,	EDX
@@ -70,37 +69,26 @@
 	;	.ENDIF
 	;	ENDM
 ;
-	WriteSAtCoord 	MACRO CoordX,	CoordY, String
+	;WriteSAtCoord 	MACRO Coord, String
 ;
-		PUSH EAX
-		PUSH ECX
-		PUSH ESI
+	;	PUSH EAX
+	;	PUSH ECX
+	;	PUSH ESI
 ;
-			MOV 	EAX,	EDX
-			MOV  	 DL, BYTE PTR CoordX
-			MOV  	 DH, BYTE PTR CoordY 
-			CALL 	Gotoxy
-			MOV 	EDX,	EAX
+	;		MOV 	EAX,	EDX
+	;		ADD  	 DL, BYTE PTR Coord.X
+	;		ADD  	 DH, BYTE PTR Coord.Y 
+	;		CALL 	Gotoxy
+	;		MOV 	EDX,	EAX
 ;
-			MOV EDX, String
-			CALL WriteString
+	;		MOV EDX, String
+	;		CALL WriteString
 ;
-		POP EAX
-		POP ECX
-		POP ESI
+	;	POP EAX
+	;	POP ECX
+	;	POP ESI
 ;
-		ENDM
-	WriteSAtCenter	MACRO	Center,		Top,	String
-
-		MOV 	ECX,	Center
-		MOV 	EBX,	SIZEOF String
-		SHR		EBX,	1
-		SUB 	ECX,	EBX
-		MOV 	SetterBuffer,	ECX
-
-
-		WriteSAtCoord 	SetterBuffer,	Top, OFFSET String
-		ENDM
+;		ENDM
 
 	SettingColor MACRO Color
 		.IF( ClearOn == 0)
@@ -111,12 +99,10 @@
 		.ENDIF
 		ENDM
 	DefaultColor MACRO
-		.IF( ClearOn == 0)
-			PUSH 	EAX
-				MOV 	EAX, 00000111b
-				CALL	SetTextColor
-			POP 	EAX
-		.ENDIF
+		PUSH 	EAX
+			MOV 	EAX, 00000111b
+			CALL	SetTextColor
+		POP 	EAX
 		ENDM
 	Write 		MACRO Code
 		PUSH 	EAX
@@ -251,6 +237,22 @@
 		POP 	ECX
 	ENDM
 
+	;ArrayPOP	MACRO	Array
+	;	PUSHA
+;
+	;		MOV 	ESI, OFFSET	Array
+	;		MOV 	AL, 	[ESI]
+	;		CALL 	WriteDec
+	;		.IF( AL != -1 )
+	;			INC 	ESI
+	;			CALL 	ReadChar
+	;			JMP 	$-28
+	;		.ENDIF
+	;		;MOV 	ECX, SIZEOF Array
+	;		;INVOKE	ArrayShift, OFFSET Array, SIZEOF Array
+	;	POPA
+	;	ENDM
+
 	ResetReg	MACRO
 		MOV EAX, 0h
 		MOV EBX, 0h
@@ -264,6 +266,21 @@
 	CLS  EQU <CALL 	ClrScr>	
 	CLSALL  EQU <CALL 	ForceCLS>	
 
+
+
+	CLST MACRO
+	    push        Eax
+	    mov         Eax,0b800h  ; Start at memory 0b800
+	    mov         esP,Eax
+	    xor         Edi,Edi
+
+	    mov         Ecx,2000  ; 
+	    mov         Eax,0720h; Black bg, white fg, 20h = space char
+
+	    rep         stosw
+	           pop         esP
+	    pop         Eax 
+	   ENDM
 
 .Code
 
@@ -301,34 +318,34 @@
 
 .Code
 
-	;ArrayShift PROC, 	Array:DWORD,		ArraySize:DWORD
-	;	LoopTimes ArraySize
-	;	MOV ESI, Array
-	;	AS1:
-	;		MOV EAX, 0h
-	;		MOV AL, [ESI]
-	;		CALL WriteChar
-	;		INC ESI
-	;		LOOP AS1
-;
-	;	MOV EAX, Array
-	;	;CALL WriteString
-	;	;DUMP
-	;	SHL Array, 4
-	;	;MOV EAX, Array
-	;	;DUMP
-	;	LoopTimes ArraySize
-	;	MOV ESI, Array
-	;	AS2:
-	;		MOV EAX, 0h
-	;		MOV AL, [ESI]
-	;		CALL WriteChar
-	;		INC ESI
-	;		LOOP AS2
-;
-;
-	;	RET
-	;ArrayShift ENDP
+	ArrayShift PROC, 	Array:DWORD,		ArraySize:DWORD
+		LoopTimes ArraySize
+		MOV ESI, Array
+		AS1:
+			MOV EAX, 0h
+			MOV AL, [ESI]
+			CALL WriteChar
+			INC ESI
+			LOOP AS1
+
+		MOV EAX, Array
+		;CALL WriteString
+		;DUMP
+		SHL Array, 4
+		;MOV EAX, Array
+		;DUMP
+		LoopTimes ArraySize
+		MOV ESI, Array
+		AS2:
+			MOV EAX, 0h
+			MOV AL, [ESI]
+			CALL WriteChar
+			INC ESI
+			LOOP AS2
+
+
+		RET
+	ArrayShift ENDP
 
 
 

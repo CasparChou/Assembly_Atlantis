@@ -1,70 +1,21 @@
 .Data
+
 	
-	Dialog_Example_1	DB "Greetings ! Welcome to Atlantis ! ",0
-	Dialog_Example_2	DB "We are under attacking ... ",0
-	Dialog_Example_3	DB "SO,",0
-	Dialog_Example_4	DB "We must to defeat the enemies ,",0
-	Dialog_Example_5	DB "or we will dead .",0
-
-	Introduce MACRO
-		DrawCastle	 	0, 0
-		DrawCastle		1, 103
-
-		Dialog 	Dialog_Example_1
-		Dialog 	Dialog_Example_2
-		Dialog 	Dialog_Example_3
-		Dialog 	Dialog_Example_4
-		Dialog 	Dialog_Example_5
-
-
-		ENDM
-	Dialog 	MACRO 	String
-		PUSHAD
-			WriteSAtCenter	60,	23,	String
-			AnyKeyToContinue
-			SettingColor	Black
-			WriteSAtCenter	60,	23,	String
-			DefaultColor
-		POPAD
-		ENDM
 	Draw MACRO
+
 		DrawCastle	 	0, 0
 		DrawCastle		1, 103
-
 		DrawSoldiers
-
-		DrawInfo
-		.IF( Timer_UserBuild > 0)
-			Building_Dialog Beats6x
-			;DrawLoading 	Beats4x
-		.ENDIF
+		;DrawInfo
 		ENDM
 
 	Clear MACRO
 		SettingColor 	Black
 		CopyFrom		ClearOn, 1
-		;Draw
-
-
-		.IF( UserLevelUpFlag == 1 )
-			DrawCastle	 	0, 0
-		.ENDIF
-		.IF( CompLevelUpFlag == 1 )
-			DrawCastle		1, 103
-		.ENDIF
-		DrawSoldiers
-		DrawInfo
-		.IF( Timer_UserBuild > 0)
-			Building_Dialog Beats6x
-			;DrawLoading		Beats4x
-		.ENDIF
-
-
-
-
+		Draw
 		DefaultColor
 		CopyFrom		ClearOn, 0
-
+		;CopyFrom 		KeyPress, 0
 		ENDM
 
 	LevelUpCheck MACRO
@@ -93,25 +44,28 @@
 			MOV EAX, 0
 			Call ReadKey
 			.IF( AL == 'Q' || AL == 'q' )
+				CopyFrom KeyPress, 1
 				;BuildUserSoldierA
 				BuildSoldierBufferTime 	0,	1
 			.ELSEIF( AL == 'W' || AL == 'w')
+				CopyFrom KeyPress, 2
 				;BuildUserSoldierB
 				BuildSoldierBufferTime 	0,	2
 			.ELSEIF( AL == 'E' || AL == 'e')
+				CopyFrom KeyPress, 3
 				;BuildUserSoldierC
 				BuildSoldierBufferTime 	0,	3
 
 
 			.ELSEIF( AL == 'I' || AL == 'i')
-				BuildCompSoldierA
-				;BuildSoldierBufferTime 	1, 1
+				;BuildCompSoldierA
+				BuildSoldierBufferTime 	1, 1
 			.ELSEIF( AL == 'O' || AL == 'o')
-				BuildCompSoldierB
-				;BuildSoldierBufferTime 	1, 2
+				;BuildCompSoldierB
+				BuildSoldierBufferTime 	1, 2
 			.ELSEIF( AL == 'P' || AL == 'p')
-				BuildCompSoldierC
-				;BuildSoldierBufferTime 	1, 3
+				;BuildCompSoldierC
+				BuildSoldierBufferTime 	1, 3
 
 
 			.ELSEIF( AL == 'Z' || AL == 'z')
@@ -125,21 +79,12 @@
 			.ENDIF
 		POPA
 		ENDM
+	DumpList 	MACRO
 
-	DumpList EQU <CALL DumpSoldierList>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;						;;;;
-;;;;		Collision 		;;;;
-;;;;						;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.Data
-
-	CollisionCheck MACRO
-
-
+		CALL DumpSoldierList
 
 		ENDM
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
 ;;;;		Moving 	 		;;;;
@@ -155,27 +100,31 @@
 		.ENDIF
 		AddBy Object[EBX].Y, AddY
 		ENDM
-	MoveOnSoldiers EQU	<CALL MoveingSoldiers>
+	MoveOnSoldiers MACRO
+		CALL MoveOnUserSoldiers
+		CALL MoveOnCompSoldiers
+		ENDM
 .Code
-	MoveingSoldiers PROC
+	MoveOnUserSoldiers PROC
 		LoopTimes 0
-		MUS:
+		MS:
 			ObjectOffset ECX
 			.IF UserSoldiers[EBX].Alive == 1
-				;CollisionCheck
 				MOVE UserSoldiers, ECX, 1, 0
 			.ENDIF
-			NextInc	16, MUS
+			NextInc	16, MS
+		RET
+	MoveOnUserSoldiers ENDP
+	MoveOnCompSoldiers PROC
 		LoopTimes 0
-		MCS:
+		MS:
 			ObjectOffset ECX
 			.IF CompSoldiers[EBX].Alive == 1
-				;CollisionCheck
 				MOVE CompSoldiers, ECX, -1, 0
 			.ENDIF
-			NextInc	16, MCS
+			NextInc	16, MS
 		RET
-	MoveingSoldiers ENDP
+	MoveOnCompSoldiers ENDP
 	
 
 
@@ -242,9 +191,9 @@
 						SettingSoldierX	 		UserSoldiers, ECX, 20
 						SettingSoldierLeague	UserSoldiers, ECX, 0
 						SettingSoldierLevel		UserSoldiers, ECX, UserCurrLevel
-						SettingSoldierState		UserSoldiers, ECX, 1
 						SettingSoldierInitialHP	UserSoldiers, ECX
 						SettingSoldierAttack	UserSoldiers, ECX
+						;SettingSoldierSize		UserSoldiers, ECX
 						POPA
 						RET
 					.ENDIF
@@ -259,9 +208,9 @@
 						SettingSoldierX	 		CompSoldiers, ECX, 90
 						SettingSoldierLeague	CompSoldiers, ECX, 1
 						SettingSoldierLevel		CompSoldiers, ECX, CompCurrLevel
-						SettingSoldierState		CompSoldiers, ECX, 1
 						SettingSoldierInitialHP	CompSoldiers, ECX
 						SettingSoldierAttack	CompSoldiers, ECX
+						;SettingSoldierSize		CompSoldiers, ECX
 						POPA
 						RET
 					.ENDIF
@@ -376,7 +325,7 @@
 			DSs:
 				NL
 				WriteD ECX
-				DumpSoldier CompSoldiers, ECX
+				DumpSoldier UserSoldiers, ECX
 				NextInc	8, DSs
 		POPA
 
