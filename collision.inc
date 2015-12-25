@@ -1,29 +1,52 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
-;;;;	   collision 	    ;;;;
+;;;;	   Collision 	    ;;;;
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 .DATA
-Compare_S 	DWORD 	?
-Compare_M	DWORD 	?
+Collision_User_X 	DWORD 	?
+Collision_Comp_X	DWORD 	?
 
-collision	MACRO	S_num, M_num, Check
+Collision	MACRO	USoldier_ID, CSoldiers_ID, Call_Back_Val
 	PUSHA
-		GettingSoldierX		UserSoldiers,S_num,GetterHandler
-		CopyFrom		Compare_S,GetterHandler
-		GettingSoldierX	CompSoldiers,M_num,GetterHandler
-		CopyFrom 		Compare_M,GetterHandler
+		;	Get User Soldier Current X Coord in ID
+		GettingSoldierX		UserSoldiers,			USoldier_ID,			GetterHandler
+		CopyFrom			Collision_User_X,		GetterHandler
 
-		mov		eax,Compare_S
-		mov		ecx,Compare_M
-		.IF		eax != 0 && ecx !=0
-			.IF		eax ==  ecx	
-			CopyFrom	Check,1
+		;	Get Computer Soldier Current X Coord in ID
+		GettingSoldierX		CompSoldiers,			CSoldiers_ID,			GetterHandler
+		CopyFrom 			Collision_Comp_X,		GetterHandler
+
+		MOV		EAX,	Collision_User_X
+		MOV 	EBX,	EAX
+		ADD		EBX,	6
+		MOV		ECX,	Collision_Comp_X
+
+		.IF	( EAX != 0 && ECX !=0 )
+			.IF	( EAX <=  ECX && EBX >= ECX )
+				AnyKeyToContinue
+
+				ObjectOffset 	USoldier_ID
+				CopyFrom 		UserSoldiers[EBX].State,	CSoldiers_ID
+				
+				ObjectOffset 	CSoldiers_ID
+				CopyFrom 		CompSoldiers[EBX].State,	USoldier_ID
+
+				SettingSoldierState 	UserSoldiers,	USoldier_ID,	CSoldiers_ID
+				SettingSoldierState 	CompSoldiers,	CSoldiers_ID,	USoldier_ID
+				CopyFrom	Call_Back_Val,	1
 			.ElSE
-			CopyFrom	Check,0
+				CopyFrom	Call_Back_Val,	0
 			.ENDIF
-			WriteD			GetterHandler
+
+			ObjectOffset 	USoldier_ID
+			CopyFrom 		EAX, UserSoldiers[EBX].State
+			WriteD			USoldier_ID
+			Write			':'
+			WriteD			EAX
+			Write			' '
+			WriteD			CSoldiers_ID
 		.ENDIF
 	POPA
 	ENDM	

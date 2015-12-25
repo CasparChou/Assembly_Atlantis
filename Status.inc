@@ -1,11 +1,14 @@
 .Data
 
+	DebugMode 		DWORD	0
+
 	AtlantisTitle 	DB 		"Atlantis",0
 	AtlantisSize	DB		8 DUP(0AH), 3 DUP(09H),"The best window size is 120 X 30, Press any key if you adjust done.",0
 
 	StartUp MACRO
 		CLS
 		INVOKE		SetConsoleTitle, 	OFFSET AtlantisTitle
+		DefaultColor
 		WriteS 		AtlantisSize
 		Translate 	0,0
 		AnyKeyToContinue
@@ -25,6 +28,7 @@
 
 
 
+	Beats6x 	DWORD 	1
 	Beats5x 	DWORD 	1
 	Beats4x 	DWORD 	1
 	Beats3x 	DWORD 	1
@@ -44,6 +48,7 @@
 		INC Beats3x
 		INC Beats4x
 		INC Beats5x
+		INC Beats6x
 		.IF Beats2x == 3
 			CopyFrom Beats2x, 1
 		.ENDIF
@@ -57,18 +62,21 @@
 			INC Timer1
 			CopyFrom Beats5x, 1
 		.ENDIF
+		.IF Beats6x == 7
+			CopyFrom Beats6x, 1
+		.ENDIF
 	ENDM
 
 
 	ClearOn 	DWORD 0
-	KeyPress 	DWORD 0
+	Building	DWORD 0
 
 
 
-	Timer1		DWORD 0
-	Timer_UserBuild	DWORD 0
-	Timer_CompBuild	DWORD 0
-
+	Timer1				DWORD 0
+	Timer_UserBuild		DWORD 0
+	Timer_CompBuild		DWORD 0
+	Timer_Build_Goal 	DWORD 0
 
 	User_BuildQueue		DWORD	0,0,0,0,0,-1	;5 DUP(0)
 	Comp_BuildQueue		DWORD	0,0,0,0,0,-1	;5 DUP(0)
@@ -77,9 +85,11 @@
 	UserBuildTimerCheck MACRO
 		PUSHA
 			MOV ESI, OFFSET User_BuildQueue
-			MOV EAX, [ESI]
+			MOV EAX, [ESI]		;Arms
 			GettingSoldierTime EAX,	UserCurrLevel, GetterHandler
-			MOV EAX,	GetterHandler 
+			MOV EAX,	GetterHandler
+			CopyFrom 	Timer_Build_Goal, 	GetterHandler
+			CopyFrom 	Building, [ESI]
 			.IF( Timer_UserBuild == EAX )
 				TriggleBuild 0, [ESI]
 				POPArray User_BuildQueue
@@ -87,7 +97,9 @@
 				.IF( EAX != 0 )
 					CopyFrom Timer_UserBuild, 1
 				.ELSE
-					CopyFrom Timer_UserBuild, 0
+					CopyFrom Timer_UserBuild, 	0
+					CopyFrom Timer_Build_Goal, 	0
+					CopyFrom Building, 0
 				.ENDIF
 			.ENDIF
 		POPA

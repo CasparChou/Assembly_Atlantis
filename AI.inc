@@ -17,9 +17,9 @@
 	AI MACRO
 
 		AutoBuild	Timer1, 1, BuildCompSoldierA
-		AutoBuild	Timer1, 2, BuildCompSoldierB
-		AutoBuild	Timer1, 3, BuildCompSoldierC
-		LoopBuild Timer1, 3
+		;AutoBuild	Timer1, 2, BuildCompSoldierB
+		;AutoBuild	Timer1, 3, BuildCompSoldierC
+		LoopBuild Timer1, 8
 
 
 

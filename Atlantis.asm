@@ -12,7 +12,9 @@
 	
 	INCLUDE	Status.inc
 	INCLUDE	Object.inc
-	INCLUDE collision.inc
+	INCLUDE Collision.inc
+	INCLUDE	Draw.inc
+	INCLUDE	Build.inc
 	INCLUDE	Function.inc
 
 	INCLUDE	AI.inc
@@ -20,24 +22,27 @@
 .Code
 MAIN:
 
+	;StartUpLogo
 	StartUp
 	LoopTimes 0FFFH
 	CLS
 	;Initial
+	DrawPanel
+	Introduce
+
+
 	DR:
 
-		DrawPanel
+		
+		;AnyKeyToContinue
 		Draw
 		;AI
-		KeyHandler
 		;DumpList
-		Translate 15, 2
-		;WriteD Timer1
-		;Write 	' '
-		;WriteD Timer_UserBuild
+		KeyHandler
+		Translate 60, 28
 		
-		PauseTime 800
-
+		PauseTime 600
+		
 		Clear
 
 		Beats
