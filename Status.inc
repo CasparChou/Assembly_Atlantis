@@ -1,5 +1,7 @@
 .Data
 
+	DebugMode 		DWORD	0
+
 	AtlantisTitle 	DB 		"Atlantis",0
 	AtlantisSize	DB		8 DUP(0AH), 3 DUP(09H),"The best window size is 120 X 30, Press any key if you adjust done.",0
 

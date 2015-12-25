@@ -1,71 +1,4 @@
 .Data
-	
-	Dialog_Example_1	DB "Greetings ! Welcome to Atlantis ! ",0
-	Dialog_Example_2	DB "We are under attacking ... ",0
-	Dialog_Example_3	DB "SO,",0
-	Dialog_Example_4	DB "We must to defeat the enemies ,",0
-	Dialog_Example_5	DB "or we will dead .",0
-
-	Introduce MACRO
-		DrawCastle	 	0, 0
-		DrawCastle		1, 103
-
-		Dialog 	Dialog_Example_1
-		Dialog 	Dialog_Example_2
-		Dialog 	Dialog_Example_3
-		Dialog 	Dialog_Example_4
-		Dialog 	Dialog_Example_5
-
-
-		ENDM
-	Dialog 	MACRO 	String
-		PUSHAD
-			WriteSAtCenter	60,	23,	String
-			AnyKeyToContinue
-			SettingColor	Black
-			WriteSAtCenter	60,	23,	String
-			DefaultColor
-		POPAD
-		ENDM
-	Draw MACRO
-		DrawCastle	 	0, 0
-		DrawCastle		1, 103
-
-		DrawSoldiers
-
-		DrawInfo
-		.IF( Timer_UserBuild > 0)
-			Building_Dialog Beats6x
-			;DrawLoading 	Beats4x
-		.ENDIF
-		ENDM
-
-	Clear MACRO
-		SettingColor 	Black
-		CopyFrom		ClearOn, 1
-		;Draw
-
-
-		.IF( UserLevelUpFlag == 1 )
-			DrawCastle	 	0, 0
-		.ENDIF
-		.IF( CompLevelUpFlag == 1 )
-			DrawCastle		1, 103
-		.ENDIF
-		DrawSoldiers
-		DrawInfo
-		.IF( Timer_UserBuild > 0)
-			Building_Dialog Beats6x
-			;DrawLoading		Beats4x
-		.ENDIF
-
-
-
-
-		DefaultColor
-		CopyFrom		ClearOn, 0
-
-		ENDM
 
 	LevelUpCheck MACRO
 		.IF( UserLevelUpFlag == 1)
@@ -77,14 +10,6 @@
 			CopyFrom CompLevelUpFlag, 0
 		.ENDIF
 
-		ENDM
-
-	GraphDisplay MACRO String
-			PUSH EDX
-				WriteS 	String
-			POP  EDX
-			INC  DH
-			Call GoToXY
 		ENDM
 
 
@@ -126,20 +51,42 @@
 		POPA
 		ENDM
 
-	DumpList EQU <CALL DumpSoldierList>
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
-;;;;		Collision 		;;;;
+;;;;		Dialog 	 		;;;;
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 .Data
+	Dialog_Example_1	DB "Greetings ! Welcome to Atlantis ! ",0
+	Dialog_Example_2	DB "We are under attacking ... ",0
+	Dialog_Example_3	DB "SO,",0
+	Dialog_Example_4	DB "We must to defeat the enemies ,",0
+	Dialog_Example_5	DB "or we will dead .",0
 
-	CollisionCheck MACRO
+	Introduce MACRO
+		DrawCastle	 	0, 0
+		DrawCastle		1, 103
 
+		Dialog 	Dialog_Example_1
+		Dialog 	Dialog_Example_2
+		Dialog 	Dialog_Example_3
+		Dialog 	Dialog_Example_4
+		Dialog 	Dialog_Example_5
 
 
 		ENDM
+	Dialog 	MACRO 	String
+		PUSHAD
+			WriteSAtCenter	60,	23,	String
+			AnyKeyToContinue
+			SettingColor	Black
+			WriteSAtCenter	60,	23,	String
+			DefaultColor
+		POPAD
+		ENDM
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
 ;;;;		Moving 	 		;;;;
@@ -161,175 +108,45 @@
 		LoopTimes 0
 		MUS:
 			ObjectOffset ECX
-			.IF UserSoldiers[EBX].Alive == 1
-				;CollisionCheck
-				MOVE UserSoldiers, ECX, 1, 0
+			.IF UserSoldiers[EBX].Alive == 1 && UserSoldiers[EBX].State == -1 
+				WriteD UserSoldiers[EBX].State
+				;AnyKeyToContinue
+				MOVE 	UserSoldiers, ECX, 1, 0
+				MOV 	SetterBuffer, ECX
+				PUSHA
+				LoopTimes 	8
+				CollisionCheck:
+					Collision	SetterBuffer,	ECX,	GetterHandler
+					.IF	GetterHandler == 1
+						AnyKeyToContinue
+						POPA
+						NextInc 16, MUS
+					.ENDIF
+					NEXT 	CollisionCheck
+				POPA
 			.ENDIF
 			NextInc	16, MUS
 		LoopTimes 0
 		MCS:
 			ObjectOffset ECX
-			.IF CompSoldiers[EBX].Alive == 1
-				;CollisionCheck
+			.IF CompSoldiers[EBX].Alive == 1 && CompSoldiers[EBX].State == -1
 				MOVE CompSoldiers, ECX, -1, 0
+				;CollisionCheck	
 			.ENDIF
 			NextInc	16, MCS
 		RET
 	MoveingSoldiers ENDP
 	
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;						;;;;
-;;;;	Build New Soldier 	;;;;
-;;;;						;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.Data
-	TriggleBuild MACRO 	League,	Arms
-		PUSHA
-			MOV EAX, League
-			MOV EBX, Arms
-			.IF( EAX == 0)
-				.IF( EBX == 1)
-					BuildUserSoldierA
-				.ELSEIF( EBX == 2)
-					BuildUserSoldierB
-				.ELSEIF( EBX == 3)
-					BuildUserSoldierC
-				.ENDIF
-			.ELSE
-				.IF( EBX == 1)
-					BuildCompSoldierA
-				.ELSEIF( EBX == 2)
-					BuildCompSoldierB
-				.ELSEIF( EBX == 3)
-					BuildCompSoldierC
-				.ENDIF
-			.ENDIF
-		POPA
-		ENDM
-	BuildSoldierBufferTime 	MACRO	League,		Arms
-		PUSHA
-			.IF( Timer_UserBuild == 0)
-				CopyFrom Timer_UserBuild, 1
-			.ENDIF
-			MOV EAX,	League
-			.IF( EAX == 0 )
-				PUSHArray 	User_BuildQueue,	Arms
-			.ELSE
-				PUSHArray	Comp_BuildQueue,	Arms
-			.ENDIF
-		POPA
-		ENDM
-	BuildSoldier MACRO Object, League, Arms, Speed
-		PUSHA
-			INVOKE FindUsableSoldier, League, Arms
-		POPA
-		ENDM
-.Code	
-	FindUsableSoldier PROC, League:DWORD, Arms:DWORD
-		PUSHA
-				;WriteD League
-				;AnyKeyToContinue
-
-			.IF (League == 0)
-				LoopTimes 0
-				FindUser:
-					ObjectOffset ECX
-					.IF (UserSoldiers[EBX].Alive == 0)
-						SettingSoldierAlive		UserSoldiers, ECX, 1
-						SettingSoldierArms 		UserSoldiers, ECX, Arms
-						SettingSoldierX	 		UserSoldiers, ECX, 20
-						SettingSoldierLeague	UserSoldiers, ECX, 0
-						SettingSoldierLevel		UserSoldiers, ECX, UserCurrLevel
-						SettingSoldierState		UserSoldiers, ECX, 1
-						SettingSoldierInitialHP	UserSoldiers, ECX
-						SettingSoldierAttack	UserSoldiers, ECX
-						POPA
-						RET
-					.ENDIF
-					NextInc 8, FindUser
-			.ELSEIF (League == 1)
-				LoopTimes 0
-				FindComp:
-					ObjectOffset ECX
-					.IF (CompSoldiers[EBX].Alive == 0)
-						SettingSoldierAlive		CompSoldiers, ECX, 1
-						SettingSoldierArms 		CompSoldiers, ECX, Arms
-						SettingSoldierX	 		CompSoldiers, ECX, 90
-						SettingSoldierLeague	CompSoldiers, ECX, 1
-						SettingSoldierLevel		CompSoldiers, ECX, CompCurrLevel
-						SettingSoldierState		CompSoldiers, ECX, 1
-						SettingSoldierInitialHP	CompSoldiers, ECX
-						SettingSoldierAttack	CompSoldiers, ECX
-						POPA
-						RET
-					.ENDIF
-					NextInc 8,	FindComp
-			.ENDIF
-		POPA
-		RET
-	FindUsableSoldier ENDP
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;						;;;;
-;;;;	Drawing Soldiers 	;;;;
-;;;;						;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.Data
-	SoldierOn	MACRO Object, ID
-		ObjectOffset ID
-		.IF (Object[EBX].Alive == 1)
-			.IF (Object[EBX].League == 0) 
-				
-				.IF (Object[EBX].Arms == 1) 
-					DrawSoldierA Object[EBX], Beats2x
-				.ELSEIF (Object[EBX].Arms == 2) 
-					DrawSoldierB Object[EBX], Beats2x
-				.ELSEIF (Object[EBX].Arms == 3) 
-					DrawSoldierC Object[EBX], Beats4x
-				.ENDIF
-
-			.ELSEIF (Object[EBX].League == 1) 
-
-				.IF (Object[EBX].Arms == 1) 
-					DrawMonsterA Object[EBX], Beats2x
-				.ELSEIF (Object[EBX].Arms == 2) 
-					DrawMonsterB Object[EBX], Beats4x
-				.ELSEIF (Object[EBX].Arms == 3) 
-					DrawMonsterC Object[EBX], Beats4x
-				.ENDIF
-
-			.ENDIF
-			;WriteD MonsterWidth[((Object[EBX].Level-1)*4)+((Object[EBX].Arms-1)*12)]
-			;WriteD ID
-			;GettingSoldierWidth Object, ID, GetterHandler
-			;WriteD GetterHandler
-		.ENDIF
-		ENDM
-.Code
-	DrawingSoldiers 	PROC
-		PUSHA
-			LoopTimes 0
-			DSs:
-				SoldierOn	UserSoldiers, ECX
-				SoldierOn	CompSoldiers, ECX
-				NextInc	8, DSs
-		POPA
-		RET
-	DrawingSoldiers		ENDP
-
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
 ;;;;	Dump 	 Soldiers 	;;;;
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .Data
+	DumpList MACRO 
+		CopyFrom DebugMode, 1
+		CALL DumpSoldierList
+		ENDM
 	DumpSoldier 	MACRO	Object, ID
 		ObjectOffset ID
 		Write  09H
@@ -351,8 +168,8 @@
 		Write  09H
 		WriteD	Object[EBX].League
 		Write  09H
-		;WriteD	Object[EBX].State
-		;Write  09H
+		WriteD	Object[EBX].State
+		Write  09H
 		WriteD	Object[EBX].Alive
 		Write  09H
 	ENDM
@@ -366,17 +183,19 @@
 					"Level",	09H,
 					"AR",		09H,
 					"Leag",		09H,
+					"State",	09H,
 					"Alive",	09H, 0
 
 .Code
 	DumpSoldierList		PROC
 		PUSHA
+			CopyFrom DebugMode, 1
 			WriteS TableHead
 			LoopTimes 0
 			DSs:
 				NL
 				WriteD ECX
-				DumpSoldier CompSoldiers, ECX
+				DumpSoldier UserSoldiers, ECX
 				NextInc	8, DSs
 		POPA
 
