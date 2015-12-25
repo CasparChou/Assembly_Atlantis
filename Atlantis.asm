@@ -1,24 +1,55 @@
-
+	
 
 	INCLUDE	Irvine32.inc
-	INCLUDE	Motion.inc
-	INCLUDE	Status.inc
-	INCLUDE	Function.inc
 	INCLUDE	Helpers.inc
 
 	INCLUDE	UI.inc
+	INCLUDE	Graph_UI.inc
 	INCLUDE	Graph_castle.inc
 	INCLUDE	Graph_soldier.inc
 	INCLUDE	Graph_turret.inc
+	INCLUDE	Graph_Monster.inc
+	
+	INCLUDE	Status.inc
+	INCLUDE	Object.inc
+	INCLUDE Collision.inc
+	INCLUDE	Draw.inc
+	INCLUDE	Build.inc
+	INCLUDE	Function.inc
+
+	INCLUDE	AI.inc
 
 .Code
 MAIN:
 
+	;StartUpLogo
+	StartUp
+	LoopTimes 0FFFH
+	CLS
+	;Initial
+	DrawPanel
+	Introduce
 
 
-	Draw
+	DR:
 
+		
+		;AnyKeyToContinue
+		Draw
+		;AI
+		;DumpList
+		KeyHandler
+		Translate 60, 28
+		
+		PauseTime 600
+		
+		Clear
 
+		Beats
+		MoveOnSoldiers
+		LevelUpCheck
 
+		LoopTimes 0FFFH
+		NEXT DR
 ExitMain
 END MAIN
