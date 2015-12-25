@@ -7,6 +7,8 @@
 		DrawCastle		1, 103
 		DrawSoldiers
 		;DrawInfo
+
+		collision		0,0,GetterHandler
 		ENDM
 
 	Clear MACRO
@@ -45,27 +47,27 @@
 			Call ReadKey
 			.IF( AL == 'Q' || AL == 'q' )
 				CopyFrom KeyPress, 1
-				;BuildUserSoldierA
-				BuildSoldierBufferTime 	0,	1
+				BuildUserSoldierA
+				;BuildSoldierBufferTime 	0,	1
 			.ELSEIF( AL == 'W' || AL == 'w')
 				CopyFrom KeyPress, 2
-				;BuildUserSoldierB
-				BuildSoldierBufferTime 	0,	2
+				BuildUserSoldierB
+				;BuildSoldierBufferTime 	0,	2
 			.ELSEIF( AL == 'E' || AL == 'e')
 				CopyFrom KeyPress, 3
-				;BuildUserSoldierC
-				BuildSoldierBufferTime 	0,	3
+				BuildUserSoldierC
+				;BuildSoldierBufferTime 	0,	3
 
 
 			.ELSEIF( AL == 'I' || AL == 'i')
-				;BuildCompSoldierA
-				BuildSoldierBufferTime 	1, 1
+				BuildCompSoldierA
+				;BuildSoldierBufferTime 	1, 1
 			.ELSEIF( AL == 'O' || AL == 'o')
-				;BuildCompSoldierB
-				BuildSoldierBufferTime 	1, 2
+				BuildCompSoldierB
+				;BuildSoldierBufferTime 	1, 2
 			.ELSEIF( AL == 'P' || AL == 'p')
-				;BuildCompSoldierC
-				BuildSoldierBufferTime 	1, 3
+				BuildCompSoldierC
+				;BuildSoldierBufferTime 	1, 3
 
 
 			.ELSEIF( AL == 'Z' || AL == 'z')
