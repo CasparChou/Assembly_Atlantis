@@ -121,6 +121,12 @@
 					MOVE 		UserSoldiers, 	ECX, 1, 0
 					CollisionCheck	 	CollisionCurrID
 					UserWaitStackCheck	WaitCheckCurrID
+				.ELSEIF( UserSoldiers[EBX].AttackTo != -1 )
+					CopyFrom UserAttackSoldier, ECX
+					CopyFrom UserAttackTarget, UserSoldiers[EBX].AttackTo
+					.IF UserAttackTimer == 0
+						CopyFrom UserAttackTimer,	1
+					.ENDIF
 				.ENDIF
 			.ENDIF
 			NextInc	8, MUS
@@ -133,6 +139,12 @@
 					MOVE CompSoldiers, ECX, -1, 0
 					CopyFrom 	WaitCheckCurrID,	ECX
 					CompWaitStackCheck	WaitCheckCurrID
+				.ELSEIF (CompSoldiers[EBX].AttackTo != -1)
+					CopyFrom CompAttackSoldier, ECX
+					CopyFrom CompAttackTarget, CompSoldiers[EBX].AttackTo
+					.IF CompAttackTimer == 0
+						CopyFrom CompAttackTimer, 1
+					.ENDIF
 				.ENDIF
 				;CollisionCheck	
 			.ENDIF

@@ -10,13 +10,13 @@ Collision_B_X	DWORD 	?
 
 CollisionCheck MACRO 	Current
 	PUSHA
-		LoopTimes 	7
+		LoopTimes 	0
 		CollisionChecking:
 			Collision	Current,	ECX,	GetterHandler
 			.IF	GetterHandler == 1
-				MOV ECX, 0
+				;MOV ECX, 0
 			.ENDIF
-			NEXT 	CollisionChecking
+			NEXTINC 7, 	CollisionChecking
 	POPA
 	ENDM
 UserWaitStackCheck MACRO 	Current
@@ -55,21 +55,20 @@ CompWaitStackCheck MACRO 	Current
 Collision	MACRO	UserSoldier, CompSoldier, Call_Back_Val
 	PUSHA
 		;	Get User Soldier Current X Coord in ID
-		GettingSoldierX		UserSoldiers,			UserSoldier,			GetterHandler
-		CopyFrom			Collision_A_X,			GetterHandler
+		GettingSoldierX		UserSoldiers,			UserSoldier,			Collision_A_X
 		;	Get Computer Soldier Current X Coord in ID
-		GettingSoldierX		CompSoldiers,			CompSoldier,			GetterHandler
-		CopyFrom 			Collision_B_X,			GetterHandler
+		GettingSoldierX		CompSoldiers,			CompSoldier,			Collision_B_X
 
 		MOV		EAX,	Collision_A_X
-		MOV 	EBX,	EAX
-		ADD		EBX,	6
-		MOV		ECX,	Collision_B_X
+		MOV 	EBX,	Collision_B_X
+		
+		MOV 	EDX,	EBX
+		SUB 	EDX,	EAX
 
-		.IF	( EAX != 0 && ECX !=0 )
-			.IF	( EAX <=  ECX && EBX >= ECX )
-				SettingSoldierAttackTO 	UserSoldiers,	UserSoldier,	CompSoldier
-				SettingSoldierAttackTO 	CompSoldiers,	CompSoldier,	UserSoldier
+		.IF	( EAX != 0 && EBX !=0 )
+			.IF	( EDX < 6 )
+				SettingSoldierAttackTo 	UserSoldiers,	UserSoldier,	CompSoldier
+				SettingSoldierAttackTo 	CompSoldiers,	CompSoldier,	UserSoldier
 				CopyFrom	Call_Back_Val,	1
 			.ElSE
 				CopyFrom	Call_Back_Val,	0

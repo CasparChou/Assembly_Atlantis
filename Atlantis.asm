@@ -13,7 +13,7 @@
 	INCLUDE	Status.inc
 	INCLUDE	Object.inc
 	INCLUDE Collision.inc
-	;INCLUDE Attack.inc
+	INCLUDE Attack.inc
 	INCLUDE	Draw.inc
 	INCLUDE	Build.inc
 	INCLUDE	Function.inc
@@ -41,7 +41,7 @@ MAIN:
 		KeyHandler
 		Translate 60, 28
 		
-		PauseTime 600
+		PauseTime 300
 		
 		Clear
 

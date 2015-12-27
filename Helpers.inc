@@ -230,6 +230,12 @@
 			ADD A, 	EAX
 		POP EAX
 	ENDM
+	SubBy MACRO A, B
+		PUSH EAX
+			MOV EAX, B
+			SUB A, 	EAX
+		POP EAX
+	ENDM
 	ExitMain MACRO
 		;Translate 20,20
 		;PrintAt 0,0, 20H

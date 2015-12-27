@@ -36,14 +36,11 @@
 	
 
 	Beats MACRO
-		.IF( Timer_UserBuild > 0 && Beats2x == 1 )
-			INC Timer_UserBuild
-			UserBuildTimerCheck
-		.ENDIF
-		.IF( Timer_CompBuild > 0 && Beats2x == 1 )
-			INC Timer_CompBuild
-			CompBuildTimerCheck
-		.ENDIF
+		TimerCheck 	Timer_UserBuild,	Beats2x,	UserBuildTimerCheck
+		TimerCheck 	Timer_CompBuild,	Beats2x,	CompBuildTimerCheck
+		TimerCheck 	UserAttackTimer,	Beats2x,	UserAttack
+		TimerCheck 	CompAttackTimer,	Beats2x,	CompAttack
+		
 		INC Beats2x
 		INC Beats3x
 		INC Beats4x
@@ -67,6 +64,12 @@
 		.ENDIF
 	ENDM
 
+	TimerCheck MACRO	Timer,	BeatsX,	CallBack
+		.IF( Timer > 0 && BeatsX == 1)
+			INC Timer
+			CallBack
+		.ENDIF
+		ENDM
 
 	ClearOn 	DWORD 0
 	Building	DWORD 0
@@ -77,6 +80,8 @@
 	Timer_UserBuild		DWORD 0
 	Timer_CompBuild		DWORD 0
 	Timer_Build_Goal 	DWORD 0
+	UserAttackTimer		DWORD 0
+	CompAttackTimer		DWORD 0
 
 	User_BuildQueue		DWORD	0,0,0,0,0,-1	;5 DUP(0)
 	Comp_BuildQueue		DWORD	0,0,0,0,0,-1	;5 DUP(0)
