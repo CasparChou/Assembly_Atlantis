@@ -92,7 +92,7 @@
 			CopyFrom 	Building, [ESI]
 			.IF( Timer_UserBuild == EAX )
 				TriggleBuild 0, [ESI]
-				POPArray User_BuildQueue
+				POPArray 	User_BuildQueue
 				MOV EAX, User_BuildQueue
 				.IF( EAX != 0 )
 					CopyFrom Timer_UserBuild, 1
