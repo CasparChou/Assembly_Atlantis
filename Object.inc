@@ -244,7 +244,7 @@
 		POPA
 		ENDM
 
-	GettingSoldierAttack	MACRO	Object, ID
+	GettingSoldierAttack	MACRO	Object, ID,	StoreTo
 		PUSHA
 			ObjectOffset 	ID
 			CounterSoldierOffset Object
@@ -305,6 +305,21 @@
 		POPA
 		ENDM
 
+
+	DestorySoldier 		MACRO	Object,	ID
+		PUSHA
+
+			SettingSoldierAlive		Object, ID, 0
+			SettingSoldierArms 		Object, ID, 0
+			SettingSoldierX	 		Object, ID, 0
+			SettingSoldierLeague	Object, ID, 0
+			SettingSoldierLevel		Object, ID, 0
+			SettingSoldierWaitFor	Object, ID, 0
+			SettingSoldierAttackTo	Object, ID, 0
+			SettingSoldierHP		Object, ID, 0
+
+		POPA
+		ENDM
 .Code
 	
 	Init PROC
