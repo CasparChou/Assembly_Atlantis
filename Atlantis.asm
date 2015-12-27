@@ -13,6 +13,7 @@
 	INCLUDE	Status.inc
 	INCLUDE	Object.inc
 	INCLUDE Collision.inc
+	;INCLUDE Attack.inc
 	INCLUDE	Draw.inc
 	INCLUDE	Build.inc
 	INCLUDE	Function.inc
@@ -26,7 +27,6 @@ MAIN:
 	StartUp
 	LoopTimes 0FFFH
 	CLS
-	;Initial
 	DrawPanel
 	Introduce
 
@@ -37,7 +37,7 @@ MAIN:
 		;AnyKeyToContinue
 		Draw
 		;AI
-		;DumpList
+		DumpList
 		KeyHandler
 		Translate 60, 28
 		

@@ -26,6 +26,8 @@
 		League		DWORD 0
 
 		State		DWORD 0
+		WaitFor		DWORD 0
+		AttackTo	DWORD 0
 		Alive		DWORD 0
 	Soldier ENDS
 
@@ -125,6 +127,32 @@
 		PUSHA
 			ObjectOffset 	ID
 			CopyFrom  		Object[EBX].State, Number
+		POPA
+		ENDM
+
+	GettingSoldierWaitFor		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].WaitFor
+		POPA
+		ENDM
+	SettingSoldierWaitFor		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].WaitFor, Number
+		POPA
+		ENDM
+
+	GettingSoldierAttackTo		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].AttackTo
+		POPA
+		ENDM
+	SettingSoldierAttackTo		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].AttackTo, Number
 		POPA
 		ENDM
 ;
