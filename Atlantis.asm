@@ -32,12 +32,10 @@ MAIN:
 
 
 	DR:
-
-		
 		;AnyKeyToContinue
 		Draw
 		;AI
-		DumpList
+		;DumpList
 		KeyHandler
 		Translate 60, 28
 		

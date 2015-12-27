@@ -21,6 +21,7 @@ CollisionCheck MACRO 	Current
 	ENDM
 UserWaitStackCheck MACRO 	Current
 	PUSHA
+		SettingSoldierWaitFor 	UserSoldiers,	Current,	-1
 		LoopTimes 	0
 		UserWattingChecking:
 			ObjectOffset ECX
@@ -37,6 +38,7 @@ UserWaitStackCheck MACRO 	Current
 	ENDM
 CompWaitStackCheck MACRO 	Current
 	PUSHA
+		SettingSoldierWaitFor 	CompSoldiers,	Current,	-1
 		LoopTimes 	0
 		CompWattingChecking:
 			ObjectOffset ECX

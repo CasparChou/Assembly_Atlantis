@@ -113,12 +113,12 @@
 		MUS:
 			ObjectOffset ECX
 			.IF UserSoldiers[EBX].Alive == 1
-				.IF( UserSoldiers[EBX].AttackTo == -1 && UserSoldiers[EBX].WaitFor == -1 )
-				;WriteD UserSoldiers[EBX].State
-				;AnyKeyToContinue
+				.IF( UserSoldiers[EBX].AttackTo == -1 )
+					.IF ( UserSoldiers[EBX].WaitFor == -1 )
+						MOVE 		UserSoldiers, 	ECX, 1, 0
+					.ENDIF
 					CopyFrom 	CollisionCurrID,	ECX
 					CopyFrom 	WaitCheckCurrID,	ECX
-					MOVE 		UserSoldiers, 	ECX, 1, 0
 					CollisionCheck	 	CollisionCurrID
 					UserWaitStackCheck	WaitCheckCurrID
 				.ELSEIF( UserSoldiers[EBX].AttackTo != -1 )
@@ -135,8 +135,10 @@
 			ObjectOffset ECX
 			;WaitStackCheck	1,	ECX
 			.IF CompSoldiers[EBX].Alive == 1 
-				.IF(CompSoldiers[EBX].AttackTo == -1 && CompSoldiers[EBX].WaitFor == -1)
-					MOVE CompSoldiers, ECX, -1, 0
+				.IF(CompSoldiers[EBX].AttackTo == -1)
+					.IF( CompSoldiers[EBX].WaitFor == -1 )			
+						MOVE CompSoldiers, ECX, -1, 0
+					.ENDIF
 					CopyFrom 	WaitCheckCurrID,	ECX
 					CompWaitStackCheck	WaitCheckCurrID
 				.ELSEIF (CompSoldiers[EBX].AttackTo != -1)

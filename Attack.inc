@@ -14,8 +14,21 @@
 
 
 	UserAttack MACRO
+		PUSHAD
+			GettingSoldierAttack	UserSoldiers, 	UserAttackSoldier,	UserATK
+			GettingSoldierHP		CompSoldiers, 	UserAttackTarget,	CompHP
+			
+			MOV EAX,	UserATK
+			.IF( CompHP > EAX )
+				SubBy CompHP,	UserATK
+				SettingSoldierHP		CompSoldiers,	UserAttackTarget,	CompHP
+			.ELSE
+				DestorySoldier CompSoldiers, UserAttackTarget
+				SettingSoldierAttackTo	UserSoldiers,	UserAttackSoldier,	-1
+				ResetAttack
+			.ENDIF
 
-
+		POPAD
 		ENDM
 
 
@@ -24,9 +37,11 @@
 			GettingSoldierAttack	CompSoldiers, 	CompAttackSoldier,	CompATK
 			GettingSoldierHP		UserSoldiers, 	CompAttackTarget,	UserHP
 			
-			SubBy UserHP,	CompATK
-			SettingSoldierHP		UserSoldiers,	CompAttackTarget,	UserHP
-			.IF( UserHP == 0)
+			MOV EAX, CompATK
+			.IF( UserHP > EAX )
+				SubBy UserHP,	CompATK
+				SettingSoldierHP		UserSoldiers,	CompAttackTarget,	UserHP
+			.ELSE
 				DestorySoldier UserSoldiers, CompAttackTarget
 				SettingSoldierAttackTo	CompSoldiers,	CompAttackSoldier,	-1
 				ResetAttack
