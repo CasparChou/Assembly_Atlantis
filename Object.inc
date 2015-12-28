@@ -26,6 +26,8 @@
 		League		DWORD 0
 
 		State		DWORD 0
+		WaitFor		DWORD 0
+		AttackTo	DWORD 0
 		Alive		DWORD 0
 	Soldier ENDS
 
@@ -127,6 +129,32 @@
 			CopyFrom  		Object[EBX].State, Number
 		POPA
 		ENDM
+
+	GettingSoldierWaitFor		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].WaitFor
+		POPA
+		ENDM
+	SettingSoldierWaitFor		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].WaitFor, Number
+		POPA
+		ENDM
+
+	GettingSoldierAttackTo		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].AttackTo
+		POPA
+		ENDM
+	SettingSoldierAttackTo		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].AttackTo, Number
+		POPA
+		ENDM
 ;
 ;
 	;GettingSoldierHeight	MACRO	Object, ID, StoreTo
@@ -216,7 +244,7 @@
 		POPA
 		ENDM
 
-	GettingSoldierAttack	MACRO	Object, ID
+	GettingSoldierAttack	MACRO	Object, ID,	StoreTo
 		PUSHA
 			ObjectOffset 	ID
 			CounterSoldierOffset Object
@@ -277,6 +305,21 @@
 		POPA
 		ENDM
 
+
+	DestorySoldier 		MACRO	Object,	ID
+		PUSHA
+
+			SettingSoldierAlive		Object, ID, 0
+			SettingSoldierArms 		Object, ID, 0
+			SettingSoldierX	 		Object, ID, 0
+			SettingSoldierLeague	Object, ID, 0
+			SettingSoldierLevel		Object, ID, 0
+			SettingSoldierWaitFor	Object, ID, 0
+			SettingSoldierAttackTo	Object, ID, 0
+			SettingSoldierHP		Object, ID, 0
+
+		POPA
+		ENDM
 .Code
 	
 	Init PROC

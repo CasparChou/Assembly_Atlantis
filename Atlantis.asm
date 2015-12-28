@@ -13,6 +13,7 @@
 	INCLUDE	Status.inc
 	INCLUDE	Object.inc
 	INCLUDE Collision.inc
+	INCLUDE Attack.inc
 	INCLUDE	Draw.inc
 	INCLUDE	Build.inc
 	INCLUDE	Function.inc
@@ -26,14 +27,11 @@ MAIN:
 	StartUp
 	LoopTimes 0FFFH
 	CLS
-	;Initial
 	DrawPanel
 	Introduce
 
 
 	DR:
-
-		
 		;AnyKeyToContinue
 		Draw
 		;AI
@@ -41,7 +39,7 @@ MAIN:
 		KeyHandler
 		Translate 60, 28
 		
-		PauseTime 600
+		PauseTime 300
 		
 		Clear
 

@@ -230,6 +230,12 @@
 			ADD A, 	EAX
 		POP EAX
 	ENDM
+	SubBy MACRO A, B
+		PUSH EAX
+			MOV EAX, B
+			SUB A, 	EAX
+		POP EAX
+	ENDM
 	ExitMain MACRO
 		;Translate 20,20
 		;PrintAt 0,0, 20H
@@ -428,6 +434,27 @@
 		RET
 		ArrayPUSH 	ENDP
 
+		ArraySearch 	PROC, 	Array:DWORD,	Num:DWORD;,	StoreTo:DWORD
+			PUSHA
+			;	MOV 	ESI, 	Array
+			;	MOV 	EAX, 	[ESI]
+			;	MOV 	StoreTo,	0
+			;	.WHILE (EAX != Number && EAX != -1)
+			;		ADD ESI, 4
+			;		MOV EAX, [ESI]
+			;		INC StoreTo
+			;	.ENDW
+;
+			;	.IF( EAX == -1 )
+			;		CopyFrom StoreTo, -1
+			;		RET
+			;	.ENDIF
+;
+			;	CopyFrom [ESI], Number
+			POPA
+		RET
+		ArraySearch 	ENDP
+
 .Data
 
 	PushArray MACRO	Array,	Num
@@ -442,7 +469,43 @@
 		INVOKE ArrayDump, OFFSET Array
 		ENDM
 
+	ArrayEncode	MACRO NUMBER, StoreTo
+		PUSHA
+			MOV EAX,	NUMBER
+			INC EAX
+			MOV StoreTo, EAX
+		POPA
+		ENDM
+	ArrayDecode	MACRO NUMBER, StoreTo
+		PUSHA
+			MOV EAX,	NUMBER
+			DEC EAX
+			MOV StoreTo, EAX
+		POPA
+		ENDM
+
+	SearchArray	MACRO 	Array,	Number,	StoreTo
+		PUSHAD
+			MOV 		ESI, 	OFFSET Array
+			MOV 		EAX, 	[ESI]
+			CopyFrom 	StoreTo,	0
+			.WHILE (EAX != Number && EAX != -1)
+				ADD ESI, 4
+				MOV EAX, [ESI]
+				INC StoreTo
+			.ENDW
+		
+			.IF( EAX == -1 )
+				CopyFrom StoreTo, -1
+			.ENDIF
+		POPAD
+		ENDM
 COMMENT *
+
+	IF WANT 0 IN QUEUE
+	EXAMPLE:
+		ArrayEncode	NUMBER	
+		ArrayDecode NUMBER
 
 	TO USE ArrayPOP
 	EXAMPLE:
@@ -455,5 +518,9 @@ COMMENT *
 	TO USE ArrayPOP
 	EXAMPLE:
 		INVOKE ArrayDump, OFFSET YOUR_ARRAY
+
+	TO SEARCH ITEM IN ARRAY
+	EXAMPLE:
+		INVOKE ArraySearch, OFFSET YOUR_ARRAY,	Number,	StoreTo
 
 *		
