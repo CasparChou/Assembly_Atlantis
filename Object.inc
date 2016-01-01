@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 	
@@ -40,15 +41,15 @@
 								3, 3, 3,	;B
 								3, 4, 5		;C
 
-	UserSoldier_Width	DWORD	3, 4, 4,	;A
-								3, 3, 3,	;B
-								3, 4, 5		;C
+	UserSoldier_Width	DWORD	5, 12, 16,	;A
+								5, 5, 6,	;B
+								9, 8, 10	;C
 
 	CompSoldier_Height	DWORD	4, 4, 6,	;A
 								3, 5, 5,	;B
 								2, 5, 6		;C
 
-	CompSoldier_Width	DWORD	3, 4, 4,	;A
+	CompSoldier_Width	DWORD	5, 12, 16,	;A
 								3, 3, 3,	;B
 								3, 4, 5		;C
 

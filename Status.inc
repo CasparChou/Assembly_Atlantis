@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 	DebugMode 		DWORD	0
@@ -68,6 +69,12 @@
 		.IF( Timer > 0 && BeatsX == 1)
 			INC Timer
 			CallBack
+		.ENDIF
+		ENDM
+
+	TimerInc MACRO	Timer,	BeatsX
+		.IF( Timer > 0 && BeatsX == 1)
+			INC Timer
 		.ENDIF
 		ENDM
 

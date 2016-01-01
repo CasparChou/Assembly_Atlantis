@@ -1,4 +1,5 @@
-	
+;	Version 3
+
 
 	INCLUDE	Irvine32.inc
 	INCLUDE	Helpers.inc
@@ -34,7 +35,7 @@ MAIN:
 	DR:
 		;AnyKeyToContinue
 		Draw
-		;AI
+		AI
 		;DumpList
 		KeyHandler
 		Translate 60, 28

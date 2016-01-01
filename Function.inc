@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 	LevelUpCheck MACRO
@@ -105,6 +106,7 @@
 		AddBy Object[EBX].Y, AddY
 		ENDM
 	MoveOnSoldiers EQU	<CALL MoveingSoldiers>
+	CurrentID 		DWORD 	?
 	CollisionCurrID	DWORD	?
 	WaitCheckCurrID	DWORD	?
 .Code
@@ -112,17 +114,16 @@
 		LoopTimes 0
 		MUS:
 			ObjectOffset ECX
+			CopyFrom 	CurrentID,	ECX
 			.IF UserSoldiers[EBX].Alive == 1
 				.IF( UserSoldiers[EBX].AttackTo == -1 )
 					.IF ( UserSoldiers[EBX].WaitFor == -1 )
-						MOVE 		UserSoldiers, 	ECX, 1, 0
+						MOVE 		UserSoldiers, 	CurrentID, 1, 0
 					.ENDIF
-					CopyFrom 	CollisionCurrID,	ECX
-					CopyFrom 	WaitCheckCurrID,	ECX
-					CollisionCheck	 	CollisionCurrID
-					UserWaitStackCheck	WaitCheckCurrID
+					UserWaitStackCheck	CurrentID
+					CollisionCheck	 	CurrentID
 				.ELSEIF( UserSoldiers[EBX].AttackTo != -1 )
-					CopyFrom UserAttackSoldier, ECX
+					CopyFrom UserAttackSoldier, CurrentID
 					CopyFrom UserAttackTarget, UserSoldiers[EBX].AttackTo
 					.IF UserAttackTimer == 0
 						CopyFrom UserAttackTimer,	1

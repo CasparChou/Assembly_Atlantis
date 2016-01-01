@@ -67,8 +67,10 @@ Collision	MACRO	UserSoldier, CompSoldier, Call_Back_Val
 		MOV 	EDX,	EBX
 		SUB 	EDX,	EAX
 
+		GettingSoldierWidth UserSoldiers, UserSoldier, GetterHandler
+		MOV ECX, GetterHandler
 		.IF	( EAX != 0 && EBX !=0 )
-			.IF	( EDX < 6 )
+			.IF	( EDX < ECX )
 				SettingSoldierAttackTo 	UserSoldiers,	UserSoldier,	CompSoldier
 				SettingSoldierAttackTo 	CompSoldiers,	CompSoldier,	UserSoldier
 				CopyFrom	Call_Back_Val,	1
@@ -114,7 +116,9 @@ WaitStack	MACRO	League,	Soldier, FrontSoldier,	Call_Back_Val
 		.IF	( EBX > EAX && Soldier != FrontSoldier && EDX == 0)
 			CopyFrom 	SetterBuffer,	EBX
 			SUB 		SetterBuffer, 	EAX
-			.IF	( SetterBuffer < 6 )
+			GettingSoldierWidth UserSoldiers, Soldier, GetterHandler
+			MOV ECX, GetterHandler
+			.IF	( SetterBuffer < ECX )
 				SettingSoldierWaitFor 	UserSoldiers,	Soldier,	FrontSoldier
 				CopyFrom	Call_Back_Val,	1
 			.ElSE
@@ -123,7 +127,10 @@ WaitStack	MACRO	League,	Soldier, FrontSoldier,	Call_Back_Val
 		.ELSEIF ( EBX < EAX && Soldier != FrontSoldier && EDX == 1 )
 			CopyFrom 	SetterBuffer,	EAX
 			SUB 		SetterBuffer, 	EBX
-			.IF	( SetterBuffer < 6 )
+
+			GettingSoldierWidth CompSoldiers, Soldier, GetterHandler
+			MOV ECX, GetterHandler
+			.IF	( SetterBuffer < ECX )
 				SettingSoldierWaitFor 	CompSoldiers,	Soldier,	FrontSoldier
 				CopyFrom	Call_Back_Val,	1
 			.ElSE

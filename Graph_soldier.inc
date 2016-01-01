@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 
@@ -30,7 +31,7 @@
 	
 
 
-
+							        
 	SoldierA1_1_1		DB	"£»  ",0
 	SoldierA1_1_2		DB	"¢p¡÷ ",0
 	SoldierA1_1_3		DB	"£J  ",0	
@@ -53,7 +54,7 @@
 		.ENDIF
 		
 		ENDM
-
+							          
 	SoldierA2_1_1		DB "    £K     ",0
 	SoldierA2_1_2		DB "¡ø¢p¢p¢p¡ù",0
 	SoldierA2_1_3		DB "  ¢ª¢f¢«  ",0
@@ -76,7 +77,7 @@
 		.ENDIF
 		
 		ENDM
-	
+							              
 	SoldierA3_1_1 		DB "      ¡¿       ",0
 	SoldierA3_1_2 		DB "¢ª¢©¢p¢p¢p¢¨¢«",0
 	SoldierA3_1_3 		DB "  ¢ªù÷¢pùõ¢«    ",0
@@ -126,7 +127,7 @@
 		ENDM
 	
 
-
+							    
 	SoldierB1_1_1		DB	"£N  ",0
 	SoldierB1_1_2		DB	"¢pù÷",0
 	SoldierB1_1_3		DB	"£S  ",0
@@ -148,14 +149,14 @@
 			GraphDisplay SoldierB1_2_3
 		.ENDIF
 		ENDM
-		
-	SoldierB2_1_1		DB	" £[  ",0
-	SoldierB2_1_2		DB	" ¢pù÷",0
-	SoldierB2_1_3		DB	" £J  ",0
+							    
+	SoldierB2_1_1		DB	"£[  ",0
+	SoldierB2_1_2		DB	"¢pù÷",0
+	SoldierB2_1_3		DB	"£J  ",0
 	
-	SoldierB2_2_1		DB	" £[  ",0
-	SoldierB2_2_2		DB	" ¢pù÷",0
-	SoldierB2_2_3		DB	" I  ",0
+	SoldierB2_2_1		DB	"£[  ",0
+	SoldierB2_2_2		DB	"¢pù÷",0
+	SoldierB2_2_3		DB	"I  ",0
 
 
 	DrawSoldierB2 MACRO X, Fram
@@ -172,7 +173,7 @@
 		.ENDIF
 		ENDM
 		
-		
+							     
 	SoldierB3_1_1		DB	"  £Z ",0
 	SoldierB3_1_2		DB	"£X¢p£X",0
 	SoldierB3_1_3		DB	"  £S ",0
@@ -241,7 +242,7 @@
 		ENDM
 
 
-
+							      
 		SoldierC1_1_1	DB "  £»£»  ",0
 		SoldierC1_1_2	DB "¡i¢p¢p¡j",0
 		SoldierC1_1_3	DB "  ¡ä¡ä  ",0
@@ -280,11 +281,11 @@
 			.ENDIF
 			ENDM
 			
-		
-		SoldierC2_1_1	DB "  ¡¶¡¶  ",0
+							        
+		SoldierC2_1_1	DB "  ¡¶¡¶    ",0
 		SoldierC2_1_2	DB "¢¨¢p¢p¢©",0
-		SoldierC2_1_3	DB "¡i£»£»¡j ",0
-		SoldierC2_1_4	DB "  ¢E¢E ",0
+		SoldierC2_1_3	DB "¡i£»£»¡j  ",0
+		SoldierC2_1_4	DB "  ¢E¢E  ",0
 		
 		DrawSoldierC2 MACRO X, Fram
 
@@ -296,11 +297,11 @@
 			GraphDisplay SoldierC2_1_4
 			
 			ENDM
-
-		SoldierC3_1_1 	DB "  ¢¨¢©   ",0
-		SoldierC3_1_2 	DB "¢¨£»£»¢© ",0
+							        
+		SoldierC3_1_1 	DB "  ¢¨¢©  ",0
+		SoldierC3_1_2 	DB "¢¨£»£»¢©  ",0
 		SoldierC3_1_3 	DB "¡i¢p¢p¡j  ",0
-		SoldierC3_1_4 	DB "  ¢p¢p   ",0
+		SoldierC3_1_4 	DB "  ¢p¢p  ",0
 		SoldierC3_1_5 	DB "  ¡¶¡¶    ",0
   
  		

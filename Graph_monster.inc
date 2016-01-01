@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 
@@ -30,9 +31,9 @@
 
 
 	MonsterA1_1_1 		DB 		" ¢¬¢­ " ,0
-	MonsterA1_1_2 		DB 		"¡ü¡ü¡ü   "	,0
-	MonsterA1_1_3 		DB 		"ùõ¡óù÷ " ,0
-	MonsterA1_1_4 		DB 		"  ¢p " ,0
+	MonsterA1_1_2 		DB 		"¡ü¡ü¡ü  "	,0
+	MonsterA1_1_3 		DB 		"ùõ¡óù÷" ,0
+	MonsterA1_1_4 		DB 		"  ¢p" ,0
 
 	DrawMonsterA1 MACRO X, Fram
 
@@ -52,10 +53,10 @@
 		
 		
 
-	MonsterA2_1_1 		DB	" ¢¨¢© ",0
-	MonsterA2_1_2 		DB	"¡ü¡ó¡ü    ",0
-	MonsterA2_1_3 		DB	"ùã¢pùå  ",0
-	MonsterA2_1_4 		DB	"  ¡ü		",0
+	MonsterA2_1_1 		DB	" ¢¨¢©",0
+	MonsterA2_1_2 		DB	"¡ü¡ó¡ü  ",0
+	MonsterA2_1_3 		DB	"ùã¢pùå ",0
+	MonsterA2_1_4 		DB	"  ¡ü	  ",0
 		
 
 	DrawMonsterA2 MACRO X, Fram
@@ -78,10 +79,10 @@
 
 	MonsterA3_1_1 	DB "   ¡¶   ",0
 	MonsterA3_1_2 	DB " ¢¨¢p¢©",0
-	MonsterA3_1_3 	DB " ¡ü¡¹¡ü    ",0
-	MonsterA3_1_4 	DB " ¡ü¢E¡ü   ",0
-	MonsterA3_1_5 	DB "ùã ¡ó ùå ",0
-	MonsterA3_1_6 	DB "   ¡¿	",0
+	MonsterA3_1_3 	DB " ¡ü¡¹¡ü   ",0
+	MonsterA3_1_4 	DB " ¡ü¢E¡ü  ",0
+	MonsterA3_1_5 	DB "ùã ¡ó ùå",0
+	MonsterA3_1_6 	DB "   ¡¿  ",0
 			
 
 	DrawMonsterA3 MACRO X, Fram
