@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 
@@ -8,6 +9,13 @@
 		MOV  	dl, BYTE PTR X
 		MOV  	dh, BYTE PTR Y
 		CALL 	Gotoxy  
+		ENDM
+	TranslateOnce	MACRO X, Y
+		PUSHAD
+			MOV  	dl, BYTE PTR X
+			MOV  	dh, BYTE PTR Y
+			CALL 	Gotoxy  
+		POPAD
 		ENDM
 	;Position 	MACRO X, Y
 	;	MOV 	EAX,	EDX
