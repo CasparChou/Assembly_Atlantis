@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 	LevelUpCheck MACRO
@@ -59,11 +60,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 .Data
-	Dialog_Example_1	DB "Greetings ! Welcome to Atlantis ! ",0
-	Dialog_Example_2	DB "We are under attacking ... ",0
-	Dialog_Example_3	DB "SO,",0
-	Dialog_Example_4	DB "We must to defeat the enemies ,",0
-	Dialog_Example_5	DB "or we will dead .",0
+
+
+	Dialog_Example_1	DB "Greetings , warrior ! ",0
+	Dialog_Example_2	DB "Thank you for accepting this task to protect Atlantis.",0
+	Dialog_Example_3	DB "Now,",0
+	Dialog_Example_4	DB "We are attacked by those who long for treasure of Atlantis.",0
+	Dialog_Example_5	DB "Please fight with us side by side and bring the victory.",0
 
 	Introduce MACRO
 		DrawCastle	 	0, 0
@@ -103,37 +106,52 @@
 		AddBy Object[EBX].Y, AddY
 		ENDM
 	MoveOnSoldiers EQU	<CALL MoveingSoldiers>
+	CurrentID 		DWORD 	?
+	CollisionCurrID	DWORD	?
+	WaitCheckCurrID	DWORD	?
 .Code
 	MoveingSoldiers PROC
 		LoopTimes 0
 		MUS:
 			ObjectOffset ECX
-			.IF UserSoldiers[EBX].Alive == 1 && UserSoldiers[EBX].State == -1 
-				WriteD UserSoldiers[EBX].State
-				;AnyKeyToContinue
-				MOVE 	UserSoldiers, ECX, 1, 0
-				MOV 	SetterBuffer, ECX
-				PUSHA
-				LoopTimes 	8
-				CollisionCheck:
-					Collision	SetterBuffer,	ECX,	GetterHandler
-					.IF	GetterHandler == 1
-						AnyKeyToContinue
-						POPA
-						NextInc 16, MUS
+			CopyFrom 	CurrentID,	ECX
+			.IF UserSoldiers[EBX].Alive == 1
+				.IF( UserSoldiers[EBX].AttackTo == -1 )
+					.IF ( UserSoldiers[EBX].WaitFor == -1 )
+						MOVE 		UserSoldiers, 	CurrentID, 1, 0
 					.ENDIF
-					NEXT 	CollisionCheck
-				POPA
+					UserWaitStackCheck	CurrentID
+					CollisionCheck	 	CurrentID
+				.ELSEIF( UserSoldiers[EBX].AttackTo != -1 )
+					CopyFrom UserAttackSoldier, CurrentID
+					CopyFrom UserAttackTarget, UserSoldiers[EBX].AttackTo
+					.IF UserAttackTimer == 0
+						CopyFrom UserAttackTimer,	1
+					.ENDIF
+				.ENDIF
 			.ENDIF
-			NextInc	16, MUS
+			NextInc	8, MUS
 		LoopTimes 0
 		MCS:
 			ObjectOffset ECX
-			.IF CompSoldiers[EBX].Alive == 1 && CompSoldiers[EBX].State == -1
-				MOVE CompSoldiers, ECX, -1, 0
+			;WaitStackCheck	1,	ECX
+			.IF CompSoldiers[EBX].Alive == 1 
+				.IF(CompSoldiers[EBX].AttackTo == -1)
+					.IF( CompSoldiers[EBX].WaitFor == -1 )			
+						MOVE CompSoldiers, ECX, -1, 0
+					.ENDIF
+					CopyFrom 	WaitCheckCurrID,	ECX
+					CompWaitStackCheck	WaitCheckCurrID
+				.ELSEIF (CompSoldiers[EBX].AttackTo != -1)
+					CopyFrom CompAttackSoldier, ECX
+					CopyFrom CompAttackTarget, CompSoldiers[EBX].AttackTo
+					.IF CompAttackTimer == 0
+						CopyFrom CompAttackTimer, 1
+					.ENDIF
+				.ENDIF
 				;CollisionCheck	
 			.ENDIF
-			NextInc	16, MCS
+			NextInc	8, MCS
 		RET
 	MoveingSoldiers ENDP
 	
@@ -168,7 +186,11 @@
 		Write  09H
 		WriteD	Object[EBX].League
 		Write  09H
-		WriteD	Object[EBX].State
+		WriteI	Object[EBX].AttackTo
+		Write  09H
+		WriteI	Object[EBX].WaitFor
+		Write  09H
+		WriteI	Object[EBX].State
 		Write  09H
 		WriteD	Object[EBX].Alive
 		Write  09H
@@ -183,6 +205,8 @@
 					"Level",	09H,
 					"AR",		09H,
 					"Leag",		09H,
+					"Attack",	09H,
+					"Wait",		09H,
 					"State",	09H,
 					"Alive",	09H, 0
 

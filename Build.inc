@@ -1,3 +1,4 @@
+;	Version 3
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;						;;;;
 ;;;;	Build New Soldier 	;;;;
@@ -61,7 +62,9 @@
 						SettingSoldierX	 		UserSoldiers, ECX, 20
 						SettingSoldierLeague	UserSoldiers, ECX, 0
 						SettingSoldierLevel		UserSoldiers, ECX, UserCurrLevel
-						SettingSoldierState		UserSoldiers, ECX, -1
+						SettingSoldierWaitFor	UserSoldiers, ECX, -1
+						SettingSoldierAttackTo	UserSoldiers, ECX, -1
+						SettingSoldierState		UserSoldiers, ECX, 0
 						SettingSoldierInitialHP	UserSoldiers, ECX
 						SettingSoldierAttack	UserSoldiers, ECX
 						POPA
@@ -78,7 +81,9 @@
 						SettingSoldierX	 		CompSoldiers, ECX, 90
 						SettingSoldierLeague	CompSoldiers, ECX, 1
 						SettingSoldierLevel		CompSoldiers, ECX, CompCurrLevel
-						SettingSoldierState		CompSoldiers, ECX, -1
+						SettingSoldierWaitFor	CompSoldiers, ECX, -1
+						SettingSoldierAttackTo	CompSoldiers, ECX, -1
+						SettingSoldierState		CompSoldiers, ECX, 0
 						SettingSoldierInitialHP	CompSoldiers, ECX
 						SettingSoldierAttack	CompSoldiers, ECX
 						POPA

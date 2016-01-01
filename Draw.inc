@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 
@@ -36,6 +37,7 @@
 				Building_Dialog Beats6x
 				;DrawLoading 	Beats4x
 			.ENDIF
+			;DumpArray UserSoldierQueue
 		.ENDIF
 
 		ENDM

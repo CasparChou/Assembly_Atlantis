@@ -1,12 +1,13 @@
+;	Version 3
 .Code
 
 
-	Building_Dialog_1	DB 	"¡m ¡m   ¡m Building Solider ¡n   ¡n ¡n ",0
-	Building_Dialog_2	DB 	"  ¡m   ¡m  Building Solider  ¡n   ¡n   ",0
-	Building_Dialog_3	DB 	" ¡m  ¡m    Building Solider    ¡n  ¡n  ",0
-	Building_Dialog_4	DB 	"¡m¡m       Building Solider        ¡n¡n",0
-	Building_Dialog_5	DB 	" ¡m        Building Solider         ¡n ",0
-	Building_Dialog_6	DB 	"           Building Solider            ",0
+	Building_Dialog_1	DB 	"¡m ¡m   ¡m Building Soldier ¡n   ¡n ¡n ",0
+	Building_Dialog_2	DB 	"  ¡m   ¡m  Building Soldier  ¡n   ¡n   ",0
+	Building_Dialog_3	DB 	" ¡m  ¡m    Building Soldier    ¡n  ¡n  ",0
+	Building_Dialog_4	DB 	"¡m¡m       Building Soldier        ¡n¡n",0
+	Building_Dialog_5	DB 	" ¡m        Building Soldier         ¡n ",0
+	Building_Dialog_6	DB 	"           Building Soldier            ",0
 
 	Building_Dialog		MACRO Fram
 		
