@@ -42,7 +42,7 @@ MAIN:
 		KeyHandler
 		Translate 60, 28
 		
-		PauseTime 300
+		PauseTime 700
 		
 		Clear
 
@@ -51,6 +51,9 @@ MAIN:
 		LevelUpCheck
 
 		LoopTimes 0FFFH
-		NEXT DR
+		.IF ( Gaming == 1 )
+			NEXT DR
+		.ELSE
+		.ENDIF
 ExitMain
 END MAIN

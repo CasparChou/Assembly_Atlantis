@@ -65,9 +65,9 @@
 	Mod_A 	MACRO 	Time_Open,	Time_Close
 		.IF ( AI_Timer >= Time_Open && AI_Timer <= Time_Close )
 
-			AutoBuild	Mod_A_Timer, 8, 	Beats4x,	BuildCompSoldierA
-			AutoBuild	Mod_A_Timer, 16, 	Beats4x,	BuildCompSoldierB
-			LoopBuild 	Mod_A_Timer, 16,	Beats4x
+			AutoBuild	Mod_A_Timer, 4, 	Beats2x,	BuildCompSoldierA
+			AutoBuild	Mod_A_Timer, 8, 	Beats2x,	BuildCompSoldierB
+			LoopBuild 	Mod_A_Timer, 8,		Beats2x
 			
 		.ENDIF
 		ENDM

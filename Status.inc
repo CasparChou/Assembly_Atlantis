@@ -1,6 +1,7 @@
 ;	Version 3
 .Data
-
+	
+	Gaming			DWORD 	1
 	DebugMode 		DWORD	0
 
 	AtlantisTitle 	DB 		"Atlantis",0
@@ -279,5 +280,21 @@
 		RET
 	DumpBothSoldierList		ENDP
 
+
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;						;;;;
+;;;;	Game 	 End 	 	;;;;
+;;;;						;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.Data
+	UserWin MACRO
+
+		CopyFrom Gaming,	0
+		ENDM
+	CompWin MACRO
+
+		CopyFrom Gaming,	0
+		ENDM
 
 

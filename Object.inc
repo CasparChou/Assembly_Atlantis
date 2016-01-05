@@ -155,6 +155,28 @@
 		PUSHA
 			ObjectOffset 	ID
 			CopyFrom  		Object[EBX].AttackTo, Number
+			;MOV EAX, Number
+			;.IF EAX != -1
+			;	DefaultColor
+			;	WriteSAtCenter	60,	10,	Attacking
+			;	Translate 20,10
+			;	Write '['
+			;	WriteI ID
+			;	Write '-'
+			;	WriteI Number
+			;	Write ']'
+			;;	AnyKeyToContinue
+			;	SettingColor Black
+			;	WriteSAtCenter	60,	10,	Attacking
+			;	Translate 20,10
+			;	Write '['
+			;	WriteI ID
+			;	Write '-'
+			;	WriteI Number
+			;	Write ']'
+			;	DefaultColor
+			;	TranslatePrevious
+			;.ENDIF
 		POPA
 		ENDM
 ;
@@ -230,6 +252,29 @@
 		PUSHA
 			ObjectOffset 	ID
 			CopyFrom 		StoreTo, Object[EBX].HP
+		POPA
+		ENDM
+
+	Blood_Percent_100X		DWORD ?
+	Blood_Percent_75X		DWORD ?
+	Blood_Percent_50X		DWORD ?
+	Blood_Percent_25X		DWORD ?
+	GettingSoldierPercentHP	MACRO	Object, ID, StoreTo
+		PUSHA
+			;CounterSoldierOffset Object
+			;CopyFrom 		EBX, Soldier_HP[EAX]
+			;MOV 	ECX,	4
+			;MOV 	EAX,	EBX
+			;DIV		ECX
+
+			ObjectOffset 	ID
+			;CopyFrom 		ECX, Object[EBX].HP
+			CopyFrom StoreTo,	 Object[EBX].HP
+			;.IF( ECX > EAX )
+			;	CopyFrom StoreTo,	2
+			;.ELSE
+			;	CopyFrom StoreTo,	1
+			;.ENDIF
 		POPA
 		ENDM
 	SettingSoldierHP		MACRO	Object, ID, Blood

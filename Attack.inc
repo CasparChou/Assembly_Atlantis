@@ -13,9 +13,38 @@
 	UserHP	DWORD	?
 	CompHP	DWORD	?
 
+	UserCastleHP	DWORD	100
+	CompCastleHP	DWORD	100
+
+	AttackToUserCastle MACRO
+
+		GettingSoldierAttack	CompSoldiers, 	CompAttackSoldier,	CompATK
+		
+		MOV EAX, CompATK
+		.IF( UserCastleHP > EAX )
+			SubBy UserCastleHP,	CompATK
+		.ELSE
+			CompWin
+		.ENDIF
+
+		ENDM
+	AttackToCompCastle MACRO
+		GettingSoldierAttack	UserSoldiers, 	UserAttackSoldier,	UserATK
+		
+		MOV EAX, UserATK
+		.IF( CompCastleHP > EAX )
+			SubBy CompCastleHP,	UserATK
+		.ELSE
+			UserWin
+		.ENDIF
+
+		ENDM
+
 
 	UserAttack MACRO
 		PUSHAD
+		.IF( UserAttackTarget < 8 && UserAttackTarget >= 0 )
+
 			GettingSoldierAttack	UserSoldiers, 	UserAttackSoldier,	UserATK
 			GettingSoldierHP		CompSoldiers, 	UserAttackTarget,	CompHP
 			
@@ -29,13 +58,18 @@
 				ResetAttack
 				CollisionCheck	 	UserAttackSoldier
 			.ENDIF
+		.ELSEIF ( UserAttackTarget == 8 )
+			AttackToCompCastle
+		.ENDIF	
 
 		POPAD
 		ENDM
 
-
 	CompAttack MACRO
 		PUSHAD
+
+		.IF( CompAttackTarget < 8 && CompAttackTarget >= 0 )
+
 			GettingSoldierAttack	CompSoldiers, 	CompAttackSoldier,	CompATK
 			GettingSoldierHP		UserSoldiers, 	CompAttackTarget,	UserHP
 			
@@ -48,6 +82,11 @@
 				SettingSoldierAttackTo	CompSoldiers,	CompAttackSoldier,	-1
 				ResetAttack
 			.ENDIF
+
+		.ELSEIF( CompAttackTarget == 8 )
+			AttackToUserCastle
+		.ENDIF	
+
 		POPAD
 		ENDM
 

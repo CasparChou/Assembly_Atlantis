@@ -117,6 +117,7 @@
 			ObjectOffset ECX
 			CopyFrom 	CurrentID,	ECX
 			.IF UserSoldiers[EBX].Alive == 1
+				CastleAttackCheck UserSoldiers, CurrentID
 				.IF( UserSoldiers[EBX].AttackTo == -1 )
 					.IF ( UserSoldiers[EBX].WaitFor == -1 )
 						MOVE 		UserSoldiers, 	CurrentID, 1, 0
@@ -135,8 +136,10 @@
 		LoopTimes 0
 		MCS:
 			ObjectOffset ECX
+			CopyFrom 	CurrentID,	ECX
 			;WaitStackCheck	1,	ECX
 			.IF CompSoldiers[EBX].Alive == 1 
+				CastleAttackCheck CompSoldiers, CurrentID
 				.IF(CompSoldiers[EBX].AttackTo == -1)
 					.IF( CompSoldiers[EBX].WaitFor == -1 )			
 						MOVE CompSoldiers, ECX, -1, 0
