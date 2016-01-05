@@ -7,16 +7,23 @@
 .DATA
 Collision_A_X 	DWORD 	?
 Collision_B_X	DWORD 	?
-
+Collision_Check_ID	DWORD	?
 CollisionCheck MACRO 	Current
 	PUSHA
-		LoopTimes 	0
-		CollisionChecking:
-			Collision	Current,	ECX,	GetterHandler
-			.IF	GetterHandler == 1
-				;MOV ECX, 0
-			.ENDIF
+		ObjectOffset Current
+		.IF( UserSoldiers[EBX].Alive == 1)
+			LoopTimes 	0
+			CollisionChecking:
+				CopyFrom Collision_Check_ID, ECX
+				ObjectOffset Collision_Check_ID
+				.IF( CompSoldiers[EBX].Alive == 1 )					
+					Collision	Current,	Collision_Check_ID,	GetterHandler
+					.IF	GetterHandler == 1
+						;MOV ECX, 0
+					.ENDIF
+				.ENDIF
 			NEXTINC 7, 	CollisionChecking
+		.ENDIF
 	POPA
 	ENDM
 UserWaitStackCheck MACRO 	Current
@@ -71,6 +78,41 @@ Collision	MACRO	UserSoldier, CompSoldier, Call_Back_Val
 		MOV ECX, GetterHandler
 		.IF	( EAX != 0 && EBX !=0 )
 			.IF	( EDX < ECX )
+
+
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+				;;;
+				;;; 	THIS IS A DEBUG CODE FOR Collision
+				;;; 	IF ANY PROBLEM OCCURED
+				;;;	 	REMOVE " COMMENT " TO DEBUG
+				;;;
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+				;DEBUG SECTION START
+				COMMENT #
+				DefaultColor
+				WriteSAtCenter	60,	10,	Attacking
+				Translate 20,10
+				Write '['
+				WriteI UserSoldier
+				Write '-'
+				WriteI CompSoldier
+				Write ']'
+				AnyKeyToContinue
+				SettingColor Black
+				WriteSAtCenter	60,	10,	Attacking
+				Translate 20,10
+				Write '['
+				WriteI UserSoldier
+				Write '-'
+				WriteI CompSoldier
+				Write ']'
+				DefaultColor
+				TranslatePrevious
+
+				#
+				;DEBUG SECTION CLOSE
+
 				SettingSoldierAttackTo 	UserSoldiers,	UserSoldier,	CompSoldier
 				SettingSoldierAttackTo 	CompSoldiers,	CompSoldier,	UserSoldier
 				CopyFrom	Call_Back_Val,	1
@@ -95,24 +137,6 @@ WaitStack	MACRO	League,	Soldier, FrontSoldier,	Call_Back_Val
 
 		MOV		EAX,	Collision_A_X
 		MOV		EBX,	Collision_B_X
-
-;				DefaultColor
-;				Translate 0,0
-;				
-;				Write 		' '
-;				WriteD 		Soldier
-;				Write 		':'
-;				WriteD 		Collision_A_X
-;				Write 		':'
-;				WriteD 		EAX
-;				NL
-;				Write 		' '
-;				WriteD 		FrontSoldier
-;				Write 		':'
-;				WriteD 		Collision_B_X
-;				Write 		':'
-;				WriteD 		EBX
-;				NL
 		.IF	( EBX > EAX && Soldier != FrontSoldier && EDX == 0)
 			CopyFrom 	SetterBuffer,	EBX
 			SUB 		SetterBuffer, 	EAX

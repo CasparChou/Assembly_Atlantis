@@ -87,6 +87,7 @@
 			SettingColor	Black
 			WriteSAtCenter	60,	23,	String
 			DefaultColor
+			Translate 0,0
 		POPAD
 		ENDM
 
@@ -154,74 +155,3 @@
 			NextInc	8, MCS
 		RET
 	MoveingSoldiers ENDP
-	
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;						;;;;
-;;;;	Dump 	 Soldiers 	;;;;
-;;;;						;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.Data
-	DumpList MACRO 
-		CopyFrom DebugMode, 1
-		CALL DumpSoldierList
-		ENDM
-	DumpSoldier 	MACRO	Object, ID
-		ObjectOffset ID
-		Write  09H
-		WriteD	Object[EBX].HP
-		Write  09H
-		WriteD	Object[EBX].X
-		Write  09H
-		WriteD	Object[EBX].Y
-		;Write  09H
-		;WriteD	Object[EBX].SWidth
-		;Write  09H
-		;WriteD	Object[EBX].SHeight
-		Write  09H
-		WriteD	Object[EBX].ATK
-		Write  09H
-		WriteD	Object[EBX].Level
-		Write  09H
-		WriteD	Object[EBX].ARMS
-		Write  09H
-		WriteD	Object[EBX].League
-		Write  09H
-		WriteI	Object[EBX].AttackTo
-		Write  09H
-		WriteI	Object[EBX].WaitFor
-		Write  09H
-		WriteI	Object[EBX].State
-		Write  09H
-		WriteD	Object[EBX].Alive
-		Write  09H
-	ENDM
-
-	TableHead DB 	0AH,
-					"ID",		09H,
-					"HP",		09H,
-					"X",		09H,
-					"Y",		09H,
-					"ATK",		09H,
-					"Level",	09H,
-					"AR",		09H,
-					"Leag",		09H,
-					"Attack",	09H,
-					"Wait",		09H,
-					"State",	09H,
-					"Alive",	09H, 0
-
-.Code
-	DumpSoldierList		PROC
-		PUSHA
-			CopyFrom DebugMode, 1
-			WriteS TableHead
-			LoopTimes 0
-			DSs:
-				NL
-				WriteD ECX
-				DumpSoldier UserSoldiers, ECX
-				NextInc	8, DSs
-		POPA
-
-		RET
-	DumpSoldierList		ENDP
