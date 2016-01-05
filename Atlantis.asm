@@ -10,9 +10,10 @@
 	INCLUDE	Graph_soldier.inc
 	INCLUDE	Graph_turret.inc
 	INCLUDE	Graph_Monster.inc
+	INCLUDE	Graph_StartUp.inc
 	
-	INCLUDE	Status.inc
 	INCLUDE	Object.inc
+	INCLUDE	Status.inc
 	INCLUDE Collision.inc
 	INCLUDE Attack.inc
 	INCLUDE	Draw.inc
@@ -24,8 +25,8 @@
 .Code
 MAIN:
 
-	;StartUpLogo
 	StartUp
+	StartUpLogo
 	LoopTimes 0FFFH
 	CLS
 	DrawPanel
@@ -36,6 +37,7 @@ MAIN:
 		;AnyKeyToContinue
 		Draw
 		AI
+		;DumpBothList
 		;DumpList
 		KeyHandler
 		Translate 60, 28

@@ -1,13 +1,29 @@
 ;	Version 3
 .Data
-
+	LastPointX	BYTE 0
+	LastPointY	BYTE 0
+	CurrentPointX	BYTE 0
+	CurrentPointY	BYTE 0
 
 	LoopTimes	MACRO	Times
 		MOV 	ECX,	Times
-	ENDM
+		ENDM
+	TranslatePrevious	MACRO
+		MOV  	dl, LastPointX
+		MOV  	dh, LastPointY
+		MOV 	CurrentPointX,	dl
+		MOV 	CurrentPointY,	dh
+		CALL 	Gotoxy 
+		ENDM
 	Translate	MACRO X, Y
+		MOV  	dl, CurrentPointX
+		MOV  	dh, CurrentPointY
+		MOV		LastPointX,	dl
+		MOV 	LastPointY,	dh
 		MOV  	dl, BYTE PTR X
 		MOV  	dh, BYTE PTR Y
+		MOV 	CurrentPointX,	dl
+		MOV 	CurrentPointY,	dh
 		CALL 	Gotoxy  
 		ENDM
 	TranslateOnce	MACRO X, Y
