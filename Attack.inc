@@ -27,6 +27,7 @@
 				DestorySoldier CompSoldiers, UserAttackTarget
 				SettingSoldierAttackTo	UserSoldiers,	UserAttackSoldier,	-1
 				ResetAttack
+				CollisionCheck	 	UserAttackSoldier
 			.ENDIF
 
 		POPAD
