@@ -26,6 +26,22 @@ CollisionCheck MACRO 	Current
 		.ENDIF
 	POPA
 	ENDM
+CastleAttackCheck MACRO Object, ID
+	PUSHAD
+		ObjectOffset ID
+		.IF Object[EBX].League == 0
+			GettingSoldierX UserSoldiers, ID, GetterHandler
+			.IF GetterHandler >= 95
+				SettingSoldierAttackTo 	UserSoldiers,	ID,	8
+			.ENDIF
+		.ELSE
+			GettingSoldierX CompSoldiers, ID, GetterHandler
+			.IF GetterHandler <= 25
+				SettingSoldierAttackTo 	CompSoldiers,	ID,	8
+			.ENDIF
+		.ENDIF
+	POPAD
+	ENDM
 UserWaitStackCheck MACRO 	Current
 	PUSHA
 		SettingSoldierWaitFor 	UserSoldiers,	Current,	-1

@@ -59,6 +59,7 @@
 	SoldierOn	MACRO Object, ID
 		ObjectOffset ID
 		.IF (Object[EBX].Alive == 1)
+			DrawHP Object, ID
 			.IF (Object[EBX].League == 0) 
 				
 				.IF (Object[EBX].Arms == 1) 
@@ -85,6 +86,52 @@
 			;GettingSoldierWidth Object, ID, GetterHandler
 			;WriteD GetterHandler
 		.ENDIF
+		ENDM
+
+	HPLineOffset	DWORD ?
+	HPLineX			DWORD ?
+	HPLineY			DWORD ?
+	DrawHP MACRO Object, ID
+		PUSHAD
+			MOV EDX, 0
+			MOV EBX, 2
+
+			GettingSoldierWidth Object, ID, HPLineOffset
+			GettingSoldierX 	Object, ID,	HPLineX
+			MOV EAX, HPLineOffset
+			DIV EBX
+			ADD HPLineX, EAX
+			
+			CopyFrom HPLineY, 10
+			ObjectOffset ID
+			GettingSoldierPercentHP Object, ID,	GetterHandler
+
+			PUSHAD
+			Translate HPLineX, HPLineY
+			SettingColor LightRed
+			WriteD GetterHandler
+			DefaultColor
+			TranslatePrevious
+			POPAD
+		POPAD
+		ENDM
+	DrawCastleHP MACRO	League
+		PUSHAD
+			MOV EAX, League
+			.IF (EAX ==  0)
+				Translate 10, 10 
+				SettingColor LightRed
+				WriteD UserCastleHP
+				DefaultColor
+				TranslatePrevious
+			.ELSE
+				Translate 110, 10 
+				SettingColor LightRed
+				WriteD CompCastleHP
+				DefaultColor
+				TranslatePrevious
+			.ENDIF
+		POPAD
 		ENDM
 .Code
 	DrawingSoldiers 	PROC

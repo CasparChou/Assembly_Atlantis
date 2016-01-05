@@ -78,7 +78,7 @@
 					.IF (CompSoldiers[EBX].Alive == 0)
 						SettingSoldierAlive		CompSoldiers, ECX, 1
 						SettingSoldierArms 		CompSoldiers, ECX, Arms
-						SettingSoldierX	 		CompSoldiers, ECX, 90
+						SettingSoldierX	 		CompSoldiers, ECX, 100
 						SettingSoldierLeague	CompSoldiers, ECX, 1
 						SettingSoldierLevel		CompSoldiers, ECX, CompCurrLevel
 						SettingSoldierWaitFor	CompSoldiers, ECX, -1
