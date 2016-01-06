@@ -37,17 +37,17 @@
 	CompSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0,0,0,0,0>)
 
 	
-	UserSoldier_Height	DWORD	3, 4, 4,	;A
-								3, 3, 3,	;B
-								3, 4, 5		;C
+	UserSoldier_Height	DWORD	12, 11, 11,	;A
+								12, 12, 12,	;B
+								12, 11, 10	;C
 
 	UserSoldier_Width	DWORD	5, 12, 16,	;A
 								5, 5, 6,	;B
 								9, 8, 10	;C
 
-	CompSoldier_Height	DWORD	4, 4, 6,	;A
-								3, 5, 5,	;B
-								2, 5, 6		;C
+	CompSoldier_Height	DWORD	11, 11, 9,	;A
+								12, 10, 10,	;B
+								13, 10, 9	;C
 
 	CompSoldier_Width	DWORD	5, 12, 16,	;A
 								3, 3, 3,	;B
@@ -179,22 +179,28 @@
 			;.ENDIF
 		POPA
 		ENDM
-;
-;
-	;GettingSoldierHeight	MACRO	Object, ID, StoreTo
-	;	PUSHA
-	;		ObjectOffset 	ID
-	;		CopyFrom 		StoreTo, Object[EBX].SHeight
-	;	POPA
-	;	ENDM
+
+
+	GettingSoldierHeight	MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			.IF Object[EBX].League == 0
+				CounterSoldierOffset Object
+				CopyFrom 		StoreTo, UserSoldier_Height[EAX]
+			.ELSE
+				CounterSoldierOffset Object
+				CopyFrom 		StoreTo, CompSoldier_Height[EAX]
+			.ENDIF
+		POPA
+		ENDM
 	;SettingSoldierHeight	MACRO	Object, ID, Number
 	;	PUSHA
 	;		ObjectOffset 	ID
 	;		CopyFrom  		Object[EBX].SHeight, Number
 	;	POPA
 	;	ENDM
-;
-;
+
+
 	CounterSoldierOffsetIndex	MACRO Arms, Level
 		MOV EAX, Arms
 		DEC EAX
@@ -226,16 +232,16 @@
 				; 0 	12	24
 				; 8		8	8
 		ENDM
-	GettingSoldierHeight	MACRO	Object, ID, StoreTo
-		PUSHA
-			ObjectOffset 	ID
-			.IF( Object[EBX].League == 0)
-				CopyFrom StoreTo, UserSoldier_Height[EAX]
-			.ELSE
-				CopyFrom StoreTo, CompSoldier_Height[EAX]
-			.ENDIF
-		POPA
-		ENDM
+	;GettingSoldierHeight	MACRO	Object, ID, StoreTo
+	;	PUSHA
+	;		ObjectOffset 	ID
+	;		.IF( Object[EBX].League == 0)
+	;			CopyFrom StoreTo, UserSoldier_Height[EAX]
+	;		.ELSE
+	;			CopyFrom StoreTo, CompSoldier_Height[EAX]
+	;		.ENDIF
+	;	POPA
+	;	ENDM
 	GettingSoldierWidth		MACRO	Object, ID, StoreTo
 		PUSHA
 			ObjectOffset 	ID
