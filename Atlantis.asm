@@ -36,13 +36,13 @@ MAIN:
 	DR:
 		;AnyKeyToContinue
 		Draw
-		AI
+		;AI
 		;DumpBothList
 		;DumpList
 		KeyHandler
 		Translate 60, 28
 		
-		PauseTime 700
+		PauseTime 500
 		
 		Clear
 

@@ -259,17 +259,36 @@
 	Blood_Percent_75X		DWORD ?
 	Blood_Percent_50X		DWORD ?
 	Blood_Percent_25X		DWORD ?
+	Blood_Percent_Current 	DWORD ?
 	GettingSoldierPercentHP	MACRO	Object, ID, StoreTo
 		PUSHA
+			GettingSoldierHP Object, ID, Blood_Percent_Current
+			GettingSoldierInitialHP	Object,	ID,	Blood_Percent_100X
+
+			MOV EAX, Blood_Percent_100X
+			MOV EBX, Blood_Percent_Current
+			.IF( EAX == Blood_Percent_Current )
+				CopyFrom StoreTo, 4
+			.ELSE
+				MOV ECX, 2
+				DIV ECX
+				.IF( EAX < Blood_Percent_Current )
+					CopyFrom StoreTo, 3
+				.ELSEIF( EAX == Blood_Percent_Current )
+					CopyFrom StoreTo, 2
+				.ELSE
+					CopyFrom StoreTo, 1
+				.ENDIF
+			.ENDIF
 			;CounterSoldierOffset Object
 			;CopyFrom 		EBX, Soldier_HP[EAX]
 			;MOV 	ECX,	4
 			;MOV 	EAX,	EBX
 			;DIV		ECX
 
-			ObjectOffset 	ID
+			;ObjectOffset 	ID
 			;CopyFrom 		ECX, Object[EBX].HP
-			CopyFrom StoreTo,	 Object[EBX].HP
+			;CopyFrom StoreTo,	 Object[EBX].HP
 			;.IF( ECX > EAX )
 			;	CopyFrom StoreTo,	2
 			;.ELSE
@@ -288,6 +307,14 @@
 			ObjectOffset 	ID
 			CounterSoldierOffset Object
 			CopyFrom 		Object[EBX].HP, Soldier_HP[EAX]
+		POPA
+		ENDM
+
+	GettingSoldierInitialHP		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CounterSoldierOffset Object
+			CopyFrom 		StoreTo, Soldier_HP[EAX]
 		POPA
 		ENDM
 

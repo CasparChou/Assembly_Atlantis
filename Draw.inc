@@ -88,31 +88,53 @@
 		.ENDIF
 		ENDM
 
-	HPLineOffset	DWORD ?
+	HPLine 			DWORD ?
 	HPLineX			DWORD ?
 	HPLineY			DWORD ?
 	DrawHP MACRO Object, ID
 		PUSHAD
-			MOV EDX, 0
-			MOV EBX, 2
-
-			GettingSoldierWidth Object, ID, HPLineOffset
 			GettingSoldierX 	Object, ID,	HPLineX
-			MOV EAX, HPLineOffset
-			DIV EBX
-			ADD HPLineX, EAX
-			
 			CopyFrom HPLineY, 10
-			ObjectOffset ID
-			GettingSoldierPercentHP Object, ID,	GetterHandler
 
-			PUSHAD
+			ObjectOffset ID
+			GettingSoldierHP 		Object, ID,	HPLine
+			GettingSoldierPercentHP Object, ID,	GetterHandler
+			DrawHPBar HPLine, GetterHandler
+		POPAD
+		ENDM
+	DrawHPBar  	 MACRO	HP, Length
+		PUSHAD
 			Translate HPLineX, HPLineY
-			SettingColor LightRed
-			WriteD GetterHandler
+			WriteD HP
+			Write '['
+			.IF Length == 1
+				SettingColor Red
+				Write 'I'
+				Write ' '
+				Write ' '
+				Write ' '
+			.ELSEIF Length == 2
+				SettingColor LightRed
+				Write 'I'
+				Write 'I'
+				Write ' '
+				Write ' '
+			.ELSEIF Length == 3
+				SettingColor Green
+				Write 'I'
+				Write 'I'
+				Write 'I'
+				Write ' '
+			.ELSEIF Length == 4
+				SettingColor LightGreen
+				Write 'I'
+				Write 'I'
+				Write 'I'
+				Write 'I'
+			.ENDIF
 			DefaultColor
+			Write ']'
 			TranslatePrevious
-			POPAD
 		POPAD
 		ENDM
 	DrawCastleHP MACRO	League
