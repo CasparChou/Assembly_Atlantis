@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 	
@@ -26,27 +27,29 @@
 		League		DWORD 0
 
 		State		DWORD 0
+		WaitFor		DWORD 0
+		AttackTo	DWORD 0
 		Alive		DWORD 0
 	Soldier ENDS
 
 
-	UserSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0>)
-	CompSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0>)
+	UserSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0,0,0,0,0>)
+	CompSoldiers	Soldier	8 DUP(<0,0,0,0,0,0,0,0,0,0,0>)
 
 	
 	UserSoldier_Height	DWORD	3, 4, 4,	;A
 								3, 3, 3,	;B
 								3, 4, 5		;C
 
-	UserSoldier_Width	DWORD	3, 4, 4,	;A
-								3, 3, 3,	;B
-								3, 4, 5		;C
+	UserSoldier_Width	DWORD	5, 12, 16,	;A
+								5, 5, 6,	;B
+								9, 8, 10	;C
 
 	CompSoldier_Height	DWORD	4, 4, 6,	;A
 								3, 5, 5,	;B
 								2, 5, 6		;C
 
-	CompSoldier_Width	DWORD	3, 4, 4,	;A
+	CompSoldier_Width	DWORD	5, 12, 16,	;A
 								3, 3, 3,	;B
 								3, 4, 5		;C
 
@@ -127,6 +130,55 @@
 			CopyFrom  		Object[EBX].State, Number
 		POPA
 		ENDM
+
+	GettingSoldierWaitFor		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].WaitFor
+		POPA
+		ENDM
+	SettingSoldierWaitFor		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].WaitFor, Number
+		POPA
+		ENDM
+
+	GettingSoldierAttackTo		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom 		StoreTo, Object[EBX].AttackTo
+		POPA
+		ENDM
+	Attacking DB "Attacking",0
+	SettingSoldierAttackTo		MACRO	Object, ID, Number
+		PUSHA
+			ObjectOffset 	ID
+			CopyFrom  		Object[EBX].AttackTo, Number
+			;MOV EAX, Number
+			;.IF EAX != -1
+			;	DefaultColor
+			;	WriteSAtCenter	60,	10,	Attacking
+			;	Translate 20,10
+			;	Write '['
+			;	WriteI ID
+			;	Write '-'
+			;	WriteI Number
+			;	Write ']'
+			;;	AnyKeyToContinue
+			;	SettingColor Black
+			;	WriteSAtCenter	60,	10,	Attacking
+			;	Translate 20,10
+			;	Write '['
+			;	WriteI ID
+			;	Write '-'
+			;	WriteI Number
+			;	Write ']'
+			;	DefaultColor
+			;	TranslatePrevious
+			;.ENDIF
+		POPA
+		ENDM
 ;
 ;
 	;GettingSoldierHeight	MACRO	Object, ID, StoreTo
@@ -202,6 +254,48 @@
 			CopyFrom 		StoreTo, Object[EBX].HP
 		POPA
 		ENDM
+
+	Blood_Percent_100X		DWORD ?
+	Blood_Percent_75X		DWORD ?
+	Blood_Percent_50X		DWORD ?
+	Blood_Percent_25X		DWORD ?
+	Blood_Percent_Current 	DWORD ?
+	GettingSoldierPercentHP	MACRO	Object, ID, StoreTo
+		PUSHA
+			GettingSoldierHP Object, ID, Blood_Percent_Current
+			GettingSoldierInitialHP	Object,	ID,	Blood_Percent_100X
+
+			MOV EAX, Blood_Percent_100X
+			MOV EBX, Blood_Percent_Current
+			.IF( EAX == Blood_Percent_Current )
+				CopyFrom StoreTo, 4
+			.ELSE
+				MOV ECX, 2
+				DIV ECX
+				.IF( EAX < Blood_Percent_Current )
+					CopyFrom StoreTo, 3
+				.ELSEIF( EAX == Blood_Percent_Current )
+					CopyFrom StoreTo, 2
+				.ELSE
+					CopyFrom StoreTo, 1
+				.ENDIF
+			.ENDIF
+			;CounterSoldierOffset Object
+			;CopyFrom 		EBX, Soldier_HP[EAX]
+			;MOV 	ECX,	4
+			;MOV 	EAX,	EBX
+			;DIV		ECX
+
+			;ObjectOffset 	ID
+			;CopyFrom 		ECX, Object[EBX].HP
+			;CopyFrom StoreTo,	 Object[EBX].HP
+			;.IF( ECX > EAX )
+			;	CopyFrom StoreTo,	2
+			;.ELSE
+			;	CopyFrom StoreTo,	1
+			;.ENDIF
+		POPA
+		ENDM
 	SettingSoldierHP		MACRO	Object, ID, Blood
 		PUSHA
 			ObjectOffset 	ID
@@ -216,7 +310,15 @@
 		POPA
 		ENDM
 
-	GettingSoldierAttack	MACRO	Object, ID
+	GettingSoldierInitialHP		MACRO	Object, ID, StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CounterSoldierOffset Object
+			CopyFrom 		StoreTo, Soldier_HP[EAX]
+		POPA
+		ENDM
+
+	GettingSoldierAttack	MACRO	Object, ID,	StoreTo
 		PUSHA
 			ObjectOffset 	ID
 			CounterSoldierOffset Object
@@ -277,6 +379,21 @@
 		POPA
 		ENDM
 
+
+	DestorySoldier 		MACRO	Object,	ID
+		PUSHA
+
+			SettingSoldierAlive		Object, ID, 0
+			SettingSoldierArms 		Object, ID, 0
+			SettingSoldierX	 		Object, ID, 0
+			SettingSoldierLeague	Object, ID, 0
+			SettingSoldierLevel		Object, ID, 0
+			SettingSoldierWaitFor	Object, ID, 0
+			SettingSoldierAttackTo	Object, ID, 0
+			SettingSoldierHP		Object, ID, 0
+
+		POPA
+		ENDM
 .Code
 	
 	Init PROC

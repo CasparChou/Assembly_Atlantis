@@ -5,48 +5,179 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 .DATA
-Collision_User_X 	DWORD 	?
-Collision_Comp_X	DWORD 	?
+Collision_A_X 	DWORD 	?
+Collision_B_X	DWORD 	?
+Collision_Check_ID	DWORD	?
+CollisionCheck MACRO 	Current
+	PUSHA
+		ObjectOffset Current
+		.IF( UserSoldiers[EBX].Alive == 1)
+			LoopTimes 	0
+			CollisionChecking:
+				CopyFrom Collision_Check_ID, ECX
+				ObjectOffset Collision_Check_ID
+				.IF( CompSoldiers[EBX].Alive == 1 )					
+					Collision	Current,	Collision_Check_ID,	GetterHandler
+					.IF	GetterHandler == 1
+						;MOV ECX, 0
+					.ENDIF
+				.ENDIF
+			NEXTINC 7, 	CollisionChecking
+		.ENDIF
+	POPA
+	ENDM
+CastleAttackCheck MACRO Object, ID
+	PUSHAD
+		ObjectOffset ID
+		.IF Object[EBX].League == 0
+			GettingSoldierX UserSoldiers, ID, GetterHandler
+			.IF GetterHandler >= 95
+				SettingSoldierAttackTo 	UserSoldiers,	ID,	8
+			.ENDIF
+		.ELSE
+			GettingSoldierX CompSoldiers, ID, GetterHandler
+			.IF GetterHandler <= 25
+				SettingSoldierAttackTo 	CompSoldiers,	ID,	8
+			.ENDIF
+		.ENDIF
+	POPAD
+	ENDM
+UserWaitStackCheck MACRO 	Current
+	PUSHA
+		SettingSoldierWaitFor 	UserSoldiers,	Current,	-1
+		LoopTimes 	0
+		UserWattingChecking:
+			ObjectOffset ECX
+			.IF (UserSoldiers[EBX].Alive == 1)
+				.IF Current != ECX
+					WaitStack	0, Current,	ECX,	GetterHandler
+					.IF	GetterHandler == 1
+						;MOV ECX, 0
+					.ENDIF
+				.ENDIF
+			.ENDIF
+			NEXTINC 7,	UserWattingChecking
+	POPA
+	ENDM
+CompWaitStackCheck MACRO 	Current
+	PUSHA
+		SettingSoldierWaitFor 	CompSoldiers,	Current,	-1
+		LoopTimes 	0
+		CompWattingChecking:
+			ObjectOffset ECX
+			.IF (CompSoldiers[EBX].Alive == 1)
+				.IF Current != ECX
+					WaitStack	1, Current,	ECX,	GetterHandler
+					.IF	GetterHandler == 1
+						;MOV ECX, 0
+					.ENDIF
+				.ENDIF
+			.ENDIF
+			NEXTINC 7,	CompWattingChecking
+	POPA
+	ENDM
 
-Collision	MACRO	USoldier_ID, CSoldiers_ID, Call_Back_Val
+Collision	MACRO	UserSoldier, CompSoldier, Call_Back_Val
 	PUSHA
 		;	Get User Soldier Current X Coord in ID
-		GettingSoldierX		UserSoldiers,			USoldier_ID,			GetterHandler
-		CopyFrom			Collision_User_X,		GetterHandler
-
+		GettingSoldierX		UserSoldiers,			UserSoldier,			Collision_A_X
 		;	Get Computer Soldier Current X Coord in ID
-		GettingSoldierX		CompSoldiers,			CSoldiers_ID,			GetterHandler
-		CopyFrom 			Collision_Comp_X,		GetterHandler
+		GettingSoldierX		CompSoldiers,			CompSoldier,			Collision_B_X
 
-		MOV		EAX,	Collision_User_X
-		MOV 	EBX,	EAX
-		ADD		EBX,	6
-		MOV		ECX,	Collision_Comp_X
+		MOV		EAX,	Collision_A_X
+		MOV 	EBX,	Collision_B_X
+		
+		MOV 	EDX,	EBX
+		SUB 	EDX,	EAX
 
-		.IF	( EAX != 0 && ECX !=0 )
-			.IF	( EAX <=  ECX && EBX >= ECX )
+		GettingSoldierWidth UserSoldiers, UserSoldier, GetterHandler
+		MOV ECX, GetterHandler
+		.IF	( EAX != 0 && EBX !=0 )
+			.IF	( EDX < ECX )
+
+
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+				;;;
+				;;; 	THIS IS A DEBUG CODE FOR Collision
+				;;; 	IF ANY PROBLEM OCCURED
+				;;;	 	REMOVE " COMMENT " TO DEBUG
+				;;;
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+				;DEBUG SECTION START
+				COMMENT #
+				DefaultColor
+				WriteSAtCenter	60,	10,	Attacking
+				Translate 20,10
+				Write '['
+				WriteI UserSoldier
+				Write '-'
+				WriteI CompSoldier
+				Write ']'
 				AnyKeyToContinue
+				SettingColor Black
+				WriteSAtCenter	60,	10,	Attacking
+				Translate 20,10
+				Write '['
+				WriteI UserSoldier
+				Write '-'
+				WriteI CompSoldier
+				Write ']'
+				DefaultColor
+				TranslatePrevious
 
-				ObjectOffset 	USoldier_ID
-				CopyFrom 		UserSoldiers[EBX].State,	CSoldiers_ID
-				
-				ObjectOffset 	CSoldiers_ID
-				CopyFrom 		CompSoldiers[EBX].State,	USoldier_ID
+				#
+				;DEBUG SECTION CLOSE
 
-				SettingSoldierState 	UserSoldiers,	USoldier_ID,	CSoldiers_ID
-				SettingSoldierState 	CompSoldiers,	CSoldiers_ID,	USoldier_ID
+				SettingSoldierAttackTo 	UserSoldiers,	UserSoldier,	CompSoldier
+				SettingSoldierAttackTo 	CompSoldiers,	CompSoldier,	UserSoldier
 				CopyFrom	Call_Back_Val,	1
 			.ElSE
 				CopyFrom	Call_Back_Val,	0
 			.ENDIF
-
-			ObjectOffset 	USoldier_ID
-			CopyFrom 		EAX, UserSoldiers[EBX].State
-			WriteD			USoldier_ID
-			Write			':'
-			WriteD			EAX
-			Write			' '
-			WriteD			CSoldiers_ID
 		.ENDIF
+	POPA
+	ENDM	
+
+WaitStack	MACRO	League,	Soldier, FrontSoldier,	Call_Back_Val
+	PUSHA
+
+		MOV EDX,	League
+		.IF( EDX == 0)
+			GettingSoldierX		UserSoldiers,			Soldier,			Collision_A_X
+			GettingSoldierX		UserSoldiers,			FrontSoldier,		Collision_B_X
+		.ElSE
+			GettingSoldierX		CompSoldiers,			Soldier,			Collision_A_X
+			GettingSoldierX		CompSoldiers,			FrontSoldier,		Collision_B_X
+		.ENDIF
+
+		MOV		EAX,	Collision_A_X
+		MOV		EBX,	Collision_B_X
+		.IF	( EBX > EAX && Soldier != FrontSoldier && EDX == 0)
+			CopyFrom 	SetterBuffer,	EBX
+			SUB 		SetterBuffer, 	EAX
+			GettingSoldierWidth UserSoldiers, Soldier, GetterHandler
+			MOV ECX, GetterHandler
+			.IF	( SetterBuffer < ECX )
+				SettingSoldierWaitFor 	UserSoldiers,	Soldier,	FrontSoldier
+				CopyFrom	Call_Back_Val,	1
+			.ElSE
+				CopyFrom	Call_Back_Val,	0
+			.ENDIF
+		.ELSEIF ( EBX < EAX && Soldier != FrontSoldier && EDX == 1 )
+			CopyFrom 	SetterBuffer,	EAX
+			SUB 		SetterBuffer, 	EBX
+
+			GettingSoldierWidth CompSoldiers, Soldier, GetterHandler
+			MOV ECX, GetterHandler
+			.IF	( SetterBuffer < ECX )
+				SettingSoldierWaitFor 	CompSoldiers,	Soldier,	FrontSoldier
+				CopyFrom	Call_Back_Val,	1
+			.ElSE
+				CopyFrom	Call_Back_Val,	0
+			.ENDIF
+		.ENDIF
+
+			
 	POPA
 	ENDM	

@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 ;¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i¢i
@@ -40,7 +41,7 @@
 	UserCastle_3_9 		DB	   " ¢i¢i¢i      ¢i¢i¢i    ",0
 
 	DrawUserCastle1 MACRO X
-
+		
 		Translate X, 13
 
 		GraphDisplay UserCastle_1_1
@@ -186,6 +187,7 @@
 	
 	
 	DrawCastle MACRO League, X 
+		DrawCastleHP League
 		MOV EAX,	League
 		.IF ( EAX == 0 )
 			SettingColor Yellow

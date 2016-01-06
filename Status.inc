@@ -1,15 +1,19 @@
+;	Version 3
 .Data
-
+	UserMoney		DWORD 100
+	
+	Gaming			DWORD 	1
 	DebugMode 		DWORD	0
 
 	AtlantisTitle 	DB 		"Atlantis",0
-	AtlantisSize	DB		8 DUP(0AH), 3 DUP(09H),"The best window size is 120 X 30, Press any key if you adjust done.",0
+	AtlantisSize	DB		"The best window size is 120 X 30,",0ah,"Press any key if you adjust done.",0
 
 	StartUp MACRO
 		CLS
 		INVOKE		SetConsoleTitle, 	OFFSET AtlantisTitle
 		DefaultColor
-		WriteS 		AtlantisSize
+		Translate 	0,5
+		WriteSAtCenter 	30,	30, AtlantisSize
 		Translate 	0,0
 		AnyKeyToContinue
 	ENDM
@@ -27,7 +31,6 @@
 	CompLevelUpFlag	DWORD	0
 
 
-
 	Beats6x 	DWORD 	1
 	Beats5x 	DWORD 	1
 	Beats4x 	DWORD 	1
@@ -36,14 +39,11 @@
 	
 
 	Beats MACRO
-		.IF( Timer_UserBuild > 0 && Beats2x == 1 )
-			INC Timer_UserBuild
-			UserBuildTimerCheck
-		.ENDIF
-		.IF( Timer_CompBuild > 0 && Beats2x == 1 )
-			INC Timer_CompBuild
-			CompBuildTimerCheck
-		.ENDIF
+		TimerCheck 	Timer_UserBuild,	Beats2x,	UserBuildTimerCheck
+		TimerCheck 	Timer_CompBuild,	Beats2x,	CompBuildTimerCheck
+		TimerCheck 	UserAttackTimer,	Beats2x,	UserAttack
+		TimerCheck 	CompAttackTimer,	Beats2x,	CompAttack
+		
 		INC Beats2x
 		INC Beats3x
 		INC Beats4x
@@ -67,6 +67,18 @@
 		.ENDIF
 	ENDM
 
+	TimerCheck MACRO	Timer,	BeatsX,	CallBack
+		.IF( Timer > 0 && BeatsX == 1)
+			INC Timer
+			CallBack
+		.ENDIF
+		ENDM
+
+	TimerInc MACRO	Timer,	BeatsX
+		.IF( Timer > 0 && BeatsX == 1)
+			INC Timer
+		.ENDIF
+		ENDM
 
 	ClearOn 	DWORD 0
 	Building	DWORD 0
@@ -77,6 +89,8 @@
 	Timer_UserBuild		DWORD 0
 	Timer_CompBuild		DWORD 0
 	Timer_Build_Goal 	DWORD 0
+	UserAttackTimer		DWORD 0
+	CompAttackTimer		DWORD 0
 
 	User_BuildQueue		DWORD	0,0,0,0,0,-1	;5 DUP(0)
 	Comp_BuildQueue		DWORD	0,0,0,0,0,-1	;5 DUP(0)
@@ -92,7 +106,7 @@
 			CopyFrom 	Building, [ESI]
 			.IF( Timer_UserBuild == EAX )
 				TriggleBuild 0, [ESI]
-				POPArray User_BuildQueue
+				POPArray 	User_BuildQueue
 				MOV EAX, User_BuildQueue
 				.IF( EAX != 0 )
 					CopyFrom Timer_UserBuild, 1
@@ -124,7 +138,163 @@
 		POPA
 		ENDM
 
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;						;;;;
+;;;;	Dump 	 Soldiers 	;;;;
+;;;;						;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.Data
+	DumpList MACRO 
+		CopyFrom DebugMode, 1
+		CALL DumpSoldierList
+		ENDM
+	DumpBothList MACRO 
+		CopyFrom DebugMode, 1
+		CALL DumpBothSoldierList
+		ENDM
+	DumpSoldier 	MACRO	Object, ID
+		ObjectOffset ID
+		Write  09H
+		WriteD	Object[EBX].HP
+		Write  09H
+		WriteD	Object[EBX].X
+		Write  09H
+		WriteD	Object[EBX].Y
+		Write  09H
+		WriteD	Object[EBX].ATK
+		Write  09H
+		WriteD	Object[EBX].Level
+		Write  09H
+		WriteD	Object[EBX].ARMS
+		Write  09H
+		WriteD	Object[EBX].League
+		Write  09H
+		WriteI	Object[EBX].AttackTo
+		Write  09H
+		WriteI	Object[EBX].WaitFor
+		Write  09H
+		WriteI	Object[EBX].State
+		Write  09H
+		WriteD	Object[EBX].Alive
+		Write  09H
+	ENDM
+	DumpBoth 	MACRO	ID
+		ObjectOffset ID
+		Write  09H
+		WriteD	UserSoldiers[EBX].HP
+		Write  09H
+		WriteD	UserSoldiers[EBX].X
+		Write  09H
+		WriteD	UserSoldiers[EBX].Y
+		Write  09H
+		WriteI	UserSoldiers[EBX].AttackTo
+		Write  09H
+		WriteI	UserSoldiers[EBX].WaitFor
+		Write  09H
+		WriteD	UserSoldiers[EBX].Alive
+		Write  09H
+		WriteD	CompSoldiers[EBX].HP
+		Write  09H
+		WriteD	CompSoldiers[EBX].X
+		Write  09H
+		WriteD	CompSoldiers[EBX].Y
+		Write  09H
+		WriteI	CompSoldiers[EBX].AttackTo
+		Write  09H
+		WriteI	CompSoldiers[EBX].WaitFor
+		Write  09H
+		WriteD	CompSoldiers[EBX].Alive
+		Write  09H
+
+;		WriteD	Object[EBX].ATK
+;		Write  09H
+;		WriteD	Object[EBX].Level
+;		Write  09H
+;		WriteD	Object[EBX].ARMS
+;		Write  09H
+;		WriteD	Object[EBX].League
+;		Write  09H
+;		WriteI	Object[EBX].State
+	ENDM
+
+	TableHead DB 	0AH,
+					"ID",		09H,
+					"HP",		09H,
+					"X",		09H,
+					"Y",		09H,
+					"ATK",		09H,
+					"Level",	09H,
+					"AR",		09H,
+					"Leag",		09H,
+					"Attack",	09H,
+					"Wait",		09H,
+					"State",	09H,
+					"Alive",	09H, 0
+	TableHeadBoth DB 	0AH,
+					"ID",		09H,
+					"HP",		09H,
+					"X",		09H,
+					"Y",		09H,
+					"Attack",	09H,
+					"Wait",		09H,
+					"Alive",	09H,
+					"HP",		09H,
+					"X",		09H,
+					"Y",		09H,
+					"Attack",	09H,
+					"Wait",		09H,
+					"Alive",	09H,0
+
+.Code
+	DumpSoldierList		PROC
+		PUSHA
+			Translate 5, 20
+			CopyFrom DebugMode, 1
+			WriteS TableHead
+			LoopTimes 0
+			DSs:
+				NL
+				WriteD ECX
+				DumpSoldier UserSoldiers, ECX
+				NextInc	8, DSs
+			TranslatePrevious
+		POPA
+
+		RET
+	DumpSoldierList		ENDP
+	DumpBothSoldierList		PROC
+		PUSHA
+			Translate 5, 20
+			CopyFrom DebugMode, 1
+			WriteS TableHeadBoth
+			LoopTimes 0
+			DSs:
+				NL
+				WriteD ECX
+				DumpBoth ECX
+				NextInc	8, DSs
+			TranslatePrevious
+		POPA
+
+		RET
+	DumpBothSoldierList		ENDP
 
 
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;						;;;;
+;;;;	Game 	 End 	 	;;;;
+;;;;						;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.Data
+	UserWin MACRO
+
+		CopyFrom Gaming,	0
+		ENDM
+	CompWin MACRO
+
+		CopyFrom Gaming,	0
+		ENDM
 
 

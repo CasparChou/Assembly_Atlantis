@@ -1,13 +1,37 @@
+;	Version 3
 .Data
-
+	LastPointX	BYTE 0
+	LastPointY	BYTE 0
+	CurrentPointX	BYTE 0
+	CurrentPointY	BYTE 0
 
 	LoopTimes	MACRO	Times
 		MOV 	ECX,	Times
-	ENDM
+		ENDM
+	TranslatePrevious	MACRO
+		MOV  	dl, LastPointX
+		MOV  	dh, LastPointY
+		MOV 	CurrentPointX,	dl
+		MOV 	CurrentPointY,	dh
+		CALL 	Gotoxy 
+		ENDM
 	Translate	MACRO X, Y
+		MOV  	dl, CurrentPointX
+		MOV  	dh, CurrentPointY
+		MOV		LastPointX,	dl
+		MOV 	LastPointY,	dh
 		MOV  	dl, BYTE PTR X
 		MOV  	dh, BYTE PTR Y
+		MOV 	CurrentPointX,	dl
+		MOV 	CurrentPointY,	dh
 		CALL 	Gotoxy  
+		ENDM
+	TranslateOnce	MACRO X, Y
+		PUSHAD
+			MOV  	dl, BYTE PTR X
+			MOV  	dh, BYTE PTR Y
+			CALL 	Gotoxy  
+		POPAD
 		ENDM
 	;Position 	MACRO X, Y
 	;	MOV 	EAX,	EDX
@@ -230,6 +254,12 @@
 			ADD A, 	EAX
 		POP EAX
 	ENDM
+	SubBy MACRO A, B
+		PUSH EAX
+			MOV EAX, B
+			SUB A, 	EAX
+		POP EAX
+	ENDM
 	ExitMain MACRO
 		;Translate 20,20
 		;PrintAt 0,0, 20H
@@ -428,6 +458,27 @@
 		RET
 		ArrayPUSH 	ENDP
 
+		ArraySearch 	PROC, 	Array:DWORD,	Num:DWORD;,	StoreTo:DWORD
+			PUSHA
+			;	MOV 	ESI, 	Array
+			;	MOV 	EAX, 	[ESI]
+			;	MOV 	StoreTo,	0
+			;	.WHILE (EAX != Number && EAX != -1)
+			;		ADD ESI, 4
+			;		MOV EAX, [ESI]
+			;		INC StoreTo
+			;	.ENDW
+;
+			;	.IF( EAX == -1 )
+			;		CopyFrom StoreTo, -1
+			;		RET
+			;	.ENDIF
+;
+			;	CopyFrom [ESI], Number
+			POPA
+		RET
+		ArraySearch 	ENDP
+
 .Data
 
 	PushArray MACRO	Array,	Num
@@ -442,7 +493,43 @@
 		INVOKE ArrayDump, OFFSET Array
 		ENDM
 
+	ArrayEncode	MACRO NUMBER, StoreTo
+		PUSHA
+			MOV EAX,	NUMBER
+			INC EAX
+			MOV StoreTo, EAX
+		POPA
+		ENDM
+	ArrayDecode	MACRO NUMBER, StoreTo
+		PUSHA
+			MOV EAX,	NUMBER
+			DEC EAX
+			MOV StoreTo, EAX
+		POPA
+		ENDM
+
+	SearchArray	MACRO 	Array,	Number,	StoreTo
+		PUSHAD
+			MOV 		ESI, 	OFFSET Array
+			MOV 		EAX, 	[ESI]
+			CopyFrom 	StoreTo,	0
+			.WHILE (EAX != Number && EAX != -1)
+				ADD ESI, 4
+				MOV EAX, [ESI]
+				INC StoreTo
+			.ENDW
+		
+			.IF( EAX == -1 )
+				CopyFrom StoreTo, -1
+			.ENDIF
+		POPAD
+		ENDM
 COMMENT *
+
+	IF WANT 0 IN QUEUE
+	EXAMPLE:
+		ArrayEncode	NUMBER	
+		ArrayDecode NUMBER
 
 	TO USE ArrayPOP
 	EXAMPLE:
@@ -455,5 +542,9 @@ COMMENT *
 	TO USE ArrayPOP
 	EXAMPLE:
 		INVOKE ArrayDump, OFFSET YOUR_ARRAY
+
+	TO SEARCH ITEM IN ARRAY
+	EXAMPLE:
+		INVOKE ArraySearch, OFFSET YOUR_ARRAY,	Number,	StoreTo
 
 *		

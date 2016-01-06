@@ -1,12 +1,13 @@
+;	Version 3
 .Code
 
 
-	Building_Dialog_1	DB 	"¡m ¡m   ¡m Building Solider ¡n   ¡n ¡n ",0
-	Building_Dialog_2	DB 	"  ¡m   ¡m  Building Solider  ¡n   ¡n   ",0
-	Building_Dialog_3	DB 	" ¡m  ¡m    Building Solider    ¡n  ¡n  ",0
-	Building_Dialog_4	DB 	"¡m¡m       Building Solider        ¡n¡n",0
-	Building_Dialog_5	DB 	" ¡m        Building Solider         ¡n ",0
-	Building_Dialog_6	DB 	"           Building Solider            ",0
+	Building_Dialog_1	DB 	"¡m ¡m   ¡m Building Soldier ¡n   ¡n ¡n ",0
+	Building_Dialog_2	DB 	"  ¡m   ¡m  Building Soldier  ¡n   ¡n   ",0
+	Building_Dialog_3	DB 	" ¡m  ¡m    Building Soldier    ¡n  ¡n  ",0
+	Building_Dialog_4	DB 	"¡m¡m       Building Soldier        ¡n¡n",0
+	Building_Dialog_5	DB 	" ¡m        Building Soldier         ¡n ",0
+	Building_Dialog_6	DB 	"           Building Soldier            ",0
 
 	Building_Dialog		MACRO Fram
 		
@@ -32,39 +33,39 @@
 		.ENDIF
 		ENDM
 	
-	StartUp_1 	DB " A£n£f£\£h£nis  ",0
-	StartUpLogo 	MACRO
-		CLS
-		SettingColor 	gray
-		Translate 		50,13
-		GraphDisplay 	StartUp_1
-		
-		PauseTime 		500
-		SettingColor 	lightgray
-		Translate 		50,13
-		GraphDisplay 	StartUp_1
-		
-		PauseTime 		500
-		SettingColor 	white
-		Translate 		50,13
-		GraphDisplay 	StartUp_1
-		
-		PauseTime 		500
-		SettingColor 	lightgray
-		Translate 		50,13
-		GraphDisplay 	StartUp_1
-		
-		PauseTime 		500
-		SettingColor 	gray
-		Translate 		50,13
-		GraphDisplay 	StartUp_1
-		
-		PauseTime 		500
-		SettingColor 	black
-		Translate 		50,13
-		GraphDisplay 	StartUp_1
-	
-		ENDM
+;	StartUp_1 	DB " A£n£f£\£h£nis  ",0
+;	StartUpLogo 	MACRO
+;		CLS
+;		SettingColor 	gray
+;		Translate 		50,13
+;		GraphDisplay 	StartUp_1
+;		
+;		PauseTime 		500
+;		SettingColor 	lightgray
+;		Translate 		50,13
+;		GraphDisplay 	StartUp_1
+;		
+;		PauseTime 		500
+;		SettingColor 	white
+;		Translate 		50,13
+;		GraphDisplay 	StartUp_1
+;		
+;		PauseTime 		500
+;		SettingColor 	lightgray
+;		Translate 		50,13
+;		GraphDisplay 	StartUp_1
+;		
+;		PauseTime 		500
+;		SettingColor 	gray
+;		Translate 		50,13
+;		GraphDisplay 	StartUp_1
+;		
+;		PauseTime 		500
+;		SettingColor 	black
+;		Translate 		50,13
+;		GraphDisplay 	StartUp_1
+;	
+;		ENDM
 	
 
 	KEY_A_1		DB	"¢z¢w¢{"	,0
@@ -127,16 +128,16 @@
 		ENDM
 		
 		
-	INFO_Panel_1	DB "¡º¡»", 56 DUP("¡Ë"),		"¡»¡º",0
-	INFO_Panel_2	DB "¢x", 116 DUP(" "),		"¢x",0
-	INFO_Panel_3	DB "¢x", 116 DUP(" "),		"¢x",0
-	INFO_Panel_4	DB "¢x", 116 DUP(" "),		"¢x",0
-	INFO_Panel_5	DB "¢x", 116 DUP(" "),		"¢x",0
-	INFO_Panel_6	DB "¢x", 116 DUP(" "),		"¢x",0
-	INFO_Panel_7	DB "¢x", 116 DUP(" "),		"¢x",0
-	INFO_Panel_8	DB "¢x", 116 DUP(" "),		"¢x",0
-	INFO_Panel_9	DB "¢x", 116 DUP(" "),		"¢x",0
-	INFO_Panel_10	DB "ùõ", 58 DUP("¡X"),		"ù÷",0
+	INFO_Panel_1	DB "¡@¡@¡@", 	54 DUP("¢p"),		"¡@¡@¡@",0
+	INFO_Panel_2	DB "¡@¡@¢p", 	108 DUP(" "),		"¢p¡@¡@",0
+	INFO_Panel_3	DB "¡@¢p¡@", 		108 DUP(" "),		"¡@¢p",0
+	INFO_Panel_4	DB "¢p", 		116 DUP(" "),		"¢p",0
+	INFO_Panel_5	DB "¢p", 		116 DUP(" "),		"¢p",0
+	INFO_Panel_6	DB "¢p", 		116 DUP(" "),		"¢p",0
+	INFO_Panel_7	DB "¢p", 		116 DUP(" "),		"¢p",0
+	INFO_Panel_8	DB "¡@¢p¡@", 		108 DUP(" "),		"¡@¢p¡@",0
+	INFO_Panel_9	DB "¡@¡@¢p", 	108 DUP(" "),		"¢p¡@¡@",0
+	INFO_Panel_10	DB "¡@¡@¡@", 	54 DUP("¢p"),		"¡@¡@¡@",0
 	
 	
 	

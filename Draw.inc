@@ -1,3 +1,4 @@
+;	Version 3
 .Data
 
 
@@ -36,6 +37,7 @@
 				Building_Dialog Beats6x
 				;DrawLoading 	Beats4x
 			.ENDIF
+			;DumpArray UserSoldierQueue
 		.ENDIF
 
 		ENDM
@@ -57,6 +59,7 @@
 	SoldierOn	MACRO Object, ID
 		ObjectOffset ID
 		.IF (Object[EBX].Alive == 1)
+			DrawHP Object, ID
 			.IF (Object[EBX].League == 0) 
 				
 				.IF (Object[EBX].Arms == 1) 
@@ -83,6 +86,74 @@
 			;GettingSoldierWidth Object, ID, GetterHandler
 			;WriteD GetterHandler
 		.ENDIF
+		ENDM
+
+	HPLine 			DWORD ?
+	HPLineX			DWORD ?
+	HPLineY			DWORD ?
+	DrawHP MACRO Object, ID
+		PUSHAD
+			GettingSoldierX 	Object, ID,	HPLineX
+			CopyFrom HPLineY, 10
+
+			ObjectOffset ID
+			GettingSoldierHP 		Object, ID,	HPLine
+			GettingSoldierPercentHP Object, ID,	GetterHandler
+			DrawHPBar HPLine, GetterHandler
+		POPAD
+		ENDM
+	DrawHPBar  	 MACRO	HP, Length
+		PUSHAD
+			Translate HPLineX, HPLineY
+			WriteD HP
+			Write '['
+			.IF Length == 1
+				SettingColor Red
+				Write 'I'
+				Write ' '
+				Write ' '
+				Write ' '
+			.ELSEIF Length == 2
+				SettingColor LightRed
+				Write 'I'
+				Write 'I'
+				Write ' '
+				Write ' '
+			.ELSEIF Length == 3
+				SettingColor Green
+				Write 'I'
+				Write 'I'
+				Write 'I'
+				Write ' '
+			.ELSEIF Length == 4
+				SettingColor LightGreen
+				Write 'I'
+				Write 'I'
+				Write 'I'
+				Write 'I'
+			.ENDIF
+			DefaultColor
+			Write ']'
+			TranslatePrevious
+		POPAD
+		ENDM
+	DrawCastleHP MACRO	League
+		PUSHAD
+			MOV EAX, League
+			.IF (EAX ==  0)
+				Translate 10, 10 
+				SettingColor LightRed
+				WriteD UserCastleHP
+				DefaultColor
+				TranslatePrevious
+			.ELSE
+				Translate 110, 10 
+				SettingColor LightRed
+				WriteD CompCastleHP
+				DefaultColor
+				TranslatePrevious
+			.ENDIF
+		POPAD
 		ENDM
 .Code
 	DrawingSoldiers 	PROC
