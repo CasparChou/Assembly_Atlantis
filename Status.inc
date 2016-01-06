@@ -1,5 +1,6 @@
 ;	Version 3
 .Data
+	UserMoney		DWORD 100
 	
 	Gaming			DWORD 	1
 	DebugMode 		DWORD	0
@@ -28,7 +29,6 @@
 
 	UserLevelUpFlag	DWORD	0
 	CompLevelUpFlag	DWORD	0
-
 
 
 	Beats6x 	DWORD 	1
