@@ -54,17 +54,22 @@
 								3, 4, 5		;C
 
 
-	Soldier_HP			DWORD	4, 6, 8,	;A
-								3, 4, 5,	;B
-								5, 8, 11	;C
+	Soldier_HP			DWORD	10, 20, 30,	;A
+								8, 	16, 24,	;B
+								14, 28, 42	;C
 
-	Soldier_Attack		DWORD	2, 4, 6,	;A
-								3, 6, 9,	;B
-								1, 2, 3		;C
+	Soldier_Attack		DWORD	2, 4, 	6,	;A
+								4, 8, 	12,	;B
+								5, 10, 	15		;C
 
 	Soldier_Buffer		DWORD	4, 6, 7,	;A
 								5, 7, 8,	;B
 								6, 8, 9		;C
+
+	Soldier_Money		DWORD	100, 100, 100,	;A
+								300, 300, 300,	;B
+								600, 600, 600	;C
+
 
 
 	ObjectOffset MACRO ID
@@ -155,28 +160,6 @@
 		PUSHA
 			ObjectOffset 	ID
 			CopyFrom  		Object[EBX].AttackTo, Number
-			;MOV EAX, Number
-			;.IF EAX != -1
-			;	DefaultColor
-			;	WriteSAtCenter	60,	10,	Attacking
-			;	Translate 20,10
-			;	Write '['
-			;	WriteI ID
-			;	Write '-'
-			;	WriteI Number
-			;	Write ']'
-			;;	AnyKeyToContinue
-			;	SettingColor Black
-			;	WriteSAtCenter	60,	10,	Attacking
-			;	Translate 20,10
-			;	Write '['
-			;	WriteI ID
-			;	Write '-'
-			;	WriteI Number
-			;	Write ']'
-			;	DefaultColor
-			;	TranslatePrevious
-			;.ENDIF
 		POPA
 		ENDM
 
@@ -286,20 +269,6 @@
 					CopyFrom StoreTo, 1
 				.ENDIF
 			.ENDIF
-			;CounterSoldierOffset Object
-			;CopyFrom 		EBX, Soldier_HP[EAX]
-			;MOV 	ECX,	4
-			;MOV 	EAX,	EBX
-			;DIV		ECX
-
-			;ObjectOffset 	ID
-			;CopyFrom 		ECX, Object[EBX].HP
-			;CopyFrom StoreTo,	 Object[EBX].HP
-			;.IF( ECX > EAX )
-			;	CopyFrom StoreTo,	2
-			;.ELSE
-			;	CopyFrom StoreTo,	1
-			;.ENDIF
 		POPA
 		ENDM
 	SettingSoldierHP		MACRO	Object, ID, Blood
@@ -331,6 +300,22 @@
 			CopyFrom 		StoreTo, Soldier_Attack[EAX]
 		POPA
 		ENDM
+
+	GettingSoldierMoney	MACRO	Object, ID,	StoreTo
+		PUSHA
+			ObjectOffset 	ID
+			CounterSoldierOffset Object
+			CopyFrom 		StoreTo, Soldier_Money[EAX]
+		POPA
+		ENDM
+
+	GettingSoldierMoneyByIndex	MACRO	Arms,	Level, StoreTo
+		PUSHA
+			CounterSoldierOffsetIndex 	Arms, Level
+			CopyFrom 		StoreTo, Soldier_Money[EAX]
+		POPA
+		ENDM
+
 	SettingSoldierAttack	MACRO	Object, ID
 		PUSHA
 			ObjectOffset 	ID

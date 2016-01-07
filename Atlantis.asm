@@ -43,7 +43,7 @@ MAIN:
 		Translate 60, 28
 		
 		PauseTime 250
-		
+		;PauseTime 250
 		Clear
 
 		Beats

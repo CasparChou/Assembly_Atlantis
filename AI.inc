@@ -6,9 +6,11 @@
 .Data
 
 	; counter -> AI_Timer
-	AI_Timer 		DWORD 0
+	AI_Timer 		DWORD 1
 
 	Mod_A_Timer 	DWORD 0
+	Mod_B_Timer 	DWORD 0
+	Mod_C_Timer 	DWORD 0
 
 
 
@@ -50,27 +52,53 @@
 	;ENDM
 
 	;	[[	 UpGrade	]]
-	;isUpGrading	DWORD 1
-	;ResetUpGradeFlag	EQU <CopyFrom isUpGrading, 0>
-	;Mod_When_Attack	MACRO	isUpGrading
-	;
-	;	MOV 	EAX,	isUpGrading
-	;	.IF ( EAX == 1 )
-	;		BuildOnce	AI_Timer,	0,	Beats2x,	ResetUpGradeFlag
-	;	.ENDIF
-	;
-	;ENDM
+	Mod_UpGrade	MACRO	When
+		.IF ( AI_Timer ==  When )
+			.IF( CompCurrLevel < 3)
+				CopyFrom CompLevelUpFlag, 1
+			.ENDIF
+		.ENDIF	
+	ENDM
+
+	;	[[	 UpGrade	]]
+	Mod_Reset	MACRO	When
+		.IF ( AI_Timer ==  When )
+			CopyFrom AI_Timer, 0
+		.ENDIF	
+	ENDM
 	
 
 	Mod_A 	MACRO 	Time_Open,	Time_Close
 		.IF ( AI_Timer >= Time_Open && AI_Timer <= Time_Close )
 
-			AutoBuild	Mod_A_Timer, 4, 	Beats2x,	BuildCompSoldierA
-			AutoBuild	Mod_A_Timer, 8, 	Beats2x,	BuildCompSoldierB
-			LoopBuild 	Mod_A_Timer, 8,		Beats2x
+			AutoBuild	Mod_A_Timer, 0, 	Beats4x,	BuildCompSoldierA
+			AutoBuild	Mod_A_Timer, 4, 	Beats4x,	BuildCompSoldierA
+			AutoBuild	Mod_A_Timer, 8, 	Beats4x,	BuildCompSoldierB
+			LoopBuild 	Mod_A_Timer, 8,		Beats4x
 			
 		.ENDIF
 		ENDM
+
+	Mod_B 	MACRO 	Time_Open,	Time_Close
+		.IF ( AI_Timer >= Time_Open && AI_Timer <= Time_Close )
+
+			AutoBuild	Mod_B_Timer, 0, 	Beats4x,	BuildCompSoldierA
+			AutoBuild	Mod_B_Timer, 4, 	Beats4x,	BuildCompSoldierA
+			AutoBuild	Mod_B_Timer, 8, 	Beats4x,	BuildCompSoldierC
+			LoopBuild 	Mod_B_Timer, 8,	Beats4x
+			
+		.ENDIF
+		ENDM
+
+	Mod_C 	MACRO 	Time_Open,	Time_Close
+		.IF ( AI_Timer >= Time_Open && AI_Timer <= Time_Close )
+
+			AutoBuild	Mod_C_Timer, 2, 	Beats4x,	BuildCompSoldierB
+			AutoBuild	Mod_C_Timer, 2, 	Beats4x,	BuildCompSoldierC
+			LoopBuild 	Mod_C_Timer, 4,	Beats4x
+			
+		.ENDIF
+		ENDM			
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -121,9 +149,33 @@
 
 .Data
 	AI MACRO
-		TimerInc 	AI_Timer,	Beats2x
+		TimerBeat 	AI_Timer,	Beats4x
 
-		Mod_A 	0,	60
+				;DefaultColor
+				;WriteSAtCenter	60,	10,	Attacking
+				;Translate 20,10
+				;Write '['
+;
+				;WriteI AI_Timer
+				;Write ']'
+				;;AnyKeyToContinue
+				;TranslatePrevious
+
+
+
+
+		Mod_A 	0,	10
+		Mod_A 	12,	22
+		Mod_B 	24,	34
+		Mod_C 	38,	48
+
+		Mod_A 	50,	60
+		Mod_A 	62,	72
+		Mod_B 	74,	84
+		Mod_C 	88,	98
+
+		Mod_UpGrade 101
+		Mod_Reset	101
 
 
 		ENDM

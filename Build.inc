@@ -5,6 +5,15 @@
 ;;;;						;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .Data
+	TakeMoney	 MACRO	Arms,	Level, CanBuild
+		CopyFrom CanBuild,	0
+		GettingSoldierMoneyByIndex Arms, Level, GetterHandler
+		MOV EAX, GetterHandler
+		.IF( UserMoney >= EAX )
+			SubBy 	UserMoney, 	GetterHandler
+			CopyFrom 	CanBuild, 	1
+		.ENDIF
+		ENDM
 	TriggleBuild MACRO 	League,	Arms
 		PUSHA
 			MOV EAX, League

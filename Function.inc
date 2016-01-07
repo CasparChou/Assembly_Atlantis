@@ -13,21 +13,29 @@
 
 		ENDM
 
-
+	CanBuildCallBack	DWORD 0
 	KeyHandler MACRO
 		PUSHA
 			MOV EAX, 0
 			Call ReadKey
 			.IF( AL == 'Q' || AL == 'q' )
 				;BuildUserSoldierA
-				BuildSoldierBufferTime 	0,	1
+				TakeMoney	1,	UserCurrLevel, CanBuildCallBack
+				.IF( CanBuildCallBack == 1 )
+					BuildSoldierBufferTime 	0,	1
+				.ENDIF
 			.ELSEIF( AL == 'W' || AL == 'w')
 				;BuildUserSoldierB
-				BuildSoldierBufferTime 	0,	2
+				TakeMoney	2,	UserCurrLevel, CanBuildCallBack
+				.IF( CanBuildCallBack == 1 )
+					BuildSoldierBufferTime 	0,	2
+				.ENDIF
 			.ELSEIF( AL == 'E' || AL == 'e')
 				;BuildUserSoldierC
-				BuildSoldierBufferTime 	0,	3
-
+				TakeMoney	3, UserCurrLevel, CanBuildCallBack
+				.IF( CanBuildCallBack == 1 )
+					BuildSoldierBufferTime 	0,	3
+				.ENDIF
 
 			.ELSEIF( AL == 'I' || AL == 'i')
 				BuildCompSoldierA
@@ -42,7 +50,34 @@
 
 			.ELSEIF( AL == 'Z' || AL == 'z')
 				.IF( UserCurrLevel < 3)
-					CopyFrom UserLevelUpFlag, 1
+					.IF( UserCurrLevel == 1 )
+						.IF( UserMoney > 1000)
+							CopyFrom UserLevelUpFlag, 1
+						.ELSE
+							CopyFrom EnoughTimer, 1
+							SettingColor Gray
+							Key_Z
+							DefaultColor
+						.ENDIF
+					.ELSEIF( UserCurrLevel == 2 )
+						.IF( UserMoney > 3000)
+							CopyFrom UserLevelUpFlag, 1
+						.ELSE
+							CopyFrom EnoughTimer, 1
+							SettingColor Gray
+							Key_Z
+							DefaultColor
+						.ENDIF
+					.ELSEIF( UserCurrLevel == 3 )
+						.IF( UserMoney > 5000 )
+							CopyFrom UserLevelUpFlag, 1
+						.ELSE
+							CopyFrom EnoughTimer, 1
+							SettingColor Black
+							Key_Z
+							DefaultColor
+						.ENDIF
+					.ENDIF
 				.ENDIF
 			.ELSEIF( AL == 'X' || AL == 'x')
 				.IF( CompCurrLevel < 3)
