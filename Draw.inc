@@ -93,13 +93,15 @@
 	HPLineY			DWORD ?
 	DrawHP MACRO Object, ID
 		PUSHAD
-			GettingSoldierX 	Object, ID,	HPLineX
-			CopyFrom HPLineY, 10
-
+			GettingSoldierX 		Object, ID,	HPLineX
+			GettingSoldierHeight	Object, ID, HPLineY
+			;AnyKeyToContinue
+			;CopyFrom HPLineY, 15
+			;SubBy HPLineY, GetterHandler
 			ObjectOffset ID
 			GettingSoldierHP 		Object, ID,	HPLine
 			GettingSoldierPercentHP Object, ID,	GetterHandler
-			DrawHPBar HPLine, GetterHandler
+			DrawHPBar HPLineY, GetterHandler
 		POPAD
 		ENDM
 	DrawHPBar  	 MACRO	HP, Length
@@ -107,25 +109,26 @@
 			Translate HPLineX, HPLineY
 			WriteD HP
 			Write '['
-			.IF Length == 1
+			MOV ECX, Length
+			.IF ECX == 1
 				SettingColor Red
 				Write 'I'
 				Write ' '
 				Write ' '
 				Write ' '
-			.ELSEIF Length == 2
+			.ELSEIF ECX == 2
 				SettingColor LightRed
 				Write 'I'
 				Write 'I'
 				Write ' '
 				Write ' '
-			.ELSEIF Length == 3
+			.ELSEIF ECX == 3
 				SettingColor Green
 				Write 'I'
 				Write 'I'
 				Write 'I'
 				Write ' '
-			.ELSEIF Length == 4
+			.ELSEIF ECX == 4
 				SettingColor LightGreen
 				Write 'I'
 				Write 'I'
@@ -140,18 +143,24 @@
 	DrawCastleHP MACRO	League
 		PUSHAD
 			MOV EAX, League
+
 			.IF (EAX ==  0)
-				Translate 10, 10 
-				SettingColor LightRed
-				WriteD UserCastleHP
-				DefaultColor
-				TranslatePrevious
+				CopyFrom HPLineX, 10
+				CopyFrom HPLineY, 10
+				MOV EBX, UserCastleHP
 			.ELSE
-				Translate 110, 10 
-				SettingColor LightRed
-				WriteD CompCastleHP
-				DefaultColor
-				TranslatePrevious
+				CopyFrom HPLineX, 110
+				CopyFrom HPLineY, 10
+				MOV EBX, CompCastleHP
+			.ENDIF
+			.IF EBX > 75
+				DrawHPBar EBX, 4
+			.ELSEIF EBX > 50
+				DrawHPBar EBX, 3
+			.ELSEIF EBX > 25
+				DrawHPBar EBX, 2
+			.ELSE
+				DrawHPBar EBX, 1
 			.ENDIF
 		POPAD
 		ENDM
