@@ -5,7 +5,9 @@
 	Draw MACRO
 		DrawCastle	 	0, 0
 		DrawCastle		1, 103
-
+		DrawCastleHP	0
+		DrawCastleHP	1
+		DrawMoney
 		DrawSoldiers
 		PanelDisplay
 		
@@ -23,16 +25,20 @@
 		.IF( CompLevelUpFlag == 1 )
 			DrawCastle		1, 103
 		.ENDIF
+		DrawMoney
 		DrawSoldiers
 		PanelDisplay
+		DrawCastleHP	0
+		DrawCastleHP	1
+
 		DefaultColor
 		CopyFrom		ClearOn, 0
-
 		ENDM
 
 	PanelDisplay MACRO
 		.IF DebugMode == 0
 			DrawInfo
+			NoEnough_Dialog
 			.IF( Timer_UserBuild > 0)
 				Building_Dialog Beats6x
 				;DrawLoading 	Beats4x
@@ -95,13 +101,10 @@
 		PUSHAD
 			GettingSoldierX 		Object, ID,	HPLineX
 			GettingSoldierHeight	Object, ID, HPLineY
-			;AnyKeyToContinue
-			;CopyFrom HPLineY, 15
-			;SubBy HPLineY, GetterHandler
 			ObjectOffset ID
 			GettingSoldierHP 		Object, ID,	HPLine
 			GettingSoldierPercentHP Object, ID,	GetterHandler
-			DrawHPBar HPLineY, GetterHandler
+			DrawHPBar HPLine, GetterHandler
 		POPAD
 		ENDM
 	DrawHPBar  	 MACRO	HP, Length
@@ -143,26 +146,33 @@
 	DrawCastleHP MACRO	League
 		PUSHAD
 			MOV EAX, League
-
 			.IF (EAX ==  0)
-				CopyFrom HPLineX, 10
+				CopyFrom HPLineX, 5
 				CopyFrom HPLineY, 10
 				MOV EBX, UserCastleHP
 			.ELSE
-				CopyFrom HPLineX, 110
+				CopyFrom HPLineX, 105
 				CopyFrom HPLineY, 10
 				MOV EBX, CompCastleHP
 			.ENDIF
-			.IF EBX > 75
+			.IF EBX > 3750
 				DrawHPBar EBX, 4
-			.ELSEIF EBX > 50
+			.ELSEIF EBX > 2500
 				DrawHPBar EBX, 3
-			.ELSEIF EBX > 25
+			.ELSEIF EBX > 1250
 				DrawHPBar EBX, 2
 			.ELSE
 				DrawHPBar EBX, 1
 			.ENDIF
 		POPAD
+		ENDM
+	DrawMoney		MACRO
+		Translate 	60, 2
+		SettingColor Yellow
+		Write 	'$'
+		WriteD 	UserMoney
+		DefaultColor
+		TranslatePrevious
 		ENDM
 .Code
 	DrawingSoldiers 	PROC

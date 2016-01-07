@@ -8,6 +8,8 @@
 	Building_Dialog_4	DB 	"¡m¡m       Building Soldier        ¡n¡n",0
 	Building_Dialog_5	DB 	" ¡m        Building Soldier         ¡n ",0
 	Building_Dialog_6	DB 	"           Building Soldier            ",0
+	NoEnoughMoney_Dialog	DB 	"           Not Enough Money           ",0
+	UnderAttack_Dialog		DB 	"         Your Castle is under attack         ",0
 
 	Building_Dialog		MACRO Fram
 		
@@ -31,6 +33,21 @@
 			MOV SetterBuffer,	EAX
 			DecAtCoord 59,23, SetterBuffer
 		.ENDIF
+		ENDM
+		
+	
+	NoEnough_Dialog		MACRO
+		.IF( EnoughTimer == 0 )
+			
+		.ELSEIF( EnoughTimer < 10)
+			SettingColor LightRed
+			WriteSAtCenter	60,	23,	NoEnoughMoney_Dialog
+			INC EnoughTimer
+			
+		.ELSE
+			CopyFrom EnoughTimer, 0
+		.ENDIF
+		
 		ENDM
 	
 ;	StartUp_1 	DB " A£n£f£\£h£nis  ",0
@@ -71,31 +88,58 @@
 	KEY_A_1		DB	"¢z¢w¢{"	,0
 	KEY_A_2		DB	"¢x¢ß¢x"	,0
 	KEY_A_3		DB	"¢|¢w¢}"	,0	
+	KEY_A_4		DB	" $100 "	,0	
 	KEY_A	MACRO
 		Translate 5, 22
 		GraphDisplay	KEY_A_1
 		GraphDisplay	KEY_A_2
 		GraphDisplay	KEY_A_3
+		GraphDisplay	KEY_A_4
 		ENDM
 	KEY_B_1		DB	"¢z¢w¢{"	,0
 	KEY_B_2		DB	"¢x¢å¢x"	,0
 	KEY_B_3		DB	"¢|¢w¢}"	,0
+	KEY_B_4		DB	" $300 "	,0
 	KEY_B	MACRO
 		Translate 12, 22
 		GraphDisplay	KEY_B_1
 		GraphDisplay	KEY_B_2
 		GraphDisplay	KEY_B_3		
+		GraphDisplay	KEY_B_4	
 		ENDM
 	KEY_C_1		DB	"¢z¢w¢{"	,0
 	KEY_C_2		DB	"¢x¢Ó¢x"	,0
 	KEY_C_3		DB	"¢|¢w¢}"	,0
+	KEY_C_4		DB	" $600 "	,0
 	KEY_C	MACRO
 		Translate 19, 22
 		GraphDisplay	KEY_C_1
 		GraphDisplay	KEY_C_2
 		GraphDisplay	KEY_C_3		
+		GraphDisplay	KEY_C_4	
 		ENDM
-		
+	
+	
+	KEY_Z_1		DB	"¢z¢w¢{"	,0
+	KEY_Z_2		DB	"¢x¢è¢x Upgrade"	,0
+	KEY_Z_3		DB	"¢|¢w¢}"	,0
+	
+	KEY_Z_M_1 	DB "$1000",0
+	KEY_Z_M_2 	DB "$3000",0
+	KEY_Z_M_3 	DB "$5000",0
+	KEY_Z	MACRO
+		Translate 29, 24
+		GraphDisplay	KEY_Z_1
+		GraphDisplay	KEY_Z_2
+		GraphDisplay	KEY_Z_3		
+		.IF( UserCurrLevel == 1 )
+			GraphDisplay KEY_Z_M_1
+		.ELSEIF( UserCurrLevel == 2 )
+			GraphDisplay KEY_Z_M_2
+		.ELSEIF( UserCurrLevel == 3 )
+			GraphDisplay KEY_Z_M_3
+		.ENDIF
+		ENDM
 		
 	
 	DrawInfo	MACRO
@@ -124,6 +168,36 @@
 			DefaultColor
 			KEY_C
 		.ENDIF
+
+		.IF( UserCurrLevel == 1 )
+			.IF( UserMoney > 1000)
+				DefaultColor
+				KEY_Z
+			.ELSE
+				SettingColor Gray
+				KEY_Z
+				DefaultColor
+			.ENDIF
+		.ELSEIF( UserCurrLevel == 2 )
+			.IF( UserMoney > 3000)
+				DefaultColor
+				KEY_Z
+			.ELSE
+				SettingColor Gray
+				KEY_Z
+				DefaultColor
+			.ENDIF
+		.ELSEIF( UserCurrLevel == 3 )
+			.IF( UserMoney > 5000 )
+				DefaultColor
+				KEY_Z
+			.ELSE
+				SettingColor Gray
+				KEY_Z
+				DefaultColor
+			.ENDIF
+		.ENDIF
+		
 		
 		ENDM
 		

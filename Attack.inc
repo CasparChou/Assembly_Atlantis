@@ -13,8 +13,8 @@
 	UserHP	DWORD	?
 	CompHP	DWORD	?
 
-	UserCastleHP	DWORD	100
-	CompCastleHP	DWORD	100
+	UserCastleHP	DWORD	5000
+	CompCastleHP	DWORD	5000
 
 	AttackToUserCastle MACRO
 
@@ -53,6 +53,12 @@
 				SubBy CompHP,	UserATK
 				SettingSoldierHP		CompSoldiers,	UserAttackTarget,	CompHP
 			.ELSE
+				GettingSoldierMoney 	CompSoldiers,	UserAttackTarget, GetterHandler
+				MOV 	EDX, 	0
+				MOV 	EAX,	GetterHandler
+				MOV 	ECX,	2
+				DIV		ECX
+				AddBy 	UserMoney, EAX
 				DestorySoldier CompSoldiers, UserAttackTarget
 				SettingSoldierAttackTo	UserSoldiers,	UserAttackSoldier,	-1
 				ResetAttack

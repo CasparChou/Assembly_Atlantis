@@ -1,6 +1,6 @@
 ;	Version 3
 .Data
-	UserMoney		DWORD 100
+	UserMoney		DWORD 	500
 	
 	Gaming			DWORD 	1
 	DebugMode 		DWORD	0
@@ -39,10 +39,11 @@
 	
 
 	Beats MACRO
-		TimerCheck 	Timer_UserBuild,	Beats2x,	UserBuildTimerCheck
-		TimerCheck 	Timer_CompBuild,	Beats2x,	CompBuildTimerCheck
-		TimerCheck 	UserAttackTimer,	Beats2x,	UserAttack
-		TimerCheck 	CompAttackTimer,	Beats2x,	CompAttack
+		TimerCheck 	Timer_UserBuild,		Beats2x,	UserBuildTimerCheck
+		TimerCheck 	Timer_CompBuild,		Beats2x,	CompBuildTimerCheck
+		TimerCheck 	UserAttackTimer,		Beats2x,	UserAttack
+		TimerCheck 	CompAttackTimer,		Beats2x,	CompAttack
+		TimerCheck 	MoneyIncrementTimer,	Beats4x,	MoneyIncrement
 		
 		INC Beats2x
 		INC Beats3x
@@ -80,6 +81,13 @@
 		.ENDIF
 		ENDM
 
+
+	TimerBeat MACRO	Timer,	BeatsX
+		.IF( BeatsX == 1)
+			INC Timer
+		.ENDIF
+		ENDM
+
 	ClearOn 	DWORD 0
 	Building	DWORD 0
 
@@ -89,11 +97,23 @@
 	Timer_UserBuild		DWORD 0
 	Timer_CompBuild		DWORD 0
 	Timer_Build_Goal 	DWORD 0
+
+	EnoughTimer			DWORD 0
+
 	UserAttackTimer		DWORD 0
 	CompAttackTimer		DWORD 0
 
+
 	User_BuildQueue		DWORD	0,0,0,0,0,-1	;5 DUP(0)
 	Comp_BuildQueue		DWORD	0,0,0,0,0,-1	;5 DUP(0)
+
+	MoneyIncrementTimer DWORD 1
+	MoneyIncrement		MACRO
+		PUSHAD
+			MOV EAX, 30
+			AddBy UserMoney, EAX
+		POPAD
+		ENDM
 
 
 	UserBuildTimerCheck MACRO
